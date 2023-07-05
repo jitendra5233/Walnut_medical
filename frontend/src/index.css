@@ -1,0 +1,375 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.demo-logo-vertical {
+  height: 32px;
+  margin: 16px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+}
+
+.m12r {
+  margin: 2rem 1rem;
+}
+
+.mainContainer {
+  padding: 1rem 2rem;
+}
+
+.mainTitle {
+  padding: 0 0 2rem;
+}
+
+.ant-layout-sider-light {
+  background-color: #f0f0f8;
+}
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu-light
+  .ant-menu-item-selected,
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu-light
+  > .ant-menu
+  .ant-menu-item-selected {
+  background-color: #0071c5;
+  color: white;
+}
+
+.ant-menu-item-selected.ant-menu-item-only-child {
+  border-radius: 0;
+}
+
+/* login css start */
+.loginTitle {
+  color: #0071c5;
+  font-size: 24px;
+  font-family: Arial;
+  font-weight: 700;
+  letter-spacing: 0.48px;
+}
+.loginTitleDiv {
+  text-align: center;
+}
+.loginSubTitle {
+  color: #525252;
+  font-size: 12px;
+  font-family: Arial;
+  letter-spacing: 0.24px;
+}
+.loginFormContainer {
+  padding: 5rem;
+}
+.loginForm {
+  margin-top: 60px;
+}
+.remenberAndFrgotPassContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.ant-form-item-label > label {
+  color: #525252 !important;
+  font-size: 12px !important;
+  font-family: Arial;
+  letter-spacing: 0.24px;
+}
+.myAntIpt {
+  border-radius: 0 !important;
+  background: #f5f6fa !important;
+  padding: 10px !important;
+  line-height: 0 !important;
+}
+.myAntIpt2 {
+  border-radius: 0 !important;
+  background: #f5f6fa !important;
+  padding: 5px 10px !important;
+  line-height: 0 !important;
+}
+.myAntLoginBtn {
+  border-radius: 0 !important;
+  height: 35px !important;
+}
+.otpVerifyLabel {
+  color: #525252;
+  font-size: 12px;
+  font-family: Arial;
+  letter-spacing: 0.24px;
+}
+
+.otpVerifyIpt {
+  width: 50px;
+}
+
+.OTPInputContainer input {
+  height: 45px;
+  width: 45px !important;
+  margin: 30px;
+}
+
+.OtpResendText {
+  color: #525252;
+  font-size: 12px;
+  font-family: Arial;
+  letter-spacing: 0.24px;
+  text-align: center;
+}
+
+/* login css end */
+
+/* Layout Start */
+/* aside.ant-layout-sider.ant-layout-sider-light {
+  width: 250px !important;
+  min-width: 250px !important;
+  max-width: 250px !important;
+  flex: 0 0 250px !important;
+} */
+.menuText {
+  font-size: 14px;
+  font-family: Arial;
+  letter-spacing: 0.28px;
+}
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu-light,
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu-light > .ant-menu {
+  color: #525252;
+}
+:where(.css-dev-only-do-not-override-1wazalj).ant-layout
+  .ant-layout-sider-light {
+  background: #f5f6fa;
+}
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu-light,
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu-light > .ant-menu {
+  background: #f5f6fa;
+}
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu .ant-menu-item,
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu .ant-menu-submenu,
+:where(.css-dev-only-do-not-override-1wazalj).ant-menu .ant-menu-submenu-title {
+  border-radius: 0;
+}
+ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light {
+  border: none;
+}
+
+.appBarTxt {
+  color: #0071c5;
+  font-size: 16px;
+  font-family: Arial;
+  font-weight: 700;
+}
+.appBarSearchIpt {
+  border-radius: 25px;
+  background-color: #f0f0f8;
+}
+.appBarSearchIpt input {
+  background-color: #f0f0f8;
+}
+.site-form-item-icon {
+  color: #9e9e9e;
+}
+.h64p {
+  height: 64px;
+}
+
+.appBarUserName {
+  color: #525252;
+  font-size: 14px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.appBarUserType {
+  color: #525252;
+  font-size: 12px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.appBarUserContainer {
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+.menuHeading {
+  margin: 30px 15px;
+}
+
+.menuHeadingTxt {
+  color: #525252;
+  font-size: 12px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.2px;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #9e9e9e61;
+}
+
+li.ant-menu-submenu.ant-menu-submenu-inline {
+  margin: 10px 0;
+}
+
+.ant-popover-inner {
+  border-radius: 0 !important;
+}
+
+.ant-btn {
+  border-radius: 0 !important;
+}
+.ant-popover-content {
+  width: 200px;
+}
+/* Layout End */
+
+/* dashboard start */
+.dashboardCardTxt {
+  color: #0071c5;
+  /* Arial 14px */
+  font-size: 14px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+
+.dashboardCard {
+  background: #f0f1f6;
+  border-radius: 0;
+  height: 280px;
+}
+:where(.css-dev-only-do-not-override-1wazalj).ant-layout {
+  background-color: #fff;
+}
+/* dshboard end */
+
+/* employee list start */
+.pageTitle {
+  color: #525252;
+  /* Arial 14px */
+  font-size: 14px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+.ant-btn-primary {
+  background-color: #0071c5;
+}
+/* employee list end */
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > th:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before,
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper
+  .ant-table-thead
+  > tr
+  > td:not(:last-child):not(.ant-table-selection-column):not(
+    .ant-table-row-expand-icon-cell
+  ):not([colspan])::before {
+  display: none;
+}
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:first-child {
+  border-radius: 0;
+}
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper
+  .ant-table-container
+  table
+  > thead
+  > tr:first-child
+  > *:last-child {
+  border-radius: 0;
+}
+
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper
+  .ant-table-tbody
+  > tr
+  > th,
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper
+  .ant-table-tbody
+  > tr
+  > td {
+  border: 0;
+}
+.ant-pagination-item {
+  border-radius: 0 !important;
+}
+
+.popupTitle {
+  color: #0071c5;
+  /* Arial 14px */
+  font-size: 14px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+:where(.css-dev-only-do-not-override-1wazalj).ant-input {
+  background-color: #f5f6fa;
+}
+
+.myAntIptSelect2 > div {
+  border-radius: 0 !important;
+  margin-top: 6px !important;
+  background-color: #f5f6fa !important;
+}
+
+.ant-modal-footer {
+  text-align: center !important;
+}
+
+.ant-modal-footer {
+  text-align: center !important;
+}
+
+.ant-modal-footer button {
+  border-radius: 25px !important;
+  width: 120px;
+  height: 35px;
+}
+
+.ant-modal-footer > .ant-btn-default {
+  background-color: #babcc8;
+  color: white;
+  border: none;
+}
+
+.ant-modal-footer > .ant-btn-default:hover {
+  color: black;
+}
