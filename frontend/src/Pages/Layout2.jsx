@@ -241,7 +241,7 @@ const LayoutCom2 = () => {
             }
           >
             <Menu.Item key="10">
-              <Link to="/users">New hiring</Link>
+              <Link to="/hiring">New hiring</Link>
             </Menu.Item>
             <Menu.Item key="11">
               <Link to="/users">New Employee Info</Link>

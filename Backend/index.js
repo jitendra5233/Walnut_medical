@@ -4,8 +4,11 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const Users = require("./users");
 const upload = require("./Service/imageUpload");
+const Department = require("./Model/Deparrtment");
 
 const singleUpload = upload.single("image");
+
+require("dotenv").config();
 
 let app = express();
 let port = 5000;
@@ -172,5 +175,23 @@ app.post("/update_User", async (req, res) => {
     res.status(200).json(true);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/addDepartment", async (req, res) => {
+  try {
+    const dep = await Department.create(req.body);
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getDepartment", async (req, res) => {
+  try {
+    const dep = await Department.find({});
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });

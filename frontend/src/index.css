@@ -373,3 +373,11 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 .ant-modal-footer > .ant-btn-default:hover {
   color: black;
 }
+
+.DepCard .ant-card-body {
+  padding: 0;
+}
+
+.ant-input {
+  background-color: #f5f6fa;
+}
