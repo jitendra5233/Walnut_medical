@@ -44,14 +44,9 @@ app.post("/login", async (req, res) => {
 app.post("/add-profile-picture", function (req, res) {
   singleUpload(req, res, function (err) {
     if (err) {
-      return res.json({
-        success: false,
-        errors: {
-          title: "Image Upload Error",
-          detail: err.message,
-          error: err,
-        },
-      });
+      res.status(500).json({ message: err.message });
+    } else {
+      res.status(200).json({ status: true });
     }
   });
 });
@@ -180,8 +175,17 @@ app.post("/update_User", async (req, res) => {
 
 app.post("/addDepartment", async (req, res) => {
   try {
-    const dep = await Department.create(req.body);
-    res.status(200).json(dep);
+    singleUpload(req, res, function (err) {
+      if (err) {
+        res.status(500).json({ message: err.message });
+      } else {
+        Department.create({
+          name: req.body.name,
+          img: req.file.location,
+        });
+        res.status(200).json({ status: true });
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

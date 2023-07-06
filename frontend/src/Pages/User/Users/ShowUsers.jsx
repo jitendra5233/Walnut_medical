@@ -10,6 +10,8 @@ import {
   Input,
   Select,
   notification,
+  Spin,
+  Upload,
 } from "antd";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -17,6 +19,7 @@ import {
   DeleteOutlined,
   EditOutlined,
   LogoutOutlined,
+  PlusOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import { useNavigate, Link } from "react-router-dom";
@@ -168,7 +171,7 @@ const ShowUsers = () => {
         let newData = [];
 
         data.map((x) => {
-          console.log(x);
+          // console.log(x);
           newData.push({
             key: x._id,
             name: `${x.f_name} ${x.l_name}`,
@@ -196,19 +199,30 @@ const ShowUsers = () => {
   const handleSubmit = (values) => {
     if (activeId == "") {
       setLoading(true);
-      console.log("ok");
+
+      let data = new FormData();
+      data.append("email", values.email);
+      data.append("emp_code", values.emp_code);
+      data.append("f_name", values.f_name);
+      data.append("l_name", values.l_name);
+      data.append("image", "image");
+      data.append("job_title", values.job_title);
+      data.append("password", values.password);
+
       axios
         .post("http://localhost:5000/create_User", values)
         .then((res) => {
-          setLoading(false);
-          if (res.data.length === 0) {
-            openNotificationWithIcon("error");
-          } else {
-            openNotificationWithIcon("success");
-            dispatch(handleLogin({ name: "harman" }));
-            getUsers();
-            setIsModalOpen(false);
-          }
+          console.log(res.data);
+          // setLoading(false);
+          // if (res.data.length === 0) {
+          //   openNotificationWithIcon("error");
+          // } else {
+          //   openNotificationWithIcon("success");
+          //   dispatch(handleLogin({ name: "harman" }));
+          //   getUsers();
+          //   form.resetFields();
+          //   setIsModalOpen(false);
+          // }
         })
         .catch((err) => {
           setLoading(false);
@@ -241,6 +255,13 @@ const ShowUsers = () => {
     console.log("Failed:", errorInfo);
   };
 
+  const normFile = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
   let { Option } = Select;
 
   return (
@@ -262,197 +283,225 @@ const ShowUsers = () => {
         </div>
 
         <Modal open={isModalOpen} onCancel={handleCancel} footer={[]}>
-          <div style={{ padding: "30px" }}>
-            <Row>
-              <Col span={24} style={{ marginBottom: "30px" }}>
-                <span className="popupTitle">Employee Account</span>
-              </Col>
-              <Col span={24}>
-                <Form
-                  form={form}
-                  name="basic"
-                  layout="vertical"
-                  initialValues={{
-                    remember: true,
-                  }}
-                  onFinish={handleSubmit}
-                  onFinishFailed={onFinishFailed}
-                  autoComplete="off"
-                >
-                  <Row gutter={24}>
-                    <Col span={24} style={{ marginBottom: "20px" }}>
-                      <Avatar
-                        size={50}
-                        src={<img src="./icon/userImg.png" alt="avatar" />}
-                        style={{ marginRight: "  15px" }}
-                      />
-                      <Button>
-                        Upload <UploadOutlined />
-                      </Button>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="First name"
-                        name="f_name"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your First Name",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input
-                          className="myAntIpt2"
-                          placeholder="Enter your First Name"
-                          size="small"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Last Name"
-                        name="l_name"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Last Name",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input
-                          className="myAntIpt2"
-                          placeholder="Enter your Last Name"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Employee code"
-                        name="emp_code"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Employee code",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input
-                          className="myAntIpt2"
-                          placeholder="Enter your Employee code"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Job Title"
-                        name="job_title"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Title!",
-                          },
-                        ]}
-                      >
-                        <Select
-                          placeholder="Select Job"
-                          allowClear
-                          className="myAntIptSelect2"
-                        >
-                          <Option value="1">Software Enginner</Option>
-                          <Option value="2">Software Developer</Option>
-                          <Option value="3">QA Engineer</Option>
-                          <Option value="4">Frontend Developer</Option>
-                          <Option value="5">Backend Developer</Option>
-                        </Select>
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Email ID"
-                        name="email"
-                        rules={[
-                          {
-                            type: "email",
-                            message: "The input is not valid E-mail!",
-                          },
-                          {
-                            required: true,
-                            message: "Please input your E-mail!",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input
-                          className="myAntIpt2"
-                          placeholder="Enter your Title"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Create Password"
-                        name="password"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Create Password",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input.Password
-                          className="myAntIpt2"
-                          placeholder="Enter your Create Password"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Confirm password"
-                        name="c_password"
-                        dependencies={["password"]}
-                        hasFeedback
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please confirm your password!",
-                          },
-                          ({ getFieldValue }) => ({
-                            validator(_, value) {
-                              if (
-                                !value ||
-                                getFieldValue("password") === value
-                              ) {
-                                return Promise.resolve();
-                              }
-                              return Promise.reject(
-                                new Error("Password do not match!")
-                              );
+          <Spin spinning={loading}>
+            {contextHolder}
+            <div style={{ padding: "30px" }}>
+              <Row>
+                <Col span={24} style={{ marginBottom: "30px" }}>
+                  <span className="popupTitle">Employee Account</span>
+                </Col>
+                <Col span={24}>
+                  <Form
+                    form={form}
+                    name="basic"
+                    layout="vertical"
+                    initialValues={{
+                      remember: true,
+                    }}
+                    onFinish={handleSubmit}
+                    onFinishFailed={onFinishFailed}
+                    autoComplete="off"
+                  >
+                    <Row gutter={24}>
+                      <Col span={24} style={{ marginBottom: "20px" }}>
+                        <Form.Item
+                          label="Upload"
+                          valuePropName="fileList"
+                          getValueFromEvent={normFile}
+                          name="image"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your Department Image",
                             },
-                          }),
-                        ]}
-                      >
-                        <Input.Password
-                          className="myAntIpt2"
-                          placeholder="Enter your Confirm password"
+                          ]}
+                        >
+                          <Upload listType="picture-card" maxCount={1}>
+                            <div>
+                              <PlusOutlined />
+                              <div
+                                style={{
+                                  marginTop: 8,
+                                }}
+                              >
+                                Upload
+                              </div>
+                            </div>
+                          </Upload>
+                        </Form.Item>
+                        {/* <Avatar
+                          size={50}
+                          src={<img src="./icon/userImg.png" alt="avatar" />}
+                          style={{ marginRight: "  15px" }}
                         />
-                      </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                      <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                          Submit
-                        </Button>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Form>
-              </Col>
-            </Row>
-          </div>
+                        <Button>
+                          Upload <UploadOutlined />
+                        </Button> */}
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="First name"
+                          name="f_name"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your First Name",
+                            },
+                          ]}
+                          hasFeedback
+                        >
+                          <Input
+                            className="myAntIpt2"
+                            placeholder="Enter your First Name"
+                            size="small"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Last Name"
+                          name="l_name"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your Last Name",
+                            },
+                          ]}
+                          hasFeedback
+                        >
+                          <Input
+                            className="myAntIpt2"
+                            placeholder="Enter your Last Name"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Employee code"
+                          name="emp_code"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your Employee code",
+                            },
+                          ]}
+                          hasFeedback
+                        >
+                          <Input
+                            className="myAntIpt2"
+                            placeholder="Enter your Employee code"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Job Title"
+                          name="job_title"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your Title!",
+                            },
+                          ]}
+                        >
+                          <Select
+                            placeholder="Select Job"
+                            allowClear
+                            className="myAntIptSelect2"
+                          >
+                            <Option value="1">Software Enginner</Option>
+                            <Option value="2">Software Developer</Option>
+                            <Option value="3">QA Engineer</Option>
+                            <Option value="4">Frontend Developer</Option>
+                            <Option value="5">Backend Developer</Option>
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Email ID"
+                          name="email"
+                          rules={[
+                            {
+                              type: "email",
+                              message: "The input is not valid E-mail!",
+                            },
+                            {
+                              required: true,
+                              message: "Please input your E-mail!",
+                            },
+                          ]}
+                          hasFeedback
+                        >
+                          <Input
+                            className="myAntIpt2"
+                            placeholder="Enter your Title"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Create Password"
+                          name="password"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your Create Password",
+                            },
+                          ]}
+                          hasFeedback
+                        >
+                          <Input.Password
+                            className="myAntIpt2"
+                            placeholder="Enter your Create Password"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Confirm password"
+                          name="c_password"
+                          dependencies={["password"]}
+                          hasFeedback
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please confirm your password!",
+                            },
+                            ({ getFieldValue }) => ({
+                              validator(_, value) {
+                                if (
+                                  !value ||
+                                  getFieldValue("password") === value
+                                ) {
+                                  return Promise.resolve();
+                                }
+                                return Promise.reject(
+                                  new Error("Password do not match!")
+                                );
+                              },
+                            }),
+                          ]}
+                        >
+                          <Input.Password
+                            className="myAntIpt2"
+                            placeholder="Enter your Confirm password"
+                          />
+                        </Form.Item>
+                      </Col>
+                      <Col span={24}>
+                        <Form.Item>
+                          <Button type="primary" htmlType="submit">
+                            Submit
+                          </Button>
+                        </Form.Item>
+                      </Col>
+                    </Row>
+                  </Form>
+                </Col>
+              </Row>
+            </div>
+          </Spin>
         </Modal>
       </div>
 

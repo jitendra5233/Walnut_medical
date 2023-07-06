@@ -5,9 +5,9 @@ const multerS3 = require("multer-s3");
 const s3 = new aws.S3();
 
 aws.config.update({
-  secretAccessKey: "QyTCHlI+qKW8vRTVn1NhHVkBBsiSVp8oA1nCqgl0",
-  accessKeyId: "AKIAXO63DFCK5TO22UP6",
-  region: "ap-south-1",
+  secretAccessKey: "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",
+  accessKeyId: "AKIAXO63DFCKS5XSHSRM",
+  region: "us-east-1",
 });
 
 const fileFilter = (req, file, cb) => {
@@ -23,12 +23,13 @@ const upload = multer({
   storage: multerS3({
     acl: "public-read",
     s3,
-    bucket: "techies-dms",
-    metadata: function (req, file, cb) {
-      cb(null, { fieldName: "TESTING_METADATA" });
-    },
+    bucket: "tehies-dms-storage",
+
     key: function (req, file, cb) {
-      cb(null, Date.now().toString());
+      cb(null, Date.now().toString() + file.originalname);
+    },
+    filename(req, file, cb) {
+      cb(null, `${new Date().getTime()}_${file.originalname}`);
     },
   }),
 });

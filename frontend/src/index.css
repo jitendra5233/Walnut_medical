@@ -381,3 +381,23 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 .ant-input {
   background-color: #f5f6fa;
 }
+
+.potionCardTitle {
+  color: #0071c5;
+  /* Arial 14px */
+  font-family: Arial;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+
+.postionCardSubtitle {
+  color: #525252;
+  font-family: Arial;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}

@@ -1,4 +1,4 @@
-import { UploadOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import {
   Card,
   Row,
@@ -11,14 +11,25 @@ import {
   notification,
   Upload,
   message,
+  Spin,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DepartmentCard = ({ img, name }) => {
+  const navigate = useNavigate();
+
+  const handlelinkOpen = () => {
+    navigate("/show-postion");
+  };
   return (
     <div>
-      <Card style={{ borderRadius: "10px", padding: "0" }} className="DepCard">
+      <Card
+        style={{ borderRadius: "10px", padding: "0", cursor: "pointer" }}
+        className="DepCard"
+        onClick={() => handlelinkOpen()}
+      >
         <div style={{ padding: "60px 70px", textAlign: "center" }}>
           <img src={img} style={{ height: "100px", width: "100px" }} />
         </div>
@@ -51,12 +62,12 @@ const HiringDashboard = () => {
   const openNotificationWithIcon = (type) => {
     if (type === "error") {
       api[type]({
-        message: "Invalid Email or Password",
+        message: "Server Error",
         description: "",
       });
     } else {
       api[type]({
-        message: "Login Successful",
+        message: "Department Added Successful",
         description: "",
       });
     }
@@ -84,17 +95,22 @@ const HiringDashboard = () => {
   };
 
   const handleSubmit = (values) => {
-    values.img = "./icon/Hr_icon.png";
     setLoading(true);
+
+    let data = new FormData();
+    data.append("name", values.name);
+    data.append("image", values.image[0].originFileObj);
+
     axios
-      .post("http://localhost:5000/addDepartment", values)
+      .post("http://localhost:5000/addDepartment", data)
       .then((res) => {
         setLoading(false);
-        if (res.data.length === 0) {
-          openNotificationWithIcon("error");
-        } else {
-          console.log(res.data);
+        handleCancel();
+        if (res.data.status === true) {
           openNotificationWithIcon("success");
+          getDepartment();
+        } else {
+          openNotificationWithIcon("error");
         }
       })
       .catch((err) => {
@@ -126,6 +142,13 @@ const HiringDashboard = () => {
     },
   };
 
+  const normFile = (e) => {
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+
   return (
     <div>
       <div
@@ -146,26 +169,53 @@ const HiringDashboard = () => {
         </div>
       </div>
       <Modal open={isModalOpen} onCancel={handleCancel} footer={[]}>
-        <div style={{ padding: "30px" }}>
-          <Row>
-            <Col span={24} style={{ marginBottom: "30px" }}>
-              <span className="popupTitle">Add New Department</span>
-            </Col>
-            <Col span={24}>
-              <Form
-                form={form}
-                name="basic"
-                layout="vertical"
-                initialValues={{
-                  remember: true,
-                }}
-                onFinish={handleSubmit}
-                onFinishFailed={onFinishFailed}
-                autoComplete="off"
-              >
-                <Row gutter={24}>
-                  <Col span={24} style={{ marginBottom: "20px" }}>
-                    {/* <Avatar
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24} style={{ marginBottom: "30px" }}>
+                <span className="popupTitle">Add New Department</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={handleSubmit}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24} style={{ marginBottom: "20px" }}>
+                      <Form.Item
+                        label="Upload"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        name="image"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Department Image",
+                          },
+                        ]}
+                      >
+                        <Upload listType="picture-card" maxCount={1}>
+                          <div>
+                            <PlusOutlined />
+                            <div
+                              style={{
+                                marginTop: 8,
+                              }}
+                            >
+                              Upload
+                            </div>
+                          </div>
+                        </Upload>
+                      </Form.Item>
+                      {/* <Avatar
                       size={50}
                       src={<img src="./icon/userImg.png" alt="avatar" />}
                       style={{ marginRight: "  15px" }}
@@ -173,42 +223,43 @@ const HiringDashboard = () => {
                     <Button>
                       Upload <UploadOutlined />
                     </Button> */}
-                    <Upload>
+                      {/* <Upload>
                       <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                    </Upload>
-                  </Col>
-                  <Col span={24}>
-                    <Form.Item
-                      label="Department name"
-                      name="name"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your Department name",
-                        },
-                      ]}
-                      hasFeedback
-                    >
-                      <Input
-                        className="myAntIpt2"
-                        placeholder="Enter your Department name"
-                        size="small"
-                      />
-                    </Form.Item>
-                  </Col>
+                    </Upload> */}
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Department name"
+                        name="name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Department name",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Department name"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
 
-                  <Col span={24}>
-                    <Form.Item>
-                      <Button type="primary" htmlType="submit">
-                        Submit
-                      </Button>
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Form>
-            </Col>
-          </Row>
-        </div>
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
       </Modal>
       <Row
         gutter={[

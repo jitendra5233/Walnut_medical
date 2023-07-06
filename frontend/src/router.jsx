@@ -17,6 +17,7 @@ import OtpVerify from "./Pages/User/Auth/OtpVerify";
 import ChangePasword from "./Pages/User/Auth/ChangePasword";
 import LayoutCom2 from "./Pages/Layout2";
 import HiringDashboard from "./Pages/Hiring/HiringDashboard";
+import ShowPostions from "./Pages/Hiring/ShowPostions";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
         <Route path="/roles" element={<ShowRole />} />
         <Route path="/add-role" element={<AddRole />} />
         <Route path="/hiring" element={<HiringDashboard />} />
+        <Route path="/show-postion" element={<ShowPostions />} />
       </Route>
     </Route>
   )
