@@ -114,7 +114,7 @@ const PostionCard = ({
   );
 };
 
-const ShowPostions = () => {
+const ShowCandidate = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [api, contextHolder] = notification.useNotification();
@@ -171,22 +171,23 @@ const ShowPostions = () => {
   };
 
   const handleSubmit = (values) => {
-    setLoading(true);
-    values.ref_id = r_prams.id;
-    values.slug = createSlug(values.name);
-    axios
-      .post("http://localhost:5000/addDepartmentPostions", values)
-      .then((res) => {
-        setLoading(false);
-        handleCancel();
-        form.resetFields();
-        openNotificationWithIcon("success");
-        getDepartment();
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
+    console.log(values);
+    // setLoading(true);
+    // values.ref_id = r_prams.id;
+    // values.slug = createSlug(values.name);
+    // axios
+    //   .post("http://localhost:5000/addPostionsCandidate", values)
+    //   .then((res) => {
+    //     setLoading(false);
+    //     handleCancel();
+    //     form.resetFields();
+    //     openNotificationWithIcon("success");
+    //     getDepartment();
+    //   })
+    //   .catch((err) => {
+    //     setLoading(false);
+    //     console.log(err);
+    //   });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -230,11 +231,11 @@ const ShowPostions = () => {
         }}
       >
         <div>
-          <span className="pageTitle">Open Position</span>
+          <span className="pageTitle">UI/UX designer</span>
         </div>
         <div>
           <Button type="primary" onClick={showModal}>
-            Create new position +
+            Add new Candidate +
           </Button>
         </div>
       </div>
@@ -244,7 +245,7 @@ const ShowPostions = () => {
           <div style={{ padding: "30px" }}>
             <Row>
               <Col span={24} style={{ marginBottom: "30px" }}>
-                <span className="popupTitle">Add New position</span>
+                <span className="popupTitle">Add new Candidate</span>
               </Col>
               <Col span={24}>
                 <Form
@@ -261,38 +262,95 @@ const ShowPostions = () => {
                   <Row gutter={24}>
                     <Col span={12}>
                       <Form.Item
-                        label="Position name"
-                        name="name"
+                        label="First Name"
+                        name="f_name"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Position name",
+                            message: "Please input First Name",
                           },
                         ]}
                         hasFeedback
                       >
                         <Input
                           className="myAntIpt2"
-                          placeholder="Enter your Position name"
+                          placeholder="Enter your First Name"
                           size="small"
                         />
                       </Form.Item>
                     </Col>
                     <Col span={12}>
                       <Form.Item
-                        label="Total No of Positions open"
-                        name="open_position"
+                        label="Last Name"
+                        name="l_name"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Positions open No",
+                            message: "Please input your Last Name",
                           },
                         ]}
                         hasFeedback
                       >
                         <Input
                           className="myAntIpt2"
-                          placeholder="Ex. 10"
+                          placeholder="Enter your Last Name"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Email",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Email"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Last Salary"
+                        name="l_salary"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Last Salary",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Last Salary"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Expected Salary"
+                        name="expected_salary"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Expected Salary",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Expected Salary"
                           size="small"
                         />
                       </Form.Item>
@@ -304,71 +362,34 @@ const ShowPostions = () => {
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Required Experience",
+                            message: "Please input your Experience",
                           },
                         ]}
                         hasFeedback
                       >
                         <Input
                           className="myAntIpt2"
-                          placeholder="Enter your Experience Required"
+                          placeholder="Enter your Experience"
                           size="small"
                         />
                       </Form.Item>
                     </Col>
+
                     <Col span={12}>
                       <Form.Item
-                        label="Hiring Status"
-                        name="type"
+                        label="Candidate Location"
+                        name="candidate_location"
                         rules={[
                           {
                             required: true,
-                            message: "Please input your Hiring Status",
+                            message: "Please input your Candidate Location",
                           },
                         ]}
                         hasFeedback
                       >
                         <Input
                           className="myAntIpt2"
-                          placeholder="Enter your Hiring Status"
-                          size="small"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Salary Range"
-                        name="salary_range"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Salary Range",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input
-                          className="myAntIpt2"
-                          placeholder="Enter your Salary Range"
-                          size="small"
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        label="Location"
-                        name="location"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Location",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input
-                          className="myAntIpt2"
-                          placeholder="Enter your Location"
+                          placeholder="Enter Candidate Location"
                           size="small"
                         />
                       </Form.Item>
@@ -431,4 +452,4 @@ const ShowPostions = () => {
   );
 };
 
-export default ShowPostions;
+export default ShowCandidate;

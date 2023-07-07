@@ -5,6 +5,8 @@ const bodyParser = require("body-parser");
 const Users = require("./users");
 const upload = require("./Service/imageUpload");
 const Department = require("./Model/Deparrtment");
+const DepartmentPositions = require("./Model/DepartmentPositions");
+const DepartmentPositionsCandidate = require("./Model/DepartmentCandidate");
 
 const singleUpload = upload.single("image");
 
@@ -182,6 +184,7 @@ app.post("/addDepartment", async (req, res) => {
         Department.create({
           name: req.body.name,
           img: req.file.location,
+          slug: req.body.slug,
         });
         res.status(200).json({ status: true });
       }
@@ -194,6 +197,42 @@ app.post("/addDepartment", async (req, res) => {
 app.get("/getDepartment", async (req, res) => {
   try {
     const dep = await Department.find({});
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// app.post("/addDepartmentPostions", async (req, res) => {
+//   try {
+//     let Positions = DepartmentPositions.create(req.body);
+//     res.status(200).json({ Positions });
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+app.post("/addDepartmentPostions", async (req, res) => {
+  try {
+    const users = await DepartmentPositions.create(req.body);
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getDepartmentPostions", async (req, res) => {
+  try {
+    const dep = await DepartmentPositions.find({ ref_id: req.body.id });
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/addPostionsCandidate", async (req, res) => {
+  try {
+    const dep = await DepartmentPositionsCandidate.find();
     res.status(200).json(dep);
   } catch (err) {
     res.status(500).json({ message: err.message });

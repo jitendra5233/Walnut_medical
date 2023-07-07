@@ -404,13 +404,13 @@ const LayoutCom2 = () => {
                 >
                   <img
                     style={{ width: "22px", margin: "22px  0" }}
-                    src="./icon/bellicon.svg"
+                    src="/icon/bellicon.svg"
                   />
                 </Col>
                 <Col span={4} className="h64p">
                   <Avatar
                     size={35}
-                    src={<img src="./icon/userImg.png" alt="avatar" />}
+                    src={<img src="/icon/userImg.png" alt="avatar" />}
                     style={{ margin: " 0 15px" }}
                   />
                 </Col>
@@ -430,7 +430,7 @@ const LayoutCom2 = () => {
                       </div>
                       <img
                         style={{ margin: "0 20px" }}
-                        src="./icon/ArrowDown.png"
+                        src="/icon/ArrowDown.png"
                       />
                     </div>
                   </Popover>

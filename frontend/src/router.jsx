@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { Dashboard } from "./Pages/Dashboard";
-import LayoutCom from "./Pages/Layout";
+
 import ShowUsers from "./Pages/User/Users/ShowUsers";
 import AddUsers from "./Pages/User/Users/AddUsers";
 import AddRole from "./Pages/User/Role/AddRole";
@@ -18,6 +18,7 @@ import ChangePasword from "./Pages/User/Auth/ChangePasword";
 import LayoutCom2 from "./Pages/Layout2";
 import HiringDashboard from "./Pages/Hiring/HiringDashboard";
 import ShowPostions from "./Pages/Hiring/ShowPostions";
+import ShowCandidate from "./Pages/Hiring/ShowCandidate";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -34,7 +35,8 @@ const router = createBrowserRouter(
         <Route path="/roles" element={<ShowRole />} />
         <Route path="/add-role" element={<AddRole />} />
         <Route path="/hiring" element={<HiringDashboard />} />
-        <Route path="/show-postion" element={<ShowPostions />} />
+        <Route path="/show-postion/:id" element={<ShowPostions />} />
+        <Route path="/show-candidate/:id/:name" element={<ShowCandidate />} />
       </Route>
     </Route>
   )

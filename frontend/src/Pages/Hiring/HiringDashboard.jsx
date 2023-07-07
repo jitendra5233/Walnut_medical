@@ -17,18 +17,18 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const DepartmentCard = ({ img, name }) => {
+const DepartmentCard = ({ img, name, slug }) => {
   const navigate = useNavigate();
 
-  const handlelinkOpen = () => {
-    navigate("/show-postion");
+  const handlelinkOpen = (slug) => {
+    navigate("/show-postion/" + slug);
   };
   return (
     <div>
       <Card
         style={{ borderRadius: "10px", padding: "0", cursor: "pointer" }}
         className="DepCard"
-        onClick={() => handlelinkOpen()}
+        onClick={() => handlelinkOpen(slug)}
       >
         <div style={{ padding: "60px 70px", textAlign: "center" }}>
           <img src={img} style={{ height: "100px", width: "100px" }} />
@@ -94,18 +94,27 @@ const HiringDashboard = () => {
       });
   };
 
+  const createSlug = (str) => {
+    return str
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, "")
+      .replace(/[\s_-]+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  };
+
   const handleSubmit = (values) => {
     setLoading(true);
-
     let data = new FormData();
     data.append("name", values.name);
+    data.append("slug", createSlug(values.name));
     data.append("image", values.image[0].originFileObj);
-
     axios
       .post("http://localhost:5000/addDepartment", data)
       .then((res) => {
         setLoading(false);
         handleCancel();
+        form.resetFields();
         if (res.data.status === true) {
           openNotificationWithIcon("success");
           getDepartment();
@@ -273,10 +282,10 @@ const HiringDashboard = () => {
         ]}
       >
         {allDep.map((x, i) => {
-          let { img, name } = x;
+          let { img, name, slug } = x;
           return (
             <Col xs={24} sm={24} md={8} lg={6} key={i}>
-              <DepartmentCard img={img} name={name} />
+              <DepartmentCard img={img} name={name} slug={slug} />
             </Col>
           );
         })}

@@ -67,6 +67,7 @@ const ShowUsers = () => {
 
   useEffect(() => {
     getUsers();
+    getRoles();
   }, []);
 
   const columns = [
@@ -129,6 +130,17 @@ const ShowUsers = () => {
       },
     },
   ];
+
+  const getRoles = () => {
+    axios
+      .get("http://localhost:5000/getJobProfiles")
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleEdit = (id) => {
     setActiveId(id);
