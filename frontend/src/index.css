@@ -408,3 +408,89 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   height: 40px;
   width: 100px;
 }
+
+.popupTitle {
+  color: #0071c5;
+  /* Arial 14px */
+  font-size: 14px;
+  font-family: Arial;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+
+.Expensecolor {
+  color: #0071c5 !important;
+  float: left;
+}
+
+.filtercolorbtn {
+  color: #ffffff;
+  float: right;
+  background: #0071c5;
+  width: Hug (129.07px);
+  height: Hug (35px);
+  top: 75px;
+  left: 847px;
+  padding: 10px;
+  gap: 434px;
+  border: #ffffff;
+  margin-right: 5px;
+  cursor: pointer;
+}
+.Expensecolorbtn {
+  color: #ffffff;
+  float: right;
+  background: #0071c5;
+  width: Hug (129.07px);
+  height: Hug (35px);
+  top: 75px;
+  left: 847px;
+  padding: 10px;
+  gap: 434px;
+  border: #ffffff;
+  cursor: pointer;
+}
+.fa-regular fa-trash-can {
+  width: Hug (1, 025px);
+  height: Hug (347px);
+  top: 337px;
+  left: 279px;
+  gap: 434px;
+}
+
+.fa-solid fa-pen-to-square {
+  width: Hug (1, 025px);
+  height: Hug (347px);
+  top: 337px;
+  left: 279px;
+  gap: 434px;
+}
+.fa-regular,
+.far {
+  font-weight: 400;
+  color: black !important;
+}
+.fa-solid,
+.fas {
+  font-weight: 400;
+  color: black !important;
+}
+
+/* :where(.css-dev-only-do-not-override-1wazalj) a {
+  color: black !important;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  -webkit-text-decoration-skip: objects;
+} */
+
+.ant-table-cell a {
+  color: black !important;
+}
+.changecolor {
+  color: red;
+}

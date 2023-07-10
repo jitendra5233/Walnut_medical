@@ -271,7 +271,7 @@ const PostionCard = ({
                       okText="Yes"
                       cancelText="No"
                     >
-                      <Button className="interviewBtn">No</Button>
+                      <Button className="interviewBtn"> No</Button>
                     </Popconfirm>
                   </div>
                 </Col>

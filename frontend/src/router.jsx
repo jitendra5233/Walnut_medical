@@ -20,6 +20,14 @@ import HiringDashboard from "./Pages/Hiring/HiringDashboard";
 import ShowPostions from "./Pages/Hiring/ShowPostions";
 import ShowCandidate from "./Pages/Hiring/ShowCandidate";
 
+import ShowExpense from "./Pages/Expense/ShowExpense";
+import AddExpense from "./Pages/Expense/addExpense";
+import AddIssuedInventory from "./Pages/Enventory/addIssuedInventory";
+import ShowIssuedEnventory from "./Pages/Enventory/ShowIssuedEnventory";
+import ShowInventoryItem from "./Pages/Enventory/ShowInventoryItem";
+import ShowAvailableItems from "./Pages/Enventory/showAvailableItems";
+import ShowLossDamage from "./Pages/Enventory/ShowLossDamage";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
@@ -37,6 +45,14 @@ const router = createBrowserRouter(
         <Route path="/hiring" element={<HiringDashboard />} />
         <Route path="/show-postion/:id" element={<ShowPostions />} />
         <Route path="/show-candidate/:id/:name" element={<ShowCandidate />} />
+
+        <Route path="/add-expense" element={<AddExpense />} />
+        <Route path="/expense" element={<ShowExpense />} />
+        <Route path="/add-issued" element={<AddIssuedInventory />} />
+        <Route path="/issued" element={<ShowIssuedEnventory />} />
+        <Route path="/inventory-item" element={<ShowInventoryItem />} />
+        <Route path="/available-item" element={<ShowAvailableItems />} />
+        <Route path="/loss_Damage" element={<ShowLossDamage />} />
       </Route>
     </Route>
   )

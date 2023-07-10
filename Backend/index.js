@@ -7,6 +7,10 @@ const upload = require("./Service/imageUpload");
 const Department = require("./Model/Deparrtment");
 const DepartmentPositions = require("./Model/DepartmentPositions");
 const DepartmentPositionsCandidate = require("./Model/DepartmentCandidate");
+const Expense = require("./Model/expense");
+const Enventory = require("./Model/enventory");
+const Inventoryitem = require("./Model/inventoryitems");
+const LossDamageItem = require("./Model/lossdamage");
 
 const singleUpload = upload.single("image");
 
@@ -307,6 +311,239 @@ app.post("/rejectInterview", async (req, res) => {
     } else {
       res.status(200).json(true);
     }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/create_expense", async (req, res) => {
+  try {
+    const expense = await Expense.create(req.body);
+    res.status(200).json(expense);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/expense", async (req, res) => {
+  try {
+    const expnese = await Expense.find({});
+    res.status(200).json(expnese);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getExpense/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Expense.findById({ _id: id });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Define the API route for deletion
+app.delete("/delete/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Expense.deleteOne({ _id: id });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/issued_enventory", async (req, res) => {
+  try {
+    const enventory = await Enventory.create(req.body);
+    const updatedData = await Inventoryitem.findOneAndUpdate(
+      { _id: req.body.itemId }, // Filter criteria based on the ID field
+      { $inc: { availableItem: -req.body.quantity } }, // Decrement the availableItems field by req.body.quantity
+      { new: true } // Set 'new' option to return the updated document
+    );
+
+    res.status(200).json({ enventory, updatedData });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/issued", async (req, res) => {
+  try {
+    const enventory = await Enventory.find({});
+    res.status(200).json(enventory);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/deleteissue_item", async (req, res) => {
+  try {
+    const { itemId, quantity, itemname } = req.body;
+    const result = await Enventory.deleteOne({ _id: itemId });
+    const updatedData = await Inventoryitem.findOneAndUpdate(
+      { item_name: itemname }, // Filter criteria based on the ID field
+      { $inc: { availableItem: quantity } }, // Increment the availableItem field by req.body.quantity
+      { new: true } // Set 'new' option to return the updated document
+    );
+    res.status(200).json(updatedData);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/add-item", async (req, res) => {
+  try {
+    const inventoryitem = await Inventoryitem.create(req.body);
+    res.status(200).json(inventoryitem);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getItem", async (req, res) => {
+  try {
+    const inventoryitem = await Inventoryitem.find({});
+    res.status(200).json(inventoryitem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/delete_item/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Inventoryitem.deleteOne({ _id: id });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/update-expense", async (req, res) => {
+  try {
+    const { id, item_name, paid_amount, quantity, r_getamt, r_paidamt } =
+      req.body;
+    const result = await Expense.findByIdAndUpdate(id, {
+      item_name,
+      paid_amount,
+      quantity,
+      r_getamt,
+      r_paidamt,
+    });
+    if (!result) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    }
+    res.status(200).json(true);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/getInventoryItem", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const result = await Inventoryitem.findById({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/update-issueitem", async (req, res) => {
+  try {
+    const {
+      id,
+      item_name,
+      serial_number,
+      quantity,
+      emp_name,
+      emp_code,
+      job_title,
+    } = req.body;
+    const result = await Enventory.findByIdAndUpdate(id, {
+      serial_number,
+      item_name,
+      emp_name,
+      quantity,
+      emp_code,
+      job_title,
+    });
+    if (!result) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    }
+    res.status(200).json(true);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/update-item", async (req, res) => {
+  try {
+    const { id, item_name, quantity, availableItem } = req.body;
+    const result = await Inventoryitem.findByIdAndUpdate(id, {
+      item_name,
+      quantity,
+      availableItem,
+    });
+    if (!result) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    }
+    res.status(200).json(true);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/getUserData", async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Users.findOne({ _id: id }).then(function (doc) {
+      res.status(200).json(doc); // Send the found document as the response
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/getItemData", async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Inventoryitem.findOne({ _id: id }).then(function (doc) {
+      res.status(200).json(doc); // Send the found document as the response
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/addToDamage", async (req, res) => {
+  try {
+    const enventory = await LossDamageItem.create(req.body);
+    const result = await Enventory.deleteOne({
+      serial_number: req.body.serial_number,
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/GetDamageItem", async (req, res) => {
+  try {
+    const lossDamage = await LossDamageItem.find({});
+    res.status(200).json(lossDamage);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
