@@ -97,6 +97,7 @@ code {
   background: #f5f6fa !important;
   padding: 5px 10px !important;
   line-height: 0 !important;
+  width: 100%;
 }
 .myAntLoginBtn {
   border-radius: 0 !important;
@@ -400,4 +401,10 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   font-style: normal;
   font-weight: 400;
   line-height: normal;
+}
+
+.interviewBtn {
+  border-radius: 25px !important;
+  height: 40px;
+  width: 100px;
 }

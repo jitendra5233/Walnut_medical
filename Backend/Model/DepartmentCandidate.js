@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 const DepartmentPositionsCandidateSchema = mongoose.Schema(
   {
+    profile_id: {
+      type: String,
+      required: true,
+    },
     ref_id: {
       type: String,
       required: true,
@@ -33,6 +37,22 @@ const DepartmentPositionsCandidateSchema = mongoose.Schema(
     candidate_location: {
       type: String,
       required: true,
+    },
+    cv: {
+      type: String,
+      required: false,
+    },
+    interview: {
+      type: String,
+      required: false,
+    },
+    interview_date: {
+      type: String,
+      required: false,
+    },
+    interview_time: {
+      type: String,
+      required: false,
     },
   },
   { timestamps: true }

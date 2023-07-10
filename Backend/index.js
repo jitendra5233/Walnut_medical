@@ -223,7 +223,22 @@ app.post("/addDepartmentPostions", async (req, res) => {
 
 app.post("/getDepartmentPostions", async (req, res) => {
   try {
-    const dep = await DepartmentPositions.find({ ref_id: req.body.id });
+    const dep = await DepartmentPositions.find({
+      ref_id: req.body.id,
+      profile_id: req.body.name,
+    });
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getPostionsCandidate", async (req, res) => {
+  try {
+    const dep = await DepartmentPositionsCandidate.find({
+      ref_id: req.body.id,
+      profile_id: req.body.name,
+    });
     res.status(200).json(dep);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -232,9 +247,67 @@ app.post("/getDepartmentPostions", async (req, res) => {
 
 app.post("/addPostionsCandidate", async (req, res) => {
   try {
-    const dep = await DepartmentPositionsCandidate.find();
-    res.status(200).json(dep);
+    singleUpload(req, res, function (err) {
+      if (err) {
+        res.status(500).json({ message: err.message });
+      } else {
+        DepartmentPositionsCandidate.create({
+          profile_id: req.body.profile_id,
+          ref_id: req.body.ref_id,
+          f_name: req.body.f_name,
+          l_name: req.body.l_name,
+          cv: req.file.location,
+          candidate_location: req.body.candidate_location,
+          email: req.body.email,
+          experience: req.body.experience,
+          expected_salary: req.body.expected_salary,
+          l_salary: req.body.l_salary,
+        });
+        res.status(200).json({ status: true });
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/addInterviewData", async (req, res) => {
+  try {
+    const { id, interview_date, interview_time } = req.body;
+
+    const candidate = await DepartmentPositionsCandidate.findByIdAndUpdate(id, {
+      interview: true,
+      interview_date,
+      interview_time,
+    });
+    if (!candidate) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/rejectInterview", async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const candidate = await DepartmentPositionsCandidate.findByIdAndUpdate(id, {
+      interview: false,
+    });
+
+    if (!candidate) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });

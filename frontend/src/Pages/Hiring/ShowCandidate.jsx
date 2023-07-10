@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  PlusOutlined,
-  ShareAltOutlined,
+  DownloadOutlined,
+  FileTextOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
 import {
@@ -12,100 +12,350 @@ import {
   Modal,
   Form,
   Input,
-  Avatar,
   notification,
   Upload,
   message,
   Spin,
+  DatePicker,
+  TimePicker,
+  Popconfirm,
+  Alert,
 } from "antd";
 import axios from "axios";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 const PostionCard = ({
+  id,
+  f_name,
   name,
-  open_position,
+  email,
   experience,
-  type,
-  salary_range,
+  l_salary,
+  expected_salary,
   location,
-  date,
-  slug1,
-  slug2,
+  cv_link,
+  interview,
 }) => {
-  const navigate = useNavigate();
+  const [interviewModal, setInterviewModal] = useState(false);
 
-  const handlelinkOpen = (slug1, slug2) => {
-    navigate("/show-candidate/" + slug1 + "/" + slug2);
+  const [loading, setLoading] = useState(false);
+  const [api, contextHolder] = notification.useNotification();
+  const [form] = Form.useForm();
+
+  const format = "HH:mm";
+
+  const openNotificationWithIcon = (type) => {
+    if (type === "error") {
+      api[type]({
+        message: "Server Error",
+        description: "",
+      });
+    } else {
+      api[type]({
+        message: "Department Added Successful",
+        description: "",
+      });
+    }
+  };
+
+  const handleInterview = () => {
+    setInterviewModal(true);
+  };
+
+  const RejectInterview = () => {
+    axios
+      .post("http://localhost:5000/rejectInterview", { id })
+      .then((res) => {
+        message.success("Rejected");
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const handleSubmit = (values) => {
+    values.id = id;
+    axios
+      .post("http://localhost:5000/addInterviewData", values)
+      .then((res) => {
+        setLoading(false);
+        handleCancel();
+        form.resetFields();
+        message.success("Department Added Successful");
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+  const handleCancel = () => {
+    setInterviewModal(false);
+  };
+
+  const popcancel = (e) => {
+    console.log(e);
   };
 
   return (
     <div>
+      <Modal
+        open={interviewModal}
+        onCancel={handleCancel}
+        footer={[]}
+        width={450}
+      >
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24} style={{ marginBottom: "30px" }}>
+                <span className="popupTitle">Interview Date and Time</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={handleSubmit}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Date"
+                        name="interview_date"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Date",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <DatePicker
+                          className="myAntIpt2"
+                          placeholder="Enter your Date"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Time"
+                        name="interview_time"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Time",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <TimePicker
+                          className="myAntIpt2"
+                          placeholder="Enter your Time"
+                          size="small"
+                          format={format}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
       <Card
         style={{ borderRadius: "10px", padding: "0", width: "330px" }}
         className="DepCard"
-        onClick={() => handlelinkOpen(slug1, slug2)}
       >
         <div style={{ padding: "20px" }}>
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               <span className="potionCardTitle">{name}</span>
             </Col>
-            <Col span={12} style={{ textAlign: "end" }}>
-              <span
-                className="postionCardSubtitle"
-                style={{ margin: "0 10px" }}
-              >
-                Share form
-              </span>
-              <ShareAltOutlined />
-            </Col>
-            <Col span={12}>
-              <span className="postionCardSubtitle">Candidate</span>
+
+            <Col span={24}>
+              <span className="postionCardSubtitle">{email}</span>
             </Col>
           </Row>
         </div>
-        <div
-          style={{
-            backgroundColor: "#F5F6FA",
-            margin: "0 20px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              padding: "8px",
-            }}
-          >
-            <div>Total</div>
-            <div style={{ fontSize: "16px", fontWeight: "700" }}>
-              {open_position}
-            </div>
-          </div>
-        </div>
-        <div style={{ padding: "20px" }}>
+
+        <div style={{ padding: "0px 20px 20px" }}>
           <div>
-            <Row gutter={[0, 20]}>
-              <Col span={12}>Experience Required:</Col>
+            <Row gutter={[0, 15]}>
+              <Col span={12}>Last Salary</Col>
+              <Col span={12} style={{ textAlign: "end" }}>
+                {l_salary}
+              </Col>
+              <Col span={12}>Experience</Col>
               <Col span={12} style={{ textAlign: "end" }}>
                 {experience} years
               </Col>
-              <Col span={12}>Hiring Status:</Col>
+              <Col span={12}>Expected Salary</Col>
               <Col span={12} style={{ textAlign: "end" }}>
-                {type}
+                {expected_salary}
               </Col>
-              <Col span={12}>Salary Range:</Col>
-              <Col span={12} style={{ textAlign: "end" }}>
-                {salary_range}
-              </Col>
-              <Col span={12}>Location:</Col>
+              <Col span={12}>Candidate Location</Col>
               <Col span={12} style={{ textAlign: "end" }}>
                 {location}
               </Col>
-              <Col span={12}>Date:</Col>
-              <Col span={12} style={{ textAlign: "end" }}>
-                {date}
+              {interview === "true" ? (
+                <>
+                  <Col span={12}>Interview</Col>
+                  <Col span={12} style={{ textAlign: "end" }}>
+                    21/09/2022 2:00AM
+                  </Col>
+                </>
+              ) : (
+                <>
+                  <Col span={12}>Interview</Col>
+                  <Col span={12} style={{ textAlign: "end" }}>
+                    21/09/2022 2:00AM
+                  </Col>
+                </>
+              )}
+              <Col span={24}>
+                CV
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: "10px",
+                  }}
+                >
+                  <div>
+                    <FileTextOutlined /> {f_name}'s cv
+                  </div>
+                  <div>
+                    <a href={cv_link} target="_blank">
+                      <DownloadOutlined />
+                    </a>
+                  </div>
+                </div>
               </Col>
+
+              {interview === "true" ? (
+                <Col span={24}>
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <Button
+                      className="interviewBtn"
+                      type="primary"
+                      style={{ marginRight: "10px" }}
+                      onClick={() => handleInterview()}
+                    >
+                      Hired
+                    </Button>
+                    <Popconfirm
+                      title="Reject Him"
+                      description="Are you sure to Reject him?"
+                      onConfirm={RejectInterview}
+                      onCancel={popcancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button className="interviewBtn">No</Button>
+                    </Popconfirm>
+                  </div>
+                </Col>
+              ) : interview === "false" ? (
+                <Col span={24}>
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <Button
+                      className="interviewBtn"
+                      type="primary"
+                      style={{ marginRight: "10px" }}
+                      onClick={() => handleInterview()}
+                    >
+                      Interview
+                    </Button>
+                    <Popconfirm
+                      title="Reject Him"
+                      description="Are you sure to Reject him?"
+                      onConfirm={RejectInterview}
+                      onCancel={popcancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button className="interviewBtn">No</Button>
+                    </Popconfirm>
+                  </div>
+                </Col>
+              ) : (
+                <Col span={24}>
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <Alert message="Rejected" type="error" />
+                  </div>
+                </Col>
+              )}
+
+              {/* {interview === undefined ? (
+                <Col span={24}>
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    <Button
+                      className="interviewBtn"
+                      type="primary"
+                      style={{ marginRight: "10px" }}
+                      onClick={() => handleInterview()}
+                    >
+                      Interview
+                    </Button>
+                    <Popconfirm
+                      title="Reject Him"
+                      description="Are you sure to Reject him?"
+                      onConfirm={RejectInterview}
+                      onCancel={popcancel}
+                      okText="Yes"
+                      cancelText="No"
+                    >
+                      <Button className="interviewBtn">No</Button>
+                    </Popconfirm>
+                  </div>
+                </Col>
+              ) : (
+                <Col span={24}>
+                  <div style={{ textAlign: "center", marginTop: "10px" }}>
+                    {interview === true ? (
+                      <Button
+                        className="interviewBtn"
+                        type="primary"
+                        style={{ marginRight: "10px" }}
+                        onClick={() => handleInterview()}
+                      >
+                        Hired
+                      </Button>
+                    ) : (
+                      <Popconfirm
+                        title="Reject Him"
+                        description="Are you sure to Reject him?"
+                        onConfirm={RejectInterview}
+                        onCancel={popcancel}
+                        okText="Yes"
+                        cancelText="No"
+                      >
+                        <Button className="interviewBtn">No</Button>
+                      </Popconfirm>
+                    )}
+                  </div>
+                </Col>
+              )} */}
             </Row>
           </div>
         </div>
@@ -152,9 +402,13 @@ const ShowCandidate = () => {
 
   const getDepartment = () => {
     axios
-      .post("http://localhost:5000/getDepartmentPostions", { id: r_prams.id })
+      .post("http://localhost:5000/getPostionsCandidate", {
+        id: r_prams.id,
+        name: r_prams.name,
+      })
       .then((res) => {
         setAllDep(res.data);
+        // console.log(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -171,23 +425,35 @@ const ShowCandidate = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
-    // setLoading(true);
-    // values.ref_id = r_prams.id;
-    // values.slug = createSlug(values.name);
-    // axios
-    //   .post("http://localhost:5000/addPostionsCandidate", values)
-    //   .then((res) => {
-    //     setLoading(false);
-    //     handleCancel();
-    //     form.resetFields();
-    //     openNotificationWithIcon("success");
-    //     getDepartment();
-    //   })
-    //   .catch((err) => {
-    //     setLoading(false);
-    //     console.log(err);
-    //   });
+    setLoading(true);
+    values.ref_id = r_prams.id;
+    values.profile_id = r_prams.name;
+
+    let data = new FormData();
+    data.append("profile_id", values.profile_id);
+    data.append("ref_id", values.ref_id);
+    data.append("f_name", values.f_name);
+    data.append("l_name", values.l_name);
+    data.append("image", values.cv[0].originFileObj);
+    data.append("candidate_location", values.candidate_location);
+    data.append("email", values.email);
+    data.append("experience", values.experience);
+    data.append("expected_salary", values.expected_salary);
+    data.append("l_salary", values.l_salary);
+
+    axios
+      .post("http://localhost:5000/addPostionsCandidate", data)
+      .then((res) => {
+        setLoading(false);
+        handleCancel();
+        form.resetFields();
+        openNotificationWithIcon("success");
+        getDepartment();
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -395,6 +661,27 @@ const ShowCandidate = () => {
                       </Form.Item>
                     </Col>
 
+                    <Col span={12}>
+                      <Form.Item
+                        label="CV"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        name="cv"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Department Image",
+                          },
+                        ]}
+                      >
+                        <Upload maxCount={1}>
+                          <Button icon={<UploadOutlined />}>
+                            Click to Upload
+                          </Button>
+                        </Upload>
+                      </Form.Item>
+                    </Col>
+
                     <Col span={24}>
                       <Form.Item>
                         <Button type="primary" htmlType="submit">
@@ -422,27 +709,31 @@ const ShowCandidate = () => {
       >
         {allDep.map((x, i) => {
           let {
-            name,
-            open_position,
+            _id,
+            f_name,
+            l_name,
+            email,
             experience,
-            type,
-            salary_range,
-            location,
-            slug,
+            l_salary,
+            expected_salary,
+            candidate_location,
+            cv,
+            interview,
           } = x;
 
           return (
             <Col xs={24} sm={24} md={8} lg={8}>
               <PostionCard
-                name={name}
-                open_position={open_position}
+                id={_id}
+                name={`${f_name} ${l_name}`}
+                f_name={f_name}
+                email={email}
                 experience={experience}
-                type={type}
-                salary_range={salary_range}
-                location={location}
-                date={new Date(x.createdAt).toLocaleDateString()}
-                slug1={r_prams.id}
-                slug2={slug}
+                l_salary={l_salary}
+                expected_salary={expected_salary}
+                location={candidate_location}
+                cv_link={cv}
+                interview={interview}
               />
             </Col>
           );
