@@ -34,7 +34,8 @@ const LossDamageItem = mongoose.Schema({
     require:true,
   },
   
-});
+},
+{ timestamps: true });
 
 const lossDamageItem = mongoose.model("loss_damage", LossDamageItem);
 

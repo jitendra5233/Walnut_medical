@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const Users = require("./users");
+const Users = require("./Model/users");
 const upload = require("./Service/imageUpload");
 const Department = require("./Model/Deparrtment");
 const DepartmentPositions = require("./Model/DepartmentPositions");
@@ -11,6 +11,7 @@ const Expense = require("./Model/expense");
 const Enventory = require("./Model/enventory");
 const Inventoryitem = require("./Model/inventoryitems");
 const LossDamageItem = require("./Model/lossdamage");
+const Showrecord = require("./Model/showrecord");
 
 const singleUpload = upload.single("image");
 
@@ -266,6 +267,9 @@ app.post("/addPostionsCandidate", async (req, res) => {
           experience: req.body.experience,
           expected_salary: req.body.expected_salary,
           l_salary: req.body.l_salary,
+          interview: req.body.interview,
+          reject: false,
+          hired: false,
         });
         res.status(200).json({ status: true });
       }
@@ -301,7 +305,47 @@ app.post("/rejectInterview", async (req, res) => {
     const { id } = req.body;
 
     const candidate = await DepartmentPositionsCandidate.findByIdAndUpdate(id, {
-      interview: false,
+      reject: true,
+    });
+
+    if (!candidate) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/handleHire", async (req, res) => {
+  try {
+    const { id } = req.body;
+
+    const candidate = await DepartmentPositionsCandidate.findByIdAndUpdate(id, {
+      hired: true,
+    });
+
+    if (!candidate) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    } else {
+      res.status(200).json(true);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/addComment", async (req, res) => {
+  try {
+    const { id, interviewComment } = req.body;
+
+    const candidate = await DepartmentPositionsCandidate.findByIdAndUpdate(id, {
+      rejectComment: interviewComment,
     });
 
     if (!candidate) {
@@ -398,8 +442,49 @@ app.delete("/deleteissue_item", async (req, res) => {
 
 app.post("/add-item", async (req, res) => {
   try {
-    const inventoryitem = await Inventoryitem.create(req.body);
-    res.status(200).json(inventoryitem);
+    const setSuggestedId = req.body.setSuggestedId;
+    if (setSuggestedId === 0) {
+      const inventoryitem = await Inventoryitem.create(req.body);
+      res.status(200).json(inventoryitem);
+
+      const result = await Showrecord.create({
+        item_name: req.body.item_name,
+        quantity: req.body.quantity,
+        item_id: inventoryitem._id,
+      });
+    } else {
+      const {
+        item_name,
+        availableItem,
+        quantity,
+        lossDamageItem,
+        setSuggestedId,
+      } = req.body;
+
+      const result = await Showrecord.create({
+        item_name,
+        quantity,
+        item_id: setSuggestedId,
+      });
+      const updatedData = await Inventoryitem.findOneAndUpdate(
+        { _id: setSuggestedId }, // Filter criteria based on the ID field
+        {
+          $inc: {
+            availableItem: quantity,
+            quantity: quantity,
+            lossDamageItem: lossDamageItem,
+          },
+        },
+        { new: true } // Set 'new' option to return the updated document
+      );
+
+      if (!updatedData) {
+        return res.status(404).json({
+          message: `Cannot find any product with ID ${setSuggestedId}`,
+        });
+      }
+      res.status(200).json(true);
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -408,6 +493,15 @@ app.post("/add-item", async (req, res) => {
 app.get("/getItem", async (req, res) => {
   try {
     const inventoryitem = await Inventoryitem.find({});
+    res.status(200).json(inventoryitem);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getItemrecord", async (req, res) => {
+  try {
+    const inventoryitem = await Showrecord.find({});
     res.status(200).json(inventoryitem);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -467,7 +561,14 @@ app.post("/update-issueitem", async (req, res) => {
       emp_name,
       emp_code,
       job_title,
+      finalavailableItem,
+      item_id,
     } = req.body;
+    const updatedData = await Inventoryitem.findOneAndUpdate(
+      { _id: item_id }, // Filter criteria based on the ID field
+      { $inc: { availableItem: -finalavailableItem } }, // Decrement the availableItem field by req.body.quantity
+      { new: true } // Set 'new' option to return the updated document
+    );
     const result = await Enventory.findByIdAndUpdate(id, {
       serial_number,
       item_name,
@@ -476,6 +577,7 @@ app.post("/update-issueitem", async (req, res) => {
       emp_code,
       job_title,
     });
+
     if (!result) {
       return res
         .status(404)
@@ -508,8 +610,8 @@ app.post("/update-item", async (req, res) => {
 
 app.post("/getUserData", async (req, res) => {
   try {
-    const { id } = req.body;
-    await Users.findOne({ _id: id }).then(function (doc) {
+    const { userId } = req.body;
+    await Users.findOne({ _id: userId }).then(function (doc) {
       res.status(200).json(doc); // Send the found document as the response
     });
   } catch (error) {
@@ -519,8 +621,8 @@ app.post("/getUserData", async (req, res) => {
 
 app.post("/getItemData", async (req, res) => {
   try {
-    const { id } = req.body;
-    await Inventoryitem.findOne({ _id: id }).then(function (doc) {
+    const { item_id } = req.body;
+    await Inventoryitem.findOne({ _id: item_id }).then(function (doc) {
       res.status(200).json(doc); // Send the found document as the response
     });
   } catch (error) {
@@ -531,6 +633,12 @@ app.post("/getItemData", async (req, res) => {
 app.post("/addToDamage", async (req, res) => {
   try {
     const enventory = await LossDamageItem.create(req.body);
+    const item_id = req.body.damageItemId;
+    const updatedData = await Inventoryitem.findOneAndUpdate(
+      { _id: item_id }, // Filter criteria based on the ID field
+      { $inc: { lossDamageItem: req.body.quantity } }, // Decrement the availableItem field by req.body.quantity
+      { new: true } // Set 'new' option to return the updated document
+    );
     const result = await Enventory.deleteOne({
       serial_number: req.body.serial_number,
     });
@@ -546,5 +654,80 @@ app.get("/GetDamageItem", async (req, res) => {
     res.status(200).json(lossDamage);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/available-items/:id", async (req, res) => {
+  try {
+    const itemId = req.params.id;
+
+    // Query the Inventoryitem collection based on ID
+    const getdata = await Enventory.findOne({ _id: itemId });
+    const availableItem = await Inventoryitem.findOne({ _id: getdata.item_id });
+    res.json({ availableItem: availableItem });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/getissuedata/:id", async (req, res) => {
+  try {
+    const itemId = req.params.id;
+
+    // Query the Inventoryitem collection based on ID
+    const getdata = await Enventory.findOne({ _id: itemId });
+    res.json(getdata);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/items/search", async (req, res) => {
+  try {
+    const query = req.query.query;
+
+    // Query the database to search for items matching the query
+    const items = await Inventoryitem.find({
+      item_name: { $regex: query, $options: "i" },
+    });
+
+    res.json(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/items/searchName", async (req, res) => {
+  try {
+    const query = req.query.query;
+
+    // Query the database to search for items matching the query
+    const items = await Users.find({
+      f_name: { $regex: query, $options: "i" },
+    });
+
+    res.json(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/items/searchItem", async (req, res) => {
+  try {
+    const query = req.query.query;
+
+    // Query the database to search for items matching the query
+    const items = await Inventoryitem.find({
+      item_name: { $regex: query, $options: "i" },
+    });
+
+    res.json(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
   }
 });

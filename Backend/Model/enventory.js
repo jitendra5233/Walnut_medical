@@ -29,7 +29,12 @@ const EnventorySchema = mongoose.Schema({
     type:String,
     require:true,
   },
-});
+  item_id:{
+    type:Object,
+    require:true,
+  },
+},
+{ timestamps: true });
 
 const enventory = mongoose.model("enventory", EnventorySchema);
 

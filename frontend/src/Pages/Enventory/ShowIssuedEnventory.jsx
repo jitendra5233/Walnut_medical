@@ -82,14 +82,39 @@ const ShowIssuedEnventory = () => {
         console.log(err);
       });
   };
+  const [updatedItemName, setUpdatedItemName] = useState([]);
+  const [updatedTotaltem, setUpdatedTotaltem] = useState([]);
+  const [updateItemId, setUpdateItemId] = useState([]);
+  const [availableItem,setAvailableItem]=useState([]);
+  const [AvailableItemId,setAvailableItemId]=useState([]);
 
-  const [updateItemId, srtUpdateIyemId] = useState([]);
+  
+
+  
   const handleEdit = (id) => {
     showModal();
-    srtUpdateIyemId(id);
+    setUpdateItemId(id);
+     // Make an HTTP GET request to the API endpoint
+     axios.get(`http://localhost:5000/available-items/${id}`)
+     .then((response) => {
+       const availableItem = response.data.availableItem; // Corrected
+       setAvailableItem(availableItem.availableItem);
+       setAvailableItemId(availableItem._id);
+
+       // Perform any necessary operations with the available item
+       // For example, you can set it in state variables or update the UI
+     })
+     .catch((error) => {
+       // Handle any errors that occur during the request
+       console.error(error);
+     });
+   
+// Rest of your code..
+
     tableData.map((x) => {
       if (x.key == id) {
-        console.log(x);
+      setUpdatedItemName(x.item_name);
+      setUpdatedTotaltem(x.quantity);
         form.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
@@ -105,9 +130,19 @@ const ShowIssuedEnventory = () => {
   };
 
   const [damageItemId, setdamageItemId] = useState([]);
+  const [issueItemId, setissueItemId] = useState([]);
   const handleDamage = (id) => {
+    axios.get(`http://localhost:5000/getissuedata/${id}`)
+    .then((response) => {
+      let data=response.data;
+      setdamageItemId(data.item_id);
+    })
+    .catch((error) => {
+      // Handle any errors that occur during the request
+      console.error(error);
+    });
     showModal1();
-    setdamageItemId(id);
+    setissueItemId(id);
     tableData.map((x) => {
       if (x.key == id) {
         console.log(x);
@@ -124,8 +159,12 @@ const ShowIssuedEnventory = () => {
       }
     });
   };
+ 
   const handleUpdate = (values) => {
     values.id = updateItemId;
+    let getavailableitem =values.quantity-updatedTotaltem;
+    values.finalavailableItem=getavailableitem;
+    values.item_id=AvailableItemId;
     axios
       .post("http://localhost:5000/update-issueitem", values)
       .then((res) => {
@@ -141,7 +180,8 @@ const ShowIssuedEnventory = () => {
   };
 
   const handleLossDamage = (values) => {
-    values.id = damageItemId;
+    values.id = issueItemId;
+    values.damageItemId=damageItemId;
     axios
       .post("http://localhost:5000/addToDamage", values)
       .then((res) => {
@@ -189,6 +229,17 @@ const ShowIssuedEnventory = () => {
         console.error(error);
       });
   };
+
+  const handleKeyUp = (event)=>{
+    console.log(event.target.value);
+    if(event.target.value > availableItem)
+    {
+      form.setFieldsValue({
+        quantity:updatedTotaltem,
+      });
+      alert("Available Item Only" +" "+  +availableItem+ '');
+    }
+      }
   const columns = [
     {
       title: "Item Name",
@@ -236,6 +287,7 @@ const ShowIssuedEnventory = () => {
       render: (_, record) => (
         <div>
           <a onClick={() => handleEdit(record.key)}>
+            {" "}
             <span>
               <EditOutlined style={{ cursor: "pointer" }} />
             </span>
@@ -246,6 +298,7 @@ const ShowIssuedEnventory = () => {
               handleDelete(record.key, record.quantity, record.item_name)
             }
           >
+            {" "}
             <span>
               <DeleteOutlined style={{ cursor: "pointer" }} />
             </span>
@@ -287,9 +340,9 @@ const ShowIssuedEnventory = () => {
           <button className="filtercolorbtn">Total items</button>
         </Link>
 
-        {/* <Link to={`/available-item`}>
-          <button className="filtercolorbtn">Available items</button>
-        </Link> */}
+        <Link to={`/show_itemrecord`}>
+          <button className="filtercolorbtn">Show Record</button>
+        </Link>
       </div>
 
       <Modal
@@ -411,17 +464,18 @@ const ShowIssuedEnventory = () => {
                     </Form.Item>
                   </Col>
 
+
                   <Col span={12}>
-                    <Form.Item
-                      label="Quantity"
-                      name="quantity"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your Quantity",
-                        },
-                      ]}
-                    >
+                  <Form.Item
+                    label="Quantity"
+                    name="quantity"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input Quantity!",
+                      },
+                    ]}
+                  >
                       <Input
                         className="myAntIpt2"
                         placeholder="Enter your Quantity"
@@ -592,6 +646,7 @@ const ShowIssuedEnventory = () => {
                     <Form.Item
                       label="Quantity"
                       name="quantity"
+                      onKeyUp={handleKeyUp}
                       rules={[
                         {
                           required: true,

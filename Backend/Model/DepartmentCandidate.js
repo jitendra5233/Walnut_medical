@@ -42,6 +42,18 @@ const DepartmentPositionsCandidateSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    reject: {
+      type: String,
+      required: false,
+    },
+    rejectComment: {
+      type: String,
+      required: false,
+    },
+    hired: {
+      type: String,
+      required: false,
+    },
     interview: {
       type: String,
       required: false,

@@ -3,6 +3,7 @@ import {
   DownloadOutlined,
   FileTextOutlined,
   UploadOutlined,
+  ShareAltOutlined,
 } from "@ant-design/icons";
 import {
   Card,
@@ -23,6 +24,7 @@ import {
 } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import TextArea from "antd/es/input/TextArea";
 
 const PostionCard = ({
   id,
@@ -35,12 +37,20 @@ const PostionCard = ({
   location,
   cv_link,
   interview,
+  interview_date,
+  interview_time,
+  reject,
+  hired,
+  rejectComment,
 }) => {
+  const [commentModel, setCommentModel] = useState(false);
+  const [commentModelMode, setCommentModelMode] = useState("add");
   const [interviewModal, setInterviewModal] = useState(false);
 
   const [loading, setLoading] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
 
   const format = "HH:mm";
 
@@ -74,7 +84,26 @@ const PostionCard = ({
       });
   };
 
+  const handleHire = () => {
+    axios
+      .post("http://localhost:5000/handleHire", { id })
+      .then((res) => {
+        message.success("Hired");
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
   const handleSubmit = (values) => {
+    values.interview_date = new Date(
+      values.interview_date
+    ).toLocaleDateString();
+    values.interview_time = new Date(
+      values.interview_time
+    ).toLocaleTimeString();
+
     values.id = id;
     axios
       .post("http://localhost:5000/addInterviewData", values)
@@ -101,8 +130,97 @@ const PostionCard = ({
     console.log(e);
   };
 
+  const addComment = (type) => {
+    if (type == "add") {
+      setCommentModelMode("add");
+      form2.resetFields();
+    }
+
+    if (type == "show") {
+      setCommentModelMode("show");
+      form2.setFieldsValue({
+        interviewComment: rejectComment,
+      });
+    }
+    setCommentModel(true);
+  };
+
+  const handleCommmentSubmit = (values) => {
+    values.id = id;
+    axios
+      .post("http://localhost:5000/addComment", values)
+      .then((res) => {
+        message.success("Comment Added");
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const commentCancle = () => {
+    setCommentModel(false);
+  };
+
   return (
     <div>
+      <Modal
+        open={commentModel}
+        onCancel={commentCancle}
+        footer={[]}
+        width={450}
+      >
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24}>
+                <Form
+                  form={form2}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={handleCommmentSubmit}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Enter your Comment"
+                        name="interviewComment"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Comment",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <TextArea
+                          className="myAntIpt2"
+                          placeholder="Enter your Comment"
+                          size="small"
+                          rows={4}
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Save
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
       <Modal
         open={interviewModal}
         onCancel={handleCancel}
@@ -217,21 +335,12 @@ const PostionCard = ({
               <Col span={12} style={{ textAlign: "end" }}>
                 {location}
               </Col>
-              {interview === "true" ? (
-                <>
-                  <Col span={12}>Interview</Col>
-                  <Col span={12} style={{ textAlign: "end" }}>
-                    21/09/2022 2:00AM
-                  </Col>
-                </>
-              ) : (
-                <>
-                  <Col span={12}>Interview</Col>
-                  <Col span={12} style={{ textAlign: "end" }}>
-                    21/09/2022 2:00AM
-                  </Col>
-                </>
-              )}
+
+              <Col span={11}>Interview</Col>
+              <Col span={13} style={{ textAlign: "end" }}>
+                {interview_date}-{interview_time}
+              </Col>
+
               <Col span={24}>
                 CV
                 <div
@@ -246,116 +355,122 @@ const PostionCard = ({
                   </div>
                   <div>
                     <a href={cv_link} target="_blank">
-                      <DownloadOutlined />
+                      <DownloadOutlined style={{ fontSize: "15px" }} />
                     </a>
                   </div>
                 </div>
               </Col>
 
-              {interview === "true" ? (
-                <Col span={24}>
-                  <div style={{ textAlign: "center", marginTop: "10px" }}>
-                    <Button
-                      className="interviewBtn"
-                      type="primary"
-                      style={{ marginRight: "10px" }}
-                      onClick={() => handleInterview()}
-                    >
-                      Hired
-                    </Button>
-                    <Popconfirm
-                      title="Reject Him"
-                      description="Are you sure to Reject him?"
-                      onConfirm={RejectInterview}
-                      onCancel={popcancel}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <Button className="interviewBtn"> No</Button>
-                    </Popconfirm>
-                  </div>
-                </Col>
-              ) : interview === "false" ? (
-                <Col span={24}>
-                  <div style={{ textAlign: "center", marginTop: "10px" }}>
-                    <Button
-                      className="interviewBtn"
-                      type="primary"
-                      style={{ marginRight: "10px" }}
-                      onClick={() => handleInterview()}
-                    >
-                      Interview
-                    </Button>
-                    <Popconfirm
-                      title="Reject Him"
-                      description="Are you sure to Reject him?"
-                      onConfirm={RejectInterview}
-                      onCancel={popcancel}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <Button className="interviewBtn">No</Button>
-                    </Popconfirm>
-                  </div>
-                </Col>
-              ) : (
-                <Col span={24}>
-                  <div style={{ textAlign: "center", marginTop: "10px" }}>
-                    <Alert message="Rejected" type="error" />
-                  </div>
-                </Col>
-              )}
+              <Col span={24}>
+                {reject === "false" ? (
+                  <div style={{ textAlign: "center" }}>
+                    {hired === "false" ? (
+                      <div style={{ marginTop: "3.5rem" }}>
+                        {interview === "true" ? (
+                          <Button
+                            className="interviewBtn"
+                            type="primary"
+                            style={{ marginRight: "10px" }}
+                            onClick={() => handleHire()}
+                          >
+                            Hired
+                          </Button>
+                        ) : (
+                          <Button
+                            className="interviewBtn"
+                            type="primary"
+                            style={{ marginRight: "10px" }}
+                            onClick={() => handleInterview()}
+                          >
+                            Interview
+                          </Button>
+                        )}
 
-              {/* {interview === undefined ? (
-                <Col span={24}>
-                  <div style={{ textAlign: "center", marginTop: "10px" }}>
-                    <Button
-                      className="interviewBtn"
-                      type="primary"
-                      style={{ marginRight: "10px" }}
-                      onClick={() => handleInterview()}
-                    >
-                      Interview
-                    </Button>
-                    <Popconfirm
-                      title="Reject Him"
-                      description="Are you sure to Reject him?"
-                      onConfirm={RejectInterview}
-                      onCancel={popcancel}
-                      okText="Yes"
-                      cancelText="No"
-                    >
-                      <Button className="interviewBtn">No</Button>
-                    </Popconfirm>
-                  </div>
-                </Col>
-              ) : (
-                <Col span={24}>
-                  <div style={{ textAlign: "center", marginTop: "10px" }}>
-                    {interview === true ? (
-                      <Button
-                        className="interviewBtn"
-                        type="primary"
-                        style={{ marginRight: "10px" }}
-                        onClick={() => handleInterview()}
-                      >
-                        Hired
-                      </Button>
+                        <Popconfirm
+                          title="Reject Him"
+                          description="Are you sure to Reject him?"
+                          onConfirm={RejectInterview}
+                          onCancel={popcancel}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <Button className="interviewBtn">No</Button>
+                        </Popconfirm>
+                      </div>
                     ) : (
-                      <Popconfirm
-                        title="Reject Him"
-                        description="Are you sure to Reject him?"
-                        onConfirm={RejectInterview}
-                        onCancel={popcancel}
-                        okText="Yes"
-                        cancelText="No"
-                      >
-                        <Button className="interviewBtn">No</Button>
-                      </Popconfirm>
+                      <>
+                        <div>
+                          <span className="hiredSelectedTxt">
+                            Employee successfully hired share a from to get more
+                            information
+                          </span>
+                        </div>
+                        <div>
+                          <Button
+                            className="interviewBtn"
+                            type="primary"
+                            style={{ marginTop: "10px" }}
+                          >
+                            Share form <ShareAltOutlined />
+                          </Button>
+                        </div>
+                      </>
                     )}
                   </div>
-                </Col>
-              )} */}
+                ) : (
+                  <>
+                    {rejectComment === undefined ? (
+                      <>
+                        <div style={{ textAlign: "center" }}>
+                          <div>
+                            <span className="hiredSelectedTxt">
+                              Unfortunately we are unable to hire the candidate
+                              add the reason why
+                            </span>
+                          </div>
+                          <div>
+                            <Button
+                              className="interviewBtn"
+                              type="primary"
+                              style={{ marginTop: "10px" }}
+                              onClick={() => addComment("add")}
+                            >
+                              Add Comment
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    ) : (
+                      <>
+                        <div style={{ textAlign: "center" }}>
+                          <div>
+                            <span className="hiredSelectedTxt">
+                              Your comment successfully added
+                            </span>
+                          </div>
+                          <div>
+                            <Button
+                              className="interviewBtn"
+                              type="primary"
+                              style={{ marginTop: "10px", marginRight: "10px" }}
+                              onClick={() => addComment("show")}
+                            >
+                              View
+                            </Button>
+                            <Button
+                              className="interviewBtn"
+                              type="primary"
+                              style={{ marginTop: "10px" }}
+                            >
+                              Edit
+                            </Button>
+                          </div>
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
+              </Col>
             </Row>
           </div>
         </div>
@@ -440,6 +555,7 @@ const ShowCandidate = () => {
     data.append("experience", values.experience);
     data.append("expected_salary", values.expected_salary);
     data.append("l_salary", values.l_salary);
+    data.append("interview", false);
 
     axios
       .post("http://localhost:5000/addPostionsCandidate", data)
@@ -719,10 +835,15 @@ const ShowCandidate = () => {
             candidate_location,
             cv,
             interview,
+            interview_date,
+            interview_time,
+            reject,
+            hired,
+            rejectComment,
           } = x;
 
           return (
-            <Col xs={24} sm={24} md={8} lg={8}>
+            <Col xs={24} sm={24} md={8} lg={8} key={_id}>
               <PostionCard
                 id={_id}
                 name={`${f_name} ${l_name}`}
@@ -734,6 +855,11 @@ const ShowCandidate = () => {
                 location={candidate_location}
                 cv_link={cv}
                 interview={interview}
+                interview_date={interview_date}
+                interview_time={interview_time}
+                reject={reject}
+                hired={hired}
+                rejectComment={rejectComment}
               />
             </Col>
           );

@@ -19,13 +19,18 @@ import {
   Form,
   Input,
   Space,
+  AutoComplete,
+  Select,
 } from "antd";
+const { Option } = Select;
+
 const { Title } = Typography;
 const { confirm } = Modal;
 const ShowIssuedEnventory = () => {
   const [form] = Form.useForm();
   const [tableData, setTableData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -62,11 +67,19 @@ const ShowIssuedEnventory = () => {
         let data = result.data;
         let newData = [];
         data.map((x) => {
+          const createdAt = new Date(x.createdAt);
+          const updatedAt = new Date(x.updatedAt);
+          const formattedCreatedAt = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`;
+          const formattedUpdatedAt = `${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`;
+
           newData.push({
             key: x._id,
             item_name: x.item_name,
             quantity: x.quantity,
+            lossDamageItem: x.lossDamageItem,
             availableItem: x.availableItem,
+            createdAt: formattedCreatedAt,
+            updatedAt: formattedUpdatedAt,
           });
         });
 
@@ -77,14 +90,15 @@ const ShowIssuedEnventory = () => {
       });
   };
 
-  const [updateItemId, srtUpdateIyemId] = useState([]);
+  const [updateItemId, setUpdateItemId] = useState([]);
   const [updateAvailableItem, setUpdateAvailableItem] = useState([]);
   const [getOldTotalItem, setOldTotalItem] = useState([]);
+  const [getsuggestedId, setSuggestedId] = useState([]);
   const handleEdit = (id) => {
     showModal1();
-    srtUpdateIyemId(id);
+    setUpdateItemId(id);
     tableData.map((x) => {
-      if (x.key == id) {
+      if (x.key === id) {
         form.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
@@ -105,7 +119,7 @@ const ShowIssuedEnventory = () => {
     axios
       .post("http://localhost:5000/update-item", values)
       .then((res) => {
-        if (res != "") {
+        if (res !== "") {
           getInventory();
           setIsModalOpen1(false);
           handleCancel1();
@@ -119,6 +133,7 @@ const ShowIssuedEnventory = () => {
   const onFinishFailed1 = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
   const handleDelete = (itemId) => {
     confirm({
       title: "Delete the Issued Item",
@@ -149,7 +164,17 @@ const ShowIssuedEnventory = () => {
 
   const handleSubmit = (values) => {
     values.availableItem = values.quantity;
+    console.log(values.availableItem);
     values.lossDamageItem = 0;
+  
+     if(getsuggestedId !=undefined)
+     {
+      values.setSuggestedId=getsuggestedId;
+     }
+     if(getsuggestedId ==undefined)
+     {
+      values.setSuggestedId=0;
+     }
     axios
       .post("http://localhost:5000/add-item", values)
       .then((res) => {
@@ -167,6 +192,36 @@ const ShowIssuedEnventory = () => {
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
+
+
+  const handleSearch = (value) => {
+    // Fetch item suggestions based on the user's input
+    axios
+      .get(`http://localhost:5000/items/searchItem?query=${value}`)
+      .then((response) => {
+        const items = response.data;
+        console.log(items);
+        setSuggestions(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const  handleSaveId  =(value,option)=>{
+    if(option.key !='undefined')
+    {
+      setSuggestedId(option.key);
+    }
+    else
+    {
+      setSuggestedId(0);
+
+    }
+  
+  
+   }
+  
   const columns = [
     {
       title: "Item Name",
@@ -174,20 +229,27 @@ const ShowIssuedEnventory = () => {
       key: "item_name",
       render: (text) => <a>{text}</a>,
     },
-
     {
-      title: "Available  Item",
+      title: "Available Item",
       dataIndex: "availableItem",
       key: "availableItem",
       render: (text) => <a>{text}</a>,
     },
-
     {
       title: "Total Item",
       dataIndex: "quantity",
       key: "quantity",
     },
-
+    {
+      title: "Loss/Damage",
+      dataIndex: "lossDamageItem",
+      key: "lossDamageItem",
+    },
+    // {
+    //   title: "Updated Date",
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    // },
     {
       title: "Action",
       key: "action",
@@ -199,12 +261,11 @@ const ShowIssuedEnventory = () => {
               <EditOutlined style={{ cursor: "pointer" }} />
             </span>
           </a>
-          <a onClick={() => handleDelete(record.key)}>
-            {" "}
+          {/* <a onClick={() => handleDelete(record.key)}>
             <span>
               <DeleteOutlined style={{ cursor: "pointer" }} />
             </span>
-          </a>
+          </a> */}
         </div>
       ),
     },
@@ -222,10 +283,13 @@ const ShowIssuedEnventory = () => {
         <Link to={`/add-issued`}>
           <button className="filtercolorbtn">Assign Item +</button>
         </Link>
+        <Link to={`/show_itemrecord`}>
+          <button className="filtercolorbtn">Show Record</button>
+        </Link>
       </div>
 
       <Modal
-        open={isModalOpen}
+        visible={isModalOpen}
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[]}
@@ -250,23 +314,29 @@ const ShowIssuedEnventory = () => {
               >
                 <Row gutter={24}>
                   <Col span={24}>
-                    <Form.Item
-                      label="Name of item"
-                      name="item_name"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input your Lable Name",
-                        },
-                      ]}
-                      hasFeedback
-                    >
-                      <Input
-                        className="myAntIpt2"
-                        placeholder="Enter  your Lable Name"
-                        size="small"
-                      />
-                    </Form.Item>
+                  <Form.Item
+                  label="Name of Item"
+                  name="item_name"
+                  rules={[
+                  {
+                  required: true,
+                  message: "Please input a valid item name!",
+                  },
+                  ]}
+                  >
+                  <AutoComplete
+                  placeholder="Input Item"
+                  allowClear
+                  onSearch={handleSearch}
+                  onChange={handleSaveId}
+                  >
+                  {suggestions.map((option) => (
+                  <Option key={option._id} value={option.item_name}>
+                  {option.item_name}
+                  </Option>
+                  ))}
+                  </AutoComplete>
+                 </Form.Item>
                   </Col>
                   <Col span={24}>
                     <Form.Item
@@ -301,7 +371,7 @@ const ShowIssuedEnventory = () => {
       </Modal>
 
       <Modal
-        open={isModalOpen1}
+        visible={isModalOpen1}
         onOk={handleOk1}
         onCancel={handleCancel1}
         footer={[]}

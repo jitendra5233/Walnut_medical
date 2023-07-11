@@ -53,6 +53,7 @@ const router = createBrowserRouter(
         <Route path="/inventory-item" element={<ShowInventoryItem />} />
         <Route path="/available-item" element={<ShowAvailableItems />} />
         <Route path="/loss_Damage" element={<ShowLossDamage />} />
+        <Route path="/show_itemrecord" element={<ShowAvailableItems />} />
       </Route>
     </Route>
   )

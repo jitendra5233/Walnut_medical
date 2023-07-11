@@ -406,7 +406,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 .interviewBtn {
   border-radius: 25px !important;
   height: 40px;
-  width: 100px;
+  width: 120px;
 }
 
 .popupTitle {
@@ -493,4 +493,14 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 .changecolor {
   color: red;
+}
+
+.hiredSelectedTxt {
+  color: #757d8a;
+  text-align: center;
+  font-family: Arial;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
 }

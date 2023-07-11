@@ -20,14 +20,18 @@ const [form]=Form.useForm();
 
   const getInventory = () => {
     axios
-      .get('http://localhost:5000/getItem')
+      .get('http://localhost:5000/getItemrecord')
       .then((result) => {
         let data = result.data;
         let newData = [];
+        console.log(data);
         data.map((x) => {
+          const createdAt = new Date(x.createdAt);
+          const formattedCreatedAt = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`;
           newData.push({
             item_name: x.item_name,
-            quantity: x.availableItem,
+            quantity: x.quantity,
+            createdAt: formattedCreatedAt,
           });
         });
 
@@ -52,14 +56,30 @@ const [form]=Form.useForm();
       dataIndex: 'quantity',
       key: 'quantity',
     },
+    {
+      title: "Created Date/Time",
+      dataIndex: "createdAt",
+      key: "createdAt",
+    },
+    // {
+    //   title: "Updated Date",
+    //   dataIndex: "updatedAt",
+    //   key: "updatedAt",
+    // },
   ];
 
   return (
     <div>
       <div className="m12r">
-        <Title level={3} className="Expensecolor">Show Availbale Items</Title>
+        <Title level={3} className="Expensecolor">Show Item Record</Title>
         <Link to={`/inventory-item`}>
           <button className="filtercolorbtn">Total items</button>
+        </Link>
+        <Link to={`/add-issued`}>
+          <button className="filtercolorbtn">Assign Item +</button>
+        </Link>
+        <Link to={`/show_itemrecord`}>
+          <button className="filtercolorbtn">Show Record</button>
         </Link>
       </div>
       <div>

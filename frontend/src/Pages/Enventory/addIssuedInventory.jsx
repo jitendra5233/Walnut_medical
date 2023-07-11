@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Select, Col, Form, Input, Row, Typography, DatePicker, Result, Modal,notification, } from "antd";
+import { Button, Select, Col, Form, Input, Row, Typography, DatePicker, Result, Modal,notification, AutoComplete,} from "antd";
 import axios from "axios";
 import { Alert, Space } from 'antd';
 import ShowIssuedEnventory from "./ShowIssuedEnventory";
@@ -22,6 +22,10 @@ const AddIssuedEnventory = () => {
   
 
   const [itemData, setItemData] = useState([]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [userSuggestions, setUserSuggestions] = useState([]);
+
+  
 
   console.log(itemData);
 
@@ -41,9 +45,10 @@ const AddIssuedEnventory = () => {
 
   const [empName, setEmpName] = useState([]);
 
-  const handleChange = (id) => {
+  const handleChange = (value, option) => {
+    let userId=option.key;
     axios
-      .post('http://localhost:5000/getUserData', { id })
+      .post('http://localhost:5000/getUserData', {userId})
       .then((res) => {
         if (res.data !== '') {
           let data = res.data;
@@ -62,16 +67,21 @@ const AddIssuedEnventory = () => {
 
   const [updatedItemName, setUpdatedItemName] = useState([]);
   const [updateAvailableItem, setUpdatedAvailableItem] = useState([]);
+  const [updatedItemId, setUpdatedItemId] = useState([]);
+  
 
 
-  const handleUpdateItem = (id) => {
+  const handleUpdateItem = (value,option) => {
+    let item_id=option.key;
     axios
-      .post('http://localhost:5000/getItemData', { id })
+      .post('http://localhost:5000/getItemData', { item_id })
       .then((res) => {
         if (res.data !== '') {
           let data = res.data;
           setUpdatedItemName(data.item_name);
           setUpdatedAvailableItem(data.availableItem);
+          setUpdatedItemId(item_id);
+
         }
       })
       .catch((err) => {
@@ -97,8 +107,9 @@ const AddIssuedEnventory = () => {
 
   const onFinish = (values) => {
     values.emp_name = empName;
-    values.itemId = values.item_name;
+    values.itemId = updatedItemId;
     values.item_name = updatedItemName;
+    values.item_id=updatedItemId;
     setLoading(true);
     if(values.quantity <=updateAvailableItem)
     {
@@ -139,6 +150,32 @@ if(event.target.value > updateAvailableItem)
     setResultModalVisible(false);
   };
 
+  const handleSearch = (value) => {
+    // Fetch item suggestions based on the user's input
+    axios
+      .get(`http://localhost:5000/items/search?query=${value}`)
+      .then((response) => {
+        const items = response.data;
+        setSuggestions(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handlenameSearch = (value) => {
+    // Fetch item suggestions based on the user's input
+    axios
+      .get(`http://localhost:5000/items/searchName?query=${value}`)
+      .then((response) => {
+        const items = response.data;
+        setUserSuggestions(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  
   return (
     <div>
       <div className="mainContainer">
@@ -160,25 +197,28 @@ if(event.target.value > updateAvailableItem)
               <Row gutter={24}>
                 <Col span={8}>
                   <Form.Item
-                    label="Name of Item"
-                    name="item_name"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input name of valid!",
-                      },
-                    ]}
+                  label="Name of Item"
+                  name="item_name"
+                  rules={[
+                  {
+                  required: true,
+                  message: "Please input a valid item name!",
+                  },
+                  ]}
                   >
-                    <Select
-                      placeholder="Select Item"
-                      allowClear
-                      onChange={handleUpdateItem}
-                    >
-                      {itemData.map((option) => (
-                        <option value={option._id}>{`${option.item_name}`}</option>
-                      ))}
-                    </Select>
-                  </Form.Item>
+                  <AutoComplete
+                  placeholder="Select Item"
+                  allowClear
+                  onChange={handleUpdateItem}
+                  onSearch={handleSearch}
+                  >
+                  {suggestions.map((option) => (
+                  <Option key={option._id} value={option.item_name}>
+                  {option.item_name}
+                  </Option>
+                  ))}
+                  </AutoComplete>
+                 </Form.Item>
                 </Col>
                 <Col span={8}>
                   <Form.Item
@@ -205,15 +245,18 @@ if(event.target.value > updateAvailableItem)
                       },
                     ]}
                   >
-                    <Select
-                      placeholder="Select Eployee"
-                      allowClear
-                      onChange={handleChange}
-                    >
-                      {userData.map((option) => (
-                        <option value={option._id}>{`${option.emp_code} - ${option.f_name} ${option.l_name}`}</option>
-                      ))}
-                    </Select>
+                     <AutoComplete
+                  placeholder="Select Item"
+                  allowClear
+                  onSearch={handlenameSearch}
+                  onChange={handleChange}
+                  >
+                  {userSuggestions.map((option) => (
+                  <Option key={option._id} value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}>
+                 {`${option.f_name} ${option.l_name}`}
+                  </Option>
+                  ))}
+                  </AutoComplete> 
                   </Form.Item>
                 </Col>
                 <Col span={8}>
