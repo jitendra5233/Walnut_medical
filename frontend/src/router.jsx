@@ -27,6 +27,9 @@ import ShowIssuedEnventory from "./Pages/Enventory/ShowIssuedEnventory";
 import ShowInventoryItem from "./Pages/Enventory/ShowInventoryItem";
 import ShowAvailableItems from "./Pages/Enventory/showAvailableItems";
 import ShowLossDamage from "./Pages/Enventory/ShowLossDamage";
+import ShowHiredCandidate from "./Pages/Hiring/ShowHiredCandidate";
+import ShowRejectCandidate from "./Pages/Hiring/ShowRejectCandidate";
+import AddEditCandidateDetails from "./Pages/Hiring/AddEditCandidateDetails";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -45,6 +48,15 @@ const router = createBrowserRouter(
         <Route path="/hiring" element={<HiringDashboard />} />
         <Route path="/show-postion/:id" element={<ShowPostions />} />
         <Route path="/show-candidate/:id/:name" element={<ShowCandidate />} />
+        <Route path="/show-hired-candidate" element={<ShowHiredCandidate />} />
+        <Route
+          path="/show-rejected-candidate"
+          element={<ShowRejectCandidate />}
+        />
+        <Route
+          path="/candidate-details/:id"
+          element={<AddEditCandidateDetails />}
+        />
 
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/expense" element={<ShowExpense />} />

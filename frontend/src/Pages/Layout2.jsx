@@ -244,10 +244,10 @@ const LayoutCom2 = () => {
               <Link to="/hiring">New hiring</Link>
             </Menu.Item>
             <Menu.Item key="11">
-              <Link to="/users">New Employee Info</Link>
+              <Link to="/show-hired-candidate">New Employee Info</Link>
             </Menu.Item>
             <Menu.Item key="12">
-              <Link to="/users">Rejected Candidate</Link>
+              <Link to="/show-rejected-candidate">Rejected Candidate</Link>
             </Menu.Item>
           </SubMenu>
           <SubMenu

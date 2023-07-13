@@ -42,6 +42,7 @@ const PostionCard = ({
   reject,
   hired,
   rejectComment,
+  getDatFun,
 }) => {
   const [commentModel, setCommentModel] = useState(false);
   const [commentModelMode, setCommentModelMode] = useState("add");
@@ -77,6 +78,7 @@ const PostionCard = ({
       .post("http://localhost:5000/rejectInterview", { id })
       .then((res) => {
         message.success("Rejected");
+        getDatFun();
       })
       .catch((err) => {
         setLoading(false);
@@ -89,6 +91,7 @@ const PostionCard = ({
       .post("http://localhost:5000/handleHire", { id })
       .then((res) => {
         message.success("Hired");
+        getDatFun();
       })
       .catch((err) => {
         setLoading(false);
@@ -111,7 +114,8 @@ const PostionCard = ({
         setLoading(false);
         handleCancel();
         form.resetFields();
-        message.success("Department Added Successful");
+        message.success("Interview scheduled");
+        getDatFun();
       })
       .catch((err) => {
         setLoading(false);
@@ -142,15 +146,25 @@ const PostionCard = ({
         interviewComment: rejectComment,
       });
     }
+
+    if (type == "edit") {
+      setCommentModelMode("edit");
+      form2.setFieldsValue({
+        interviewComment: rejectComment,
+      });
+    }
     setCommentModel(true);
   };
 
   const handleCommmentSubmit = (values) => {
     values.id = id;
+
     axios
       .post("http://localhost:5000/addComment", values)
       .then((res) => {
         message.success("Comment Added");
+        commentCancle();
+        getDatFun();
       })
       .catch((err) => {
         setLoading(false);
@@ -187,33 +201,89 @@ const PostionCard = ({
                   autoComplete="off"
                 >
                   <Row gutter={24}>
-                    <Col span={24}>
-                      <Form.Item
-                        label="Enter your Comment"
-                        name="interviewComment"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input Comment",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <TextArea
-                          className="myAntIpt2"
-                          placeholder="Enter your Comment"
-                          size="small"
-                          rows={4}
-                        />
-                      </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                      <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                          Save
-                        </Button>
-                      </Form.Item>
-                    </Col>
+                    {commentModelMode === "add" ? (
+                      <>
+                        <Col span={24}>
+                          <Form.Item
+                            label="Enter your Comment"
+                            name="interviewComment"
+                            rules={[
+                              {
+                                required: true,
+                                message: "Please input Comment",
+                              },
+                            ]}
+                            hasFeedback
+                          >
+                            <TextArea
+                              className="myAntIpt2"
+                              placeholder="Enter your Comment"
+                              size="small"
+                              rows={4}
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col span={24}>
+                          <Form.Item>
+                            <Button type="primary" htmlType="submit">
+                              Save
+                            </Button>
+                          </Form.Item>
+                        </Col>
+                      </>
+                    ) : (
+                      <>
+                        {commentModelMode === "show" ? (
+                          <>
+                            <Col span={24}>
+                              <h3
+                                style={{
+                                  textAlign: "center",
+                                  marginBottom: "1rem",
+                                }}
+                              >
+                                Comment
+                              </h3>
+                            </Col>
+                            <Col span={24}>
+                              <Card style={{ textAlign: "center" }}>
+                                <span>{rejectComment}</span>
+                              </Card>
+                            </Col>
+                          </>
+                        ) : (
+                          <>
+                            <Col span={24}>
+                              <Form.Item
+                                label="Enter your Comment"
+                                name="interviewComment"
+                                rules={[
+                                  {
+                                    required: true,
+                                    message: "Please input Comment",
+                                  },
+                                ]}
+                                hasFeedback
+                              >
+                                <TextArea
+                                  className="myAntIpt2"
+                                  placeholder="Enter your Comment"
+                                  size="small"
+                                  rows={4}
+                                />
+                              </Form.Item>
+                            </Col>
+                            <Col span={24}>
+                              <Form.Item>
+                                <Button type="primary" htmlType="submit">
+                                  Update
+                                </Button>
+                              </Form.Item>
+                            </Col>
+                          </>
+                        )}
+                      </>
+                    )}
                   </Row>
                 </Form>
               </Col>
@@ -443,7 +513,7 @@ const PostionCard = ({
                     ) : (
                       <>
                         <div style={{ textAlign: "center" }}>
-                          <div>
+                          <div style={{ padding: "0.7rem" }}>
                             <span className="hiredSelectedTxt">
                               Your comment successfully added
                             </span>
@@ -461,6 +531,7 @@ const PostionCard = ({
                               className="interviewBtn"
                               type="primary"
                               style={{ marginTop: "10px" }}
+                              onClick={() => addComment("edit")}
                             >
                               Edit
                             </Button>
@@ -499,7 +570,7 @@ const ShowCandidate = () => {
       });
     } else {
       api[type]({
-        message: "Department Added Successful",
+        message: "Candidate Added Successful",
         description: "",
       });
     }
@@ -613,7 +684,7 @@ const ShowCandidate = () => {
         }}
       >
         <div>
-          <span className="pageTitle">UI/UX designer</span>
+          <span className="pageTitle">Candidates</span>
         </div>
         <div>
           <Button type="primary" onClick={showModal}>
@@ -860,6 +931,7 @@ const ShowCandidate = () => {
                 reject={reject}
                 hired={hired}
                 rejectComment={rejectComment}
+                getDatFun={() => getDepartment()}
               />
             </Col>
           );
