@@ -258,6 +258,15 @@ app.get("/getHiredCandidate", async (req, res) => {
     const dep = await DepartmentPositionsCandidate.find({
       hired: true,
     });
+
+    dep.map((x) => {
+      x.profile_name = DepartmentPositions.find({
+        slug: x.profile_id,
+      });
+    });
+
+    console.log(dep);
+
     res.status(200).json(dep);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -410,6 +419,18 @@ app.post("/getCandidateDataById", async (req, res) => {
       });
       res.status(200).json(can_det_2);
     }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getCandidateData2ById", async (req, res) => {
+  try {
+    const can_det_1 = await DepartmentPositionsCandidate.find({
+      ref_id: req.body.id,
+    });
+
+    res.status(200).json(can_det_1);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

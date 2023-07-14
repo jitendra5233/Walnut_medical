@@ -21,6 +21,7 @@ import {
   TimePicker,
   Popconfirm,
   Alert,
+  Empty,
 } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
@@ -395,7 +396,7 @@ const PostionCard = ({
               </Col>
               <Col span={12}>Experience</Col>
               <Col span={12} style={{ textAlign: "end" }}>
-                {experience} years
+                {experience}
               </Col>
               <Col span={12}>Expected Salary</Col>
               <Col span={12} style={{ textAlign: "end" }}>
@@ -883,6 +884,13 @@ const ShowCandidate = () => {
           </div>
         </Spin>
       </Modal>
+      {allDep.length == 0 ? (
+        <div style={{ padding: "8rem 0" }}>
+          <Empty />
+        </div>
+      ) : (
+        ""
+      )}
       <Row
         gutter={[
           {

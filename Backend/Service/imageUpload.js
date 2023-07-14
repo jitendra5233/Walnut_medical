@@ -27,7 +27,7 @@ const upload = multer({
     bucket: "tehies-dms-storage",
 
     key: function (req, file, cb) {
-      cb(null, Date.now().toString() + file.originalname);
+      cb(null, "images/" + Date.now().toString() + file.originalname);
     },
     filename(req, file, cb) {
       cb(null, `${new Date().getTime()}_${file.originalname}`);

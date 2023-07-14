@@ -17,6 +17,7 @@ import {
   Upload,
   message,
   Spin,
+  Empty,
 } from "antd";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -41,7 +42,12 @@ const PostionCard = ({
   return (
     <div>
       <Card
-        style={{ borderRadius: "10px", padding: "0", width: "330px" }}
+        style={{
+          borderRadius: "10px",
+          padding: "0",
+          width: "330px",
+          cursor: "pointer",
+        }}
         className="DepCard"
         onClick={() => handlelinkOpen(slug1, slug2)}
       >
@@ -88,7 +94,7 @@ const PostionCard = ({
             <Row gutter={[0, 20]}>
               <Col span={12}>Experience Required:</Col>
               <Col span={12} style={{ textAlign: "end" }}>
-                {experience} years
+                {experience}{" "}
               </Col>
               <Col span={12}>Hiring Status:</Col>
               <Col span={12} style={{ textAlign: "end" }}>
@@ -388,6 +394,13 @@ const ShowPostions = () => {
           </div>
         </Spin>
       </Modal>
+      {allDep.length == 0 ? (
+        <div style={{ padding: "8rem 0" }}>
+          <Empty />
+        </div>
+      ) : (
+        ""
+      )}
       <Row
         gutter={[
           {

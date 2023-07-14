@@ -30,6 +30,9 @@ import ShowLossDamage from "./Pages/Enventory/ShowLossDamage";
 import ShowHiredCandidate from "./Pages/Hiring/ShowHiredCandidate";
 import ShowRejectCandidate from "./Pages/Hiring/ShowRejectCandidate";
 import AddEditCandidateDetails from "./Pages/Hiring/AddEditCandidateDetails";
+import ShowAllEmpolyees from "./Pages/Docs_Details/ShowAllEmpolyees";
+import ShowOldEmpolyees from "./Pages/Docs_Details/ShowOldEmpolyees";
+import EmployeeDetails from "./Pages/Docs_Details/EmployeeDetails";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -57,6 +60,9 @@ const router = createBrowserRouter(
           path="/candidate-details/:id"
           element={<AddEditCandidateDetails />}
         />
+        <Route path="/show-all-employee" element={<ShowAllEmpolyees />} />
+        <Route path="/show-old-employee" element={<ShowOldEmpolyees />} />
+        <Route path="/employee-details/:id" element={<EmployeeDetails />} />
 
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/expense" element={<ShowExpense />} />

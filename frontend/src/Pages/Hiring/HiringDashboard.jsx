@@ -12,6 +12,7 @@ import {
   Upload,
   message,
   Spin,
+  Empty,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
@@ -270,6 +271,15 @@ const HiringDashboard = () => {
           </div>
         </Spin>
       </Modal>
+
+      {allDep.length == 0 ? (
+        <div style={{ padding: "8rem 0" }}>
+          <Empty />
+        </div>
+      ) : (
+        ""
+      )}
+
       <Row
         gutter={[
           {

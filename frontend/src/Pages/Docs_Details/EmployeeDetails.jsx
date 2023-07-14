@@ -5,8 +5,10 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
-const AddEditCandidateDetails = () => {
+const EmployeeDetails = () => {
   let [activeCan, setActiveCan] = useState();
+
+  const { TextArea } = Input;
 
   const [form] = Form.useForm();
   let { Title } = Typography;
@@ -25,35 +27,9 @@ const AddEditCandidateDetails = () => {
           let formData = data[0];
           form.setFieldsValue(formData);
           axios
-            .post("http://localhost:5000/getCandidateDocs", { id })
+            .post("http://localhost:5000/getCandidateData2ById", { id })
             .then((res) => {
-              res.data.map((x, i) => {
-                if (x.name == "salary_slip") {
-                  props1.defaultFileList.push({
-                    uid: x._id,
-                    name: "Salary Slip " + (i + 1),
-                    status: "done",
-                    url: x.url,
-                  });
-                }
-                if (x.name == "experience") {
-                  props2.defaultFileList.push({
-                    uid: x._id,
-                    name: "Experience letter " + (i + 1),
-                    status: "done",
-                    url: x.url,
-                  });
-                }
-                if (x.name == "education") {
-                  props3.defaultFileList.push({
-                    uid: x._id,
-                    name: "Education Document " + (i + 1),
-                    status: "done",
-                    url: x.url,
-                  });
-                }
-              });
-              setActiveCan("ok");
+              console.log(res);
             })
             .catch((err) => {
               console.log(err);
@@ -65,92 +41,6 @@ const AddEditCandidateDetails = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const deleteDoc = (id) => {
-    axios
-      .post("http://localhost:5000/deleteCandidateDocs", { id })
-      .then((res) => {
-        console.log(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const props1 = {
-    name: "file",
-    multiple: true,
-    action: "http://localhost:5000/uploadDocs",
-    data: { name: "salary_slip", ref_id: r_prams.id },
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        // console.log(info.file, info.fileList);
-      }
-      if (status == "removed") {
-        deleteDoc(info.file.uid);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-    defaultFileList: [],
-  };
-
-  const props2 = {
-    name: "file",
-    multiple: true,
-    action: "http://localhost:5000/uploadDocs",
-    data: { name: "experience", ref_id: r_prams.id },
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        // console.log(info.file, info.fileList);
-      }
-      if (status == "removed") {
-        deleteDoc(info.file.uid);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-    defaultFileList: [],
-  };
-
-  const props3 = {
-    name: "file",
-    multiple: true,
-    action: "http://localhost:5000/uploadDocs",
-    data: { name: "education", ref_id: r_prams.id },
-    onChange(info) {
-      const { status } = info.file;
-      if (status !== "uploading") {
-        // console.log(info.file, info.fileList);
-      }
-      if (status == "removed") {
-        deleteDoc(info.file.uid);
-      }
-      if (status === "done") {
-        message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    onDrop(e) {
-      console.log("Dropped files", e.dataTransfer.files);
-    },
-    defaultFileList: [],
   };
 
   const onFinish = (values) => {
@@ -176,7 +66,7 @@ const AddEditCandidateDetails = () => {
         <Row>
           <Col span={24}>
             <div className="mainTitle">
-              <Title level={4}>New Hired Candidates details</Title>
+              <Title level={4}>Employee Detail</Title>
             </div>
           </Col>
           <Col span={24}>
@@ -219,12 +109,27 @@ const AddEditCandidateDetails = () => {
                 </Col>
                 <Col span={8}>
                   <Form.Item
-                    label="Email"
-                    name="email"
+                    label="Job Title"
+                    name="job_title"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your Email!",
+                        message: "Please input your Job Title!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item
+                    label="Date of joining"
+                    name="date_of_joining"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Date of joining!",
                       },
                     ]}
                   >
@@ -233,12 +138,68 @@ const AddEditCandidateDetails = () => {
                 </Col>
                 <Col span={8}>
                   <Form.Item
-                    label="Phone Number"
-                    name="phone"
+                    label="Experience"
+                    name="experience"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your Phone Number!",
+                        message: "Please input your Experience!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Salary"
+                    name="salary"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Salary!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Office Email"
+                    name="office_email"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Office Email!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Office Email Password"
+                    name="office_email_password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Office Email Password!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Personal Email"
+                    name="email"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Email!",
                       },
                     ]}
                   >
@@ -316,45 +277,72 @@ const AddEditCandidateDetails = () => {
                     <Input />
                   </Form.Item>
                 </Col>
-                <Col span={24}>
+                <Col span={8}>
                   <Form.Item
-                    label="Last 3 month salary slip"
-                    name="salary_slip"
+                    label="Department"
+                    name="department"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Department!",
+                      },
+                    ]}
                   >
-                    <Dragger {...props1}>
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">
-                        Drag and Drop Files here
-                      </p>
-                    </Dragger>
+                    <Input />
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item
+                    label="Phone Number"
+                    name="phone"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Phone Number!",
+                      },
+                    ]}
+                  >
+                    <Input />
                   </Form.Item>
                 </Col>
                 <Col span={24}>
-                  <Form.Item label="Experience letter" name="ex_latter">
-                    <Dragger {...props2}>
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">
-                        Drag and Drop Files here
-                      </p>
-                    </Dragger>
+                  <div
+                    className="ant-form-item-label"
+                    style={{ marginLeft: "12px" }}
+                  >
+                    <label>Address</label>
+                  </div>
+                </Col>
+                <Col span={12}>
+                  <Form.Item
+                    label="Permanent Address"
+                    name="p_address"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Permanent Address!",
+                      },
+                    ]}
+                  >
+                    <TextArea />
                   </Form.Item>
                 </Col>
-                <Col span={24}>
-                  <Form.Item label="Education Documents" name="edu_docs">
-                    <Dragger {...props3}>
-                      <p className="ant-upload-drag-icon">
-                        <InboxOutlined />
-                      </p>
-                      <p className="ant-upload-text">
-                        Drag and Drop Files here
-                      </p>
-                    </Dragger>
+                <Col span={12}>
+                  <Form.Item
+                    label="Temporary Address"
+                    name="t_address"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Permanent Address!",
+                      },
+                    ]}
+                  >
+                    <TextArea />
                   </Form.Item>
                 </Col>
+
                 <Col span={24}>
                   <Form.Item>
                     <Button
@@ -375,4 +363,4 @@ const AddEditCandidateDetails = () => {
   );
 };
 
-export default AddEditCandidateDetails;
+export default EmployeeDetails;

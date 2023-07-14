@@ -504,3 +504,8 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   font-weight: 400;
   line-height: normal;
 }
+
+.employeeCardTxt {
+  color: #525252;
+  font-size: "12px";
+}
