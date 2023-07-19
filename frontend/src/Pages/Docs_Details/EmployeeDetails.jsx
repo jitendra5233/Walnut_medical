@@ -1,10 +1,25 @@
-import { Button, Col, Form, Input, Row, Typography, message } from "antd";
+import {
+  Button,
+  Col,
+  DatePicker,
+  Form,
+  Input,
+  Row,
+  Select,
+  Typography,
+  message,
+} from "antd";
 
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const EmployeeDetails = () => {
+  const [allDep, setAllDep] = useState([]);
+  const [allJobs, setAllJobs] = useState([]);
+
+  let { Option } = Select;
+
   const { TextArea } = Input;
 
   const [form] = Form.useForm();
@@ -12,8 +27,31 @@ const EmployeeDetails = () => {
   const r_prams = useParams();
 
   useEffect(() => {
+    getDepartments();
     getCandidateData(r_prams.id);
   }, []);
+
+  const getDepartments = () => {
+    axios
+      .get("http://localhost:5000/getDepartment")
+      .then((res) => {
+        setAllDep(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getAllJobProfiles = (ref_id) => {
+    axios
+      .post("http://localhost:5000/getDepartmentPostions", { id: ref_id })
+      .then((res) => {
+        setAllJobs(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getCandidateData = (id) => {
     axios
@@ -23,6 +61,8 @@ const EmployeeDetails = () => {
         if (data.length != 0) {
           let formData = data[0];
           form.setFieldsValue(formData);
+          getAllJobProfiles(formData.department);
+          // console.log(formData.department);
           axios
             .post("http://localhost:5000/getCandidateData2ById", { id })
             .then((res) => {
@@ -102,7 +142,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter your Last Name"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
 
@@ -117,7 +161,12 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input disabled />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Employee Code"
+                      size="small"
+                      disabled
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -131,7 +180,19 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Select
+                      placeholder="Select Department"
+                      className="myAntIptSelect2"
+                      allowClear
+                      onChange={(value) => {
+                        form.resetFields(["designation"]);
+                        getAllJobProfiles(value);
+                      }}
+                    >
+                      {allDep.map((x) => (
+                        <Option value={x.slug}>{x.name}</Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -145,7 +206,15 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Select
+                      placeholder="Select designation"
+                      className="myAntIptSelect2"
+                      allowClear
+                    >
+                      {allJobs.map((x) => (
+                        <Option value={x.slug}>{x.name}</Option>
+                      ))}
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -159,7 +228,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <DatePicker
+                      className="myAntIpt2"
+                      placeholder="Enter your Date"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -173,7 +246,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Experience"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -187,7 +264,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Salary"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -201,7 +282,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Office Email"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -215,7 +300,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Office Email Password"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -229,7 +318,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Personal Email"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
 
@@ -244,7 +337,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Last Salary"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -258,7 +355,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Pan Card No"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -268,11 +369,15 @@ const EmployeeDetails = () => {
                     rules={[
                       {
                         required: true,
-                        message: "Please input your Account No!",
+                        message: "Please input your Bank Name!",
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Bank Name"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -286,7 +391,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Account No"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -300,7 +409,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Account No"
+                      size="small"
+                    />
                   </Form.Item>
                 </Col>
 

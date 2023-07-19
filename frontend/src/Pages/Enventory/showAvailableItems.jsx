@@ -1,26 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-
-import {
-  Table,
-  Modal,
-  Typography,
-  Form,
-} from "antd";
+import { Table, Modal, Typography, Form } from "antd";
 const { Title } = Typography;
 
 const ShowAvailableItems = () => {
-const [tableData, setTableData] = useState([]);
-const [form]=Form.useForm();
+  const [tableData, setTableData] = useState([]);
+  const [form] = Form.useForm();
   useEffect(() => {
     getInventory();
   }, []);
 
   const getInventory = () => {
     axios
-      .get('http://localhost:5000/getItemrecord')
+      .get("http://localhost:5000/getItemrecord")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -42,19 +36,18 @@ const [form]=Form.useForm();
       });
   };
 
-
   const columns = [
     {
-      title: 'Item Name',
-      dataIndex: 'item_name',
-      key: 'item_name',
+      title: "Item Name",
+      dataIndex: "item_name",
+      key: "item_name",
       render: (text) => <a>{text}</a>,
     },
 
     {
-      title: 'Quantity',
-      dataIndex: 'quantity',
-      key: 'quantity',
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
     },
     {
       title: "Created Date/Time",
@@ -71,7 +64,9 @@ const [form]=Form.useForm();
   return (
     <div>
       <div className="m12r">
-        <Title level={3} className="Expensecolor">Show Item Record</Title>
+        <Title level={3} className="Expensecolor">
+          Show Item Record
+        </Title>
         <Link to={`/inventory-item`}>
           <button className="filtercolorbtn">Total items</button>
         </Link>
