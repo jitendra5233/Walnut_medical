@@ -19,12 +19,13 @@ import {
   message,
   Spin,
   Empty,
+  Select,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const EmployeeCard = ({ id, img, name }) => {
+const EmployeeCard = ({ id, img, name, designation }) => {
   const navigate = useNavigate();
 
   const openPage = (name) => {
@@ -66,7 +67,7 @@ const EmployeeCard = ({ id, img, name }) => {
             </span>
           </div>
           <div>
-            <span className="postionCardSubtitle"> Employee designation </span>
+            <span className="postionCardSubtitle"> {designation} </span>
           </div>
         </div>
         <div>
@@ -115,9 +116,15 @@ const ShowAllEmpolyees = () => {
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
   const [allDep, setAllDep] = useState([]);
+  const [allJobs, setAllJobs] = useState([]);
+  const [allEmp, setAllEmp] = useState([]);
+
+  const { Option } = Select;
 
   useEffect(() => {
-    getDepartment();
+    getEmployee();
+    getTotalNoOfEmp();
+    getDepartments();
   }, []);
 
   const openNotificationWithIcon = (type) => {
@@ -134,6 +141,20 @@ const ShowAllEmpolyees = () => {
     }
   };
 
+  const getTotalNoOfEmp = () => {
+    axios
+      .get("http://localhost:5000/getTotalNumberOfEmp")
+      .then((res) => {
+        let data = res.data + 1;
+        form.setFieldsValue({
+          emp_code: data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -142,11 +163,34 @@ const ShowAllEmpolyees = () => {
     setIsModalOpen(false);
   };
 
-  const getDepartment = () => {
+  const getDepartments = () => {
     axios
-      .get("http://localhost:5000/getHiredCandidate")
+      .get("http://localhost:5000/getDepartment")
       .then((res) => {
         setAllDep(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getAllJobProfiles = (ref_id) => {
+    console.log(ref_id);
+    axios
+      .post("http://localhost:5000/getDepartmentPostions", { id: ref_id })
+      .then((res) => {
+        setAllJobs(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getEmployee = () => {
+    axios
+      .get("http://localhost:5000/getAllEmployee")
+      .then((res) => {
+        setAllEmp(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -172,6 +216,42 @@ const ShowAllEmpolyees = () => {
     },
   };
 
+  const handleSubmit = (values) => {
+    setLoading(true);
+
+    let data = new FormData();
+    data.append("f_name", values.f_name);
+    data.append("l_name", values.l_name);
+    data.append("department", values.department);
+    data.append("designation", values.designation);
+    data.append("emp_code", values.emp_code);
+
+    if (values.image != undefined && values.image.length != 0) {
+      data.append("image", values.image[0].originFileObj);
+    }
+
+    values.ref_id = null;
+
+    axios
+      .post("http://localhost:5000/addNewEmployee", values)
+      .then((res) => {
+        setLoading(false);
+        handleCancel();
+        form.resetFields();
+        openNotificationWithIcon("success");
+        getEmployee();
+        getTotalNoOfEmp();
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
+  };
+
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
+  };
+
   const normFile = (e) => {
     if (Array.isArray(e)) {
       return e;
@@ -194,7 +274,7 @@ const ShowAllEmpolyees = () => {
         </div>
         <div>
           <Button type="primary" onClick={showModal}>
-            Add New Department +
+            New Emp +
           </Button>
         </div>
       </div>
@@ -204,7 +284,164 @@ const ShowAllEmpolyees = () => {
           <div style={{ padding: "30px" }}>
             <Row>
               <Col span={24} style={{ marginBottom: "30px" }}>
-                <span className="popupTitle">Add New Department</span>
+                <span className="popupTitle">New Employee</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={handleSubmit}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24} style={{ marginBottom: "10px" }}>
+                      <Form.Item
+                        label="Porfile Photo"
+                        valuePropName="fileList"
+                        getValueFromEvent={normFile}
+                        name="image"
+                      >
+                        <Upload listType="picture-card" maxCount={1}>
+                          <div>
+                            <PlusOutlined />
+                            <div
+                              style={{
+                                marginTop: 8,
+                              }}
+                            >
+                              Upload
+                            </div>
+                          </div>
+                        </Upload>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                      <Form.Item
+                        label="First Name"
+                        name="f_name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your First Name",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your First Name"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Last Name"
+                        name="l_name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Last Name",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Last Name"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Department"
+                        name="department"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Department",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        {/* <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Department"
+                          size="small"
+                        /> */}
+                        <Select
+                          placeholder="Select Department"
+                          className="myAntIptSelect2"
+                          allowClear
+                          onChange={(value) => getAllJobProfiles(value)}
+                        >
+                          {allDep.map((x) => (
+                            <Option value={x.slug}>{x.name}</Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Designation"
+                        name="designation"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Designation",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Select
+                          placeholder="Select designation"
+                          className="myAntIptSelect2"
+                          allowClear
+                        >
+                          {allJobs.map((x) => (
+                            <Option value={x.slug}>{x.name}</Option>
+                          ))}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={12}>
+                      <Form.Item
+                        label="Emp Code"
+                        name="emp_code"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Emp Code",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input
+                          className="myAntIpt2"
+                          placeholder="Enter your Emp Code"
+                          size="small"
+                          disabled
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
               </Col>
             </Row>
           </div>
@@ -230,14 +467,15 @@ const ShowAllEmpolyees = () => {
           20,
         ]}
       >
-        {allDep.map((x, i) => {
-          let { _id, f_name, l_name, profile_img } = x;
+        {allEmp.map((x, i) => {
+          let { _id, f_name, l_name, profile_img, designation } = x;
           return (
             <Col xs={24} sm={24} md={8} lg={6} key={i}>
               <EmployeeCard
                 id={_id}
                 img={profile_img}
                 name={`${f_name} ${l_name}`}
+                designation={designation}
               />
             </Col>
           );

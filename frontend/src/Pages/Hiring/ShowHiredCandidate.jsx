@@ -13,6 +13,7 @@ import {
   Spin,
   Upload,
   Dropdown,
+  message,
 } from "antd";
 import { useEffect, useState } from "react";
 import axios from "axios";
@@ -32,6 +33,8 @@ import { useDispatch } from "react-redux";
 
 const ShowHiredCandidate = () => {
   const [tableData, setTableData] = useState([]);
+  const [employees, setEmployees] = useState([]);
+  const [totalNoOfEmp, setTotalNoOfEmp] = useState();
   const [form] = Form.useForm();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -71,17 +74,21 @@ const ShowHiredCandidate = () => {
 
   useEffect(() => {
     getUsers();
+    getTotalNoOfEmp();
     // getRoles();
   }, []);
 
   const items = [
     {
       key: "1",
+      label: <Link onClick={() => SaveAsEmployee()}>Save as Employee</Link>,
+    },
+    {
+      key: "2",
       label: <Link to={"/candidate-details/" + activeId}>Update Details</Link>,
     },
-
     {
-      key: "4",
+      key: "3",
       label: (
         <Link onClick={() => handleDelete()} style={{ color: "red" }}>
           Delete
@@ -185,6 +192,44 @@ const ShowHiredCandidate = () => {
     showModal();
   };
 
+  const getTotalNoOfEmp = () => {
+    axios
+      .get("http://localhost:5000/getTotalNumberOfEmp")
+      .then((res) => {
+        let data = res.data + 1;
+        setTotalNoOfEmp(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const SaveAsEmployee = () => {
+    employees.map((x) => {
+      if (x._id == activeId) {
+        let dataObj = {
+          ref_id: activeId,
+          f_name: x.f_name,
+          l_name: x.l_name,
+          department: x.ref_id,
+          designation: x.profile_id,
+          emp_code: totalNoOfEmp,
+        };
+
+        axios
+          .post("http://localhost:5000/addNewEmployee", dataObj)
+          .then((res) => {
+            message.success("Saved");
+          })
+          .catch((err) => {
+            setLoading(false);
+            message.error(err.response.data.message);
+            console.log(err.response.data.message);
+          });
+      }
+    });
+  };
+
   const handleDelete = () => {
     axios
       .post("http://localhost:5000/delete_candidate", { id: activeId })
@@ -204,6 +249,7 @@ const ShowHiredCandidate = () => {
       .get("http://localhost:5000/getHiredCandidate")
       .then((result) => {
         let data = result.data;
+        setEmployees(data);
 
         let newData = [];
 

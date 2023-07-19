@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 
 const AddEditCandidateDetails = () => {
   let [activeCan, setActiveCan] = useState();
+  const [empCode, setEmpCode] = useState("");
 
   const [form] = Form.useForm();
   let { Title } = Typography;
@@ -14,7 +15,22 @@ const AddEditCandidateDetails = () => {
 
   useEffect(() => {
     getCandidateData(r_prams.id);
+    // getTotalNoOfEmp();
   }, []);
+
+  const getTotalNoOfEmp = () => {
+    axios
+      .get("http://localhost:5000/getTotalNumberOfEmp")
+      .then((res) => {
+        let data = res.data + 1;
+        form.setFieldsValue({
+          emp_code: data,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const getCandidateData = (id) => {
     axios
@@ -23,6 +39,11 @@ const AddEditCandidateDetails = () => {
         let data = res.data;
         if (data.length != 0) {
           let formData = data[0];
+
+          if (formData.emp_code === undefined) {
+            getTotalNoOfEmp();
+          }
+
           form.setFieldsValue(formData);
           axios
             .post("http://localhost:5000/getCandidateDocs", { id })
@@ -225,6 +246,20 @@ const AddEditCandidateDetails = () => {
                       {
                         required: true,
                         message: "Please input your Email!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Emp Code"
+                    name="emp_code"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Emp Code!",
                       },
                     ]}
                   >

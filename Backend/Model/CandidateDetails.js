@@ -42,6 +42,46 @@ const CandidateDetailsSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    date_of_joining: {
+      type: String,
+      required: false,
+    },
+    department: {
+      type: String,
+      required: false,
+    },
+    emp_code: {
+      type: String,
+      required: false,
+    },
+    experience: {
+      type: String,
+      required: false,
+    },
+    job_title: {
+      type: String,
+      required: false,
+    },
+    office_email: {
+      type: String,
+      required: false,
+    },
+    office_email_password: {
+      type: String,
+      required: false,
+    },
+    p_address: {
+      type: String,
+      required: false,
+    },
+    t_address: {
+      type: String,
+      required: false,
+    },
+    salary: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

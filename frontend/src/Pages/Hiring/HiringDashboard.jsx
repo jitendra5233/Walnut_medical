@@ -225,17 +225,6 @@ const HiringDashboard = () => {
                           </div>
                         </Upload>
                       </Form.Item>
-                      {/* <Avatar
-                      size={50}
-                      src={<img src="./icon/userImg.png" alt="avatar" />}
-                      style={{ marginRight: "  15px" }}
-                    />
-                    <Button>
-                      Upload <UploadOutlined />
-                    </Button> */}
-                      {/* <Upload>
-                      <Button icon={<UploadOutlined />}>Click to Upload</Button>
-                    </Upload> */}
                     </Col>
                     <Col span={24}>
                       <Form.Item

@@ -14,6 +14,7 @@ const LossDamageItem = require("./Model/lossdamage");
 const Showrecord = require("./Model/showrecord");
 const CandidateDetails = require("./Model/CandidateDetails");
 const Candidate_docs = require("./Model/Docs");
+const EmployeeSchema = require("./Model/Employee");
 
 const singleUpload = upload.single("image");
 const docUpload = upload.single("file");
@@ -229,6 +230,28 @@ app.post("/addDepartmentPostions", async (req, res) => {
   }
 });
 
+app.post("/addNewEmployee", async (req, res) => {
+  try {
+    if (req.body.ref_id != null) {
+      const checkEmp = await EmployeeSchema.find({
+        ref_id: req.body.ref_id,
+      });
+
+      if (checkEmp.length == 0) {
+        const Employee = await EmployeeSchema.create(req.body);
+        res.status(200).json(Employee);
+      } else {
+        res.status(500).json({ message: "Employee Already Exists" });
+      }
+    } else {
+      const Employee = await EmployeeSchema.create(req.body);
+      res.status(200).json(Employee);
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 app.post("/getDepartmentPostions", async (req, res) => {
   try {
     const dep = await DepartmentPositions.find({
@@ -259,14 +282,6 @@ app.get("/getHiredCandidate", async (req, res) => {
       hired: true,
     });
 
-    dep.map((x) => {
-      x.profile_name = DepartmentPositions.find({
-        slug: x.profile_id,
-      });
-    });
-
-    console.log(dep);
-
     res.status(200).json(dep);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -278,6 +293,24 @@ app.get("/getRejectedCandidate", async (req, res) => {
     const dep = await DepartmentPositionsCandidate.find({
       reject: true,
     });
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getAllEmployee", async (req, res) => {
+  try {
+    const dep = await EmployeeSchema.find();
+    res.status(200).json(dep);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getAllJobProfiles", async (req, res) => {
+  try {
+    const dep = await DepartmentPositions.find();
     res.status(200).json(dep);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -407,18 +440,18 @@ app.post("/addComment", async (req, res) => {
 
 app.post("/getCandidateDataById", async (req, res) => {
   try {
-    const can_det_1 = await CandidateDetails.find({
-      ref_id: req.body.id,
+    const can_det_1 = await EmployeeSchema.find({
+      _id: req.body.id,
     });
-
-    if (can_det_1 != 0) {
-      res.status(200).json(can_det_1);
-    } else {
-      const can_det_2 = await DepartmentPositionsCandidate.find({
-        _id: req.body.id,
-      });
-      res.status(200).json(can_det_2);
-    }
+    res.status(200).json(can_det_1);
+    // if (can_det_1 != 0) {
+    //   res.status(200).json(can_det_1);
+    // } else {
+    //   const can_det_2 = await DepartmentPositionsCandidate.find({
+    //     _id: req.body.id,
+    //   });
+    //   res.status(200).json(can_det_2);
+    // }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -491,6 +524,16 @@ app.post("/deleteCandidateDocs", async (req, res) => {
     const result = await Candidate_docs.deleteOne({ _id: id });
 
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getTotalNumberOfEmp", async (req, res) => {
+  try {
+    const result = await EmployeeSchema.find({});
+
+    res.status(200).json(result.length);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

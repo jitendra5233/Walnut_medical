@@ -1,13 +1,10 @@
 import { Button, Col, Form, Input, Row, Typography, message } from "antd";
-import { InboxOutlined } from "@ant-design/icons";
-import Dragger from "antd/es/upload/Dragger";
+
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 
 const EmployeeDetails = () => {
-  let [activeCan, setActiveCan] = useState();
-
   const { TextArea } = Input;
 
   const [form] = Form.useForm();
@@ -29,7 +26,7 @@ const EmployeeDetails = () => {
           axios
             .post("http://localhost:5000/getCandidateData2ById", { id })
             .then((res) => {
-              console.log(res);
+              // console.log(res);
             })
             .catch((err) => {
               console.log(err);
@@ -45,10 +42,11 @@ const EmployeeDetails = () => {
 
   const onFinish = (values) => {
     values.ref_id = r_prams.id;
-
+    console.log(values);
     axios
       .post("http://localhost:5000/addCandidateDetails", values)
       .then((res) => {
+        console.log(res.data);
         message.success("Added");
       })
       .catch((err) => {
@@ -107,21 +105,49 @@ const EmployeeDetails = () => {
                     <Input />
                   </Form.Item>
                 </Col>
+
                 <Col span={8}>
                   <Form.Item
-                    label="Job Title"
-                    name="job_title"
+                    label="Emp Code"
+                    name="emp_code"
                     rules={[
                       {
                         required: true,
-                        message: "Please input your Job Title!",
+                        message: "Please input your Emp Code!",
+                      },
+                    ]}
+                  >
+                    <Input disabled />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Department"
+                    name="department"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Department!",
                       },
                     ]}
                   >
                     <Input />
                   </Form.Item>
                 </Col>
-
+                <Col span={8}>
+                  <Form.Item
+                    label="Designation"
+                    name="designation"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Designation!",
+                      },
+                    ]}
+                  >
+                    <Input />
+                  </Form.Item>
+                </Col>
                 <Col span={8}>
                   <Form.Item
                     label="Date of joining"
@@ -271,20 +297,6 @@ const EmployeeDetails = () => {
                       {
                         required: true,
                         message: "Please input your IFSC Code!",
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    label="Department"
-                    name="department"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input your Department!",
                       },
                     ]}
                   >
