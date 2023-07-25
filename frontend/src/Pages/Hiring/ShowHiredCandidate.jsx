@@ -220,6 +220,7 @@ const ShowHiredCandidate = () => {
           .post("http://localhost:5000/addNewEmployee", dataObj)
           .then((res) => {
             message.success("Saved");
+            getTotalNoOfEmp();
           })
           .catch((err) => {
             setLoading(false);

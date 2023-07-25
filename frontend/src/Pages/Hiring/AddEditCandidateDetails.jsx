@@ -9,6 +9,8 @@ const AddEditCandidateDetails = () => {
   let [activeCan, setActiveCan] = useState();
   const [empCode, setEmpCode] = useState("");
 
+  const [canDetails, setCanDetails] = useState([]);
+
   const [form] = Form.useForm();
   let { Title } = Typography;
   const r_prams = useParams();
@@ -34,7 +36,7 @@ const AddEditCandidateDetails = () => {
 
   const getCandidateData = (id) => {
     axios
-      .post("http://localhost:5000/getCandidateDataById", { id })
+      .post("http://localhost:5000/getCandidateDataByIdDetail", { id })
       .then((res) => {
         let data = res.data;
         if (data.length != 0) {
@@ -43,6 +45,8 @@ const AddEditCandidateDetails = () => {
           if (formData.emp_code === undefined) {
             getTotalNoOfEmp();
           }
+
+          setCanDetails(formData);
 
           form.setFieldsValue(formData);
           axios
@@ -177,6 +181,11 @@ const AddEditCandidateDetails = () => {
   const onFinish = (values) => {
     values.ref_id = r_prams.id;
 
+    values.department = canDetails.department;
+    values.job_title = canDetails.designation;
+
+    // console.log(canDetails);
+
     axios
       .post("http://localhost:5000/addCandidateDetails", values)
       .then((res) => {
@@ -263,7 +272,7 @@ const AddEditCandidateDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input disabled />
                   </Form.Item>
                 </Col>
                 <Col span={8}>

@@ -25,11 +25,11 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-const EmployeeCard = ({ id, img, name, designation }) => {
+const EmployeeCard = ({ id, img, name, designation, ref_id = 0 }) => {
   const navigate = useNavigate();
 
   const openPage = (name) => {
-    navigate(name + "/" + id);
+    navigate(name + "/" + (ref_id != null ? ref_id : id));
   };
   return (
     <div>
@@ -468,11 +468,12 @@ const ShowAllEmpolyees = () => {
         ]}
       >
         {allEmp.map((x, i) => {
-          let { _id, f_name, l_name, profile_img, designation } = x;
+          let { _id, f_name, l_name, profile_img, designation, ref_id } = x;
           return (
             <Col xs={24} sm={24} md={8} lg={6} key={i}>
               <EmployeeCard
                 id={_id}
+                ref_id={ref_id}
                 img={profile_img}
                 name={`${f_name} ${l_name}`}
                 designation={designation}

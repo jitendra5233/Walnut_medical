@@ -449,20 +449,55 @@ app.post("/addComment", async (req, res) => {
   }
 });
 
+app.post("/getCandidateDataByIdDetail", async (req, res) => {
+  try {
+    const can_det_1 = await CandidateDetails.find({
+      ref_id: req.body.id,
+    });
+    // res.status(200).json(can_det_1);
+    if (can_det_1 != 0) {
+      res.status(200).json(can_det_1);
+    } else {
+      const can_det_2 = await DepartmentPositionsCandidate.find({
+        _id: req.body.id,
+      });
+
+      if (can_det_2 != 0) {
+        res.status(200).json(can_det_2);
+      } else {
+        const can_det_3 = await EmployeeSchema.find({
+          _id: req.body.id,
+        });
+        res.status(200).json(can_det_3);
+      }
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 app.post("/getCandidateDataById", async (req, res) => {
   try {
-    const can_det_1 = await EmployeeSchema.find({
-      _id: req.body.id,
+    const can_det_1 = await CandidateDetails.find({
+      ref_id: req.body.id,
     });
-    res.status(200).json(can_det_1);
-    // if (can_det_1 != 0) {
-    //   res.status(200).json(can_det_1);
-    // } else {
-    //   const can_det_2 = await DepartmentPositionsCandidate.find({
-    //     _id: req.body.id,
-    //   });
-    //   res.status(200).json(can_det_2);
-    // }
+    // res.status(200).json(can_det_1);
+    if (can_det_1 != 0) {
+      res.status(200).json(can_det_1);
+    } else {
+      const can_det_2 = await EmployeeSchema.find({
+        ref_id: req.body.id,
+      });
+
+      if (can_det_2 != 0) {
+        res.status(200).json(can_det_2);
+      } else {
+        const can_det_3 = await EmployeeSchema.find({
+          _id: req.body.id,
+        });
+        res.status(200).json(can_det_3);
+      }
+    }
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

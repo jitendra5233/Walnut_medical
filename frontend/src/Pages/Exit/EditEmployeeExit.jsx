@@ -59,10 +59,10 @@ const EditEmployeeExit = () => {
         const data = result.data;
 
         let newData = [];
-        data.map((x) => {
+        data.map((x, i) => {
           newData.push({
             key: x._id,
-            url: x.url,
+            url: `${1}. Doc ${i + 1}`,
           });
         });
 

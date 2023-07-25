@@ -13,6 +13,7 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
 
 const EmployeeDetails = () => {
   const [allDep, setAllDep] = useState([]);
@@ -60,9 +61,13 @@ const EmployeeDetails = () => {
         let data = res.data;
         if (data.length != 0) {
           let formData = data[0];
+          formData.date_of_joining = dayjs(formData.date_of_joining);
+
+          if (formData.job_title == undefined) {
+            formData.job_title = formData.designation;
+          }
           form.setFieldsValue(formData);
           getAllJobProfiles(formData.department);
-          // console.log(formData.department);
           axios
             .post("http://localhost:5000/getCandidateData2ById", { id })
             .then((res) => {
@@ -198,7 +203,7 @@ const EmployeeDetails = () => {
                 <Col span={8}>
                   <Form.Item
                     label="Designation"
-                    name="designation"
+                    name="job_title"
                     rules={[
                       {
                         required: true,
@@ -228,6 +233,11 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
+                    {/* <Input
+                      className="myAntIpt2"
+                      placeholder="Enter your Date"
+                      size="small"
+                    /> */}
                     <DatePicker
                       className="myAntIpt2"
                       placeholder="Enter your Date"
