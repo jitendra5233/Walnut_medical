@@ -23,6 +23,7 @@ import {
 } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
+import moment from "moment";
 dayjs.extend(customParseFormat);
 const dateFormat = "M/D/YYYY";
 const { Title } = Typography;
@@ -79,7 +80,6 @@ const ShowExpense = ({ message }) => {
 
   const [updateItemId, srtUpdateIyemId] = useState([]);
   const [updateDate, setUpdateDate] = useState([]);
-  console.log(updateDate);
   const handleEdit = (id) => {
     showModal();
     srtUpdateIyemId(id);
@@ -99,6 +99,9 @@ const ShowExpense = ({ message }) => {
 
   const handleUpdate = (values) => {
     values.id = updateItemId;
+    if (values.buying_date == undefined) {
+      values.buying_date = updateDate;
+    }
     axios
       .post("http://localhost:5000/update-expense", values)
       .then((res) => {
@@ -338,27 +341,29 @@ const ShowExpense = ({ message }) => {
                       />
                     </Form.Item>
                   </Col>
-
-                  {/* <Col span={12}>
+                  <Col span={12}>
+                    <Form.Item label="Old Buying Date">
+                      <Input
+                        value={updateDate}
+                        disabled
+                        className="sameinput"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
                     <Form.Item
                       label="Buying Date"
                       name="buying_date"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input Buying Date",
-                        },
-                      ]}
                       hasFeedback
                     >
-                      <Space direction="vertical" size={12}>
-                        <DatePicker
-                          defaultValue={dayjs("7/29/2023", dateFormat)}
-                          format={dateFormat}
-                        />
-                      </Space>
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        disabledDate={(current) =>
+                          current && current < moment().startOf("day")
+                        }
+                      />
                     </Form.Item>
-                  </Col> */}
+                  </Col>
                 </Row>
                 <Col span={24}>
                   <Form.Item>

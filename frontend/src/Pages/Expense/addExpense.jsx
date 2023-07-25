@@ -1,29 +1,15 @@
-import { useState, useEffect } from "react";
-import {
-  Button,
-  Select,
-  Col,
-  Form,
-  Input,
-  Row,
-  Typography,
-  DatePicker,
-  Result,
-  Modal,
-} from "antd";
+import React, { useState } from "react";
+import { Button, Col, DatePicker, Form, Input, Row, Typography } from "antd";
+import moment from "moment";
 import axios from "axios";
 import ShowExpense from "./ShowExpense";
 
 const { Title } = Typography;
-const { Option } = Select;
 
-const AddExpense = (props) => {
+const AddExpense = () => {
   const [loading, setLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [form] = Form.useForm();
-  const [resultModalVisible, setResultModalVisible] = useState(false);
-
-  const [handleStateChange, sethandleStateChange] = useState("ok");
+  const [showExpenseKey, setShowExpenseKey] = useState(Date.now());
 
   const onFinish = (values) => {
     setLoading(true);
@@ -31,9 +17,8 @@ const AddExpense = (props) => {
       .post("http://localhost:5000/create_expense", values)
       .then((res) => {
         setLoading(false);
-        setIsSubmitted(true);
         form.resetFields();
-        setResultModalVisible(true);
+        setShowExpenseKey(Date.now());
       })
       .catch((err) => {
         setLoading(false);
@@ -43,11 +28,6 @@ const AddExpense = (props) => {
 
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
-  };
-
-  const handleRetry = () => {
-    setIsSubmitted(false);
-    setResultModalVisible(false);
   };
 
   return (
@@ -96,7 +76,12 @@ const AddExpense = (props) => {
                       },
                     ]}
                   >
-                    <DatePicker style={{ width: "100%" }} />
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      disabledDate={(current) =>
+                        current && current < moment().startOf("day")
+                      }
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -165,23 +150,7 @@ const AddExpense = (props) => {
           </Col>
         </Row>
       </div>
-
-      <Modal
-        visible={resultModalVisible}
-        onCancel={handleRetry}
-        footer={[
-          <Button key="retry" type="primary" onClick={handleRetry}>
-            Insert Another Item
-          </Button>,
-        ]}
-      >
-        {isSubmitted && (
-          <Result status="success" title="Successfully Expense Added!" />
-        )}
-      </Modal>
-
-      {/* <ShowExpense message="Hello from parent" /> */}
-      <ShowExpense message="Hello from parent" />
+      <ShowExpense key={showExpenseKey} />
     </div>
   );
 };

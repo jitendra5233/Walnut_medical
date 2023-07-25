@@ -16,7 +16,7 @@ import {
 import axios from "axios";
 import { Alert, Space } from "antd";
 import ShowIssuedEnventory from "./ShowIssuedEnventory";
-
+import moment from "moment";
 const { Title } = Typography;
 const { Option } = Select;
 
@@ -27,6 +27,9 @@ const AddIssuedEnventory = () => {
   const [resultModalVisible, setResultModalVisible] = useState(false);
   const [isItemAssigned, setIsItemAssigned] = useState(false);
   const [api, contextHolder] = notification.useNotification();
+  const [ShowIssuedEnventoryKey, setShowIssuedEnventoryKey] = useState(
+    Date.now()
+  );
   useEffect(() => {
     getUsers();
     getInventory();
@@ -35,8 +38,6 @@ const AddIssuedEnventory = () => {
   const [itemData, setItemData] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
   const [userSuggestions, setUserSuggestions] = useState([]);
-
-  console.log(itemData);
 
   const getInventory = () => {
     axios
@@ -53,7 +54,6 @@ const AddIssuedEnventory = () => {
   };
 
   const [empName, setEmpName] = useState([]);
-
   const handleChange = (value, option) => {
     let userId = option.key;
     axios
@@ -64,7 +64,7 @@ const AddIssuedEnventory = () => {
           var emp_name = data.f_name + " " + data.l_name;
           form.setFieldsValue({
             emp_code: data.emp_code,
-            job_title: data.job_title,
+            job_title: data.designation,
           });
           setEmpName(emp_name);
         }
@@ -126,6 +126,7 @@ const AddIssuedEnventory = () => {
           form.resetFields();
           setResultModalVisible(true);
           setIsItemAssigned(true);
+          setShowIssuedEnventoryKey(Date.now());
         })
         .catch((err) => {
           setLoading(false);
@@ -212,7 +213,6 @@ const AddIssuedEnventory = () => {
                   >
                     <AutoComplete
                       placeholder="Select Item"
-                      allowClear
                       onChange={handleUpdateItem}
                       onSearch={handleSearch}
                     >
@@ -251,7 +251,6 @@ const AddIssuedEnventory = () => {
                   >
                     <AutoComplete
                       placeholder="Select Item"
-                      allowClear
                       onSearch={handlenameSearch}
                       onChange={handleChange}
                     >
@@ -305,7 +304,12 @@ const AddIssuedEnventory = () => {
                       },
                     ]}
                   >
-                    <DatePicker style={{ width: "100%" }} />
+                    <DatePicker
+                      style={{ width: "100%" }}
+                      disabledDate={(current) =>
+                        current && current < moment().startOf("day")
+                      }
+                    />
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -335,21 +339,7 @@ const AddIssuedEnventory = () => {
           </Col>
         </Row>
       </div>
-
-      <Modal
-        visible={resultModalVisible}
-        onCancel={handleRetry}
-        footer={[
-          <Button key="retry" type="primary" onClick={handleRetry}>
-            Insert Another Item
-          </Button>,
-        ]}
-      >
-        {isSubmitted && (
-          <Result status="success" title="Successfully Issued Item!" />
-        )}
-      </Modal>
-      <ShowIssuedEnventory isItemAssigned={isItemAssigned} />
+      <ShowIssuedEnventory key={ShowIssuedEnventoryKey} />
     </div>
   );
 };

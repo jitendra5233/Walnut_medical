@@ -169,13 +169,13 @@ const LayoutCom2 = () => {
             }
           >
             <Menu.Item key="2">
-              <Link to="/users">Client Details</Link>
+              <Link to="/client_details">Client Details</Link>
             </Menu.Item>
             <Menu.Item key="3">
-              <Link to="/users">Account Info</Link>
+              <Link to="/show_accountInfo">Account Info</Link>
             </Menu.Item>
             <Menu.Item key="4">
-              <Link to="/users">Old Clients</Link>
+              <Link to="/old_clients">Old Clients</Link>
             </Menu.Item>
           </SubMenu>
           <SubMenu
@@ -293,7 +293,7 @@ const LayoutCom2 = () => {
             }
           >
             <Menu.Item key="17">
-              <Link to="/users">Company Accounts</Link>
+              <Link to="/company_accounts">Company Accounts</Link>
             </Menu.Item>
             <Menu.Item key="18">
               <Link to="/expense">Office expenses</Link>
@@ -310,7 +310,7 @@ const LayoutCom2 = () => {
                 />
               </div>
               <div>
-                <Link to="/" className="menuText">
+                <Link to="/employee_exit" className="menuText">
                   Exit
                 </Link>
               </div>
@@ -349,7 +349,7 @@ const LayoutCom2 = () => {
                 />
               </div>
               <div>
-                <Link to="/" className="menuText">
+                <Link to="/web_setting" className="menuText">
                   Settings
                 </Link>
               </div>

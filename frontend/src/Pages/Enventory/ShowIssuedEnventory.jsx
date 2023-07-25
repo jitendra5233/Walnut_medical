@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import moment from "moment";
 import {
   DeleteOutlined,
   EditOutlined,
@@ -20,14 +21,18 @@ import {
   Input,
   Space,
   DatePicker,
+  AutoComplete,
+  Select,
 } from "antd";
+import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 const { TextArea } = Input;
 const { Title } = Typography;
 const { confirm } = Modal;
-
+const { Option } = Select;
 const ShowIssuedEnventory = () => {
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
+  const [form1] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
 
@@ -56,7 +61,7 @@ const ShowIssuedEnventory = () => {
   useEffect(() => {
     getInventory();
   }, []);
-
+  const [userSuggestions, setUserSuggestions] = useState([]);
   const getInventory = () => {
     axios
       .get("http://localhost:5000/issued")
@@ -85,45 +90,44 @@ const ShowIssuedEnventory = () => {
   const [updatedItemName, setUpdatedItemName] = useState([]);
   const [updatedTotaltem, setUpdatedTotaltem] = useState([]);
   const [updateItemId, setUpdateItemId] = useState([]);
-  const [availableItem,setAvailableItem]=useState([]);
-  const [AvailableItemId,setAvailableItemId]=useState([]);
+  const [availableItem, setAvailableItem] = useState([]);
+  const [AvailableItemId, setAvailableItemId] = useState([]);
+  const [oldasigneddate, setoldasigneddate] = useState([]);
 
-  
-
-  
   const handleEdit = (id) => {
     showModal();
     setUpdateItemId(id);
-     // Make an HTTP GET request to the API endpoint
-     axios.get(`http://localhost:5000/available-items/${id}`)
-     .then((response) => {
-       const availableItem = response.data.availableItem; // Corrected
-       setAvailableItem(availableItem.availableItem);
-       setAvailableItemId(availableItem._id);
+    // Make an HTTP GET request to the API endpoint
+    axios
+      .get(`http://localhost:5000/available-items/${id}`)
+      .then((response) => {
+        const availableItem = response.data.availableItem; // Corrected
+        setAvailableItem(availableItem.availableItem);
+        setAvailableItemId(availableItem._id);
 
-       // Perform any necessary operations with the available item
-       // For example, you can set it in state variables or update the UI
-     })
-     .catch((error) => {
-       // Handle any errors that occur during the request
-       console.error(error);
-     });
-   
-// Rest of your code..
+        // Perform any necessary operations with the available item
+        // For example, you can set it in state variables or update the UI
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the request
+        console.error(error);
+      });
+
+    // Rest of your code..
 
     tableData.map((x) => {
       if (x.key == id) {
-      setUpdatedItemName(x.item_name);
-      setUpdatedTotaltem(x.quantity);
-        form.setFieldsValue({
+        setUpdatedItemName(x.item_name);
+        setUpdatedTotaltem(x.quantity);
+        setoldasigneddate(x.assignment_date);
+        form1.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
           serial_number: x.serial_number,
-          assignment_date: new Date(x.assignment_date).toLocaleDateString(),
           quantity: x.quantity,
           emp_name: x.emp_name,
           emp_code: x.emp_code,
-          job_title: x.job_title,
+          job_title: x.designation,
         });
       }
     });
@@ -132,20 +136,20 @@ const ShowIssuedEnventory = () => {
   const [damageItemId, setdamageItemId] = useState([]);
   const [issueItemId, setissueItemId] = useState([]);
   const handleDamage = (id) => {
-    axios.get(`http://localhost:5000/getissuedata/${id}`)
-    .then((response) => {
-      let data=response.data;
-      setdamageItemId(data.item_id);
-    })
-    .catch((error) => {
-      // Handle any errors that occur during the request
-      console.error(error);
-    });
+    axios
+      .get(`http://localhost:5000/getissuedata/${id}`)
+      .then((response) => {
+        let data = response.data;
+        setdamageItemId(data.item_id);
+      })
+      .catch((error) => {
+        // Handle any errors that occur during the request
+        console.error(error);
+      });
     showModal1();
     setissueItemId(id);
     tableData.map((x) => {
       if (x.key == id) {
-        console.log(x);
         form.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
@@ -159,12 +163,15 @@ const ShowIssuedEnventory = () => {
       }
     });
   };
- 
+
   const handleUpdate = (values) => {
     values.id = updateItemId;
-    let getavailableitem =values.quantity-updatedTotaltem;
-    values.finalavailableItem=getavailableitem;
-    values.item_id=AvailableItemId;
+    if (values.assignment_date == undefined) {
+      values.assignment_date = oldasigneddate;
+    }
+    let getavailableitem = values.quantity - updatedTotaltem;
+    values.finalavailableItem = getavailableitem;
+    values.item_id = AvailableItemId;
     axios
       .post("http://localhost:5000/update-issueitem", values)
       .then((res) => {
@@ -172,6 +179,7 @@ const ShowIssuedEnventory = () => {
           getInventory();
           setIsModalOpen(false);
           handleCancel();
+          form1.resetFields();
         }
       })
       .catch((err) => {
@@ -181,7 +189,7 @@ const ShowIssuedEnventory = () => {
 
   const handleLossDamage = (values) => {
     values.id = issueItemId;
-    values.damageItemId=damageItemId;
+    values.damageItemId = damageItemId;
     axios
       .post("http://localhost:5000/addToDamage", values)
       .then((res) => {
@@ -230,16 +238,48 @@ const ShowIssuedEnventory = () => {
       });
   };
 
-  const handleKeyUp = (event)=>{
+  const handleKeyUp = (event) => {
     console.log(event.target.value);
-    if(event.target.value > availableItem)
-    {
+    if (event.target.value > availableItem) {
       form.setFieldsValue({
-        quantity:updatedTotaltem,
+        quantity: updatedTotaltem,
       });
-      alert("Available Item Only" +" "+  +availableItem+ '');
+      alert("Available Item Only" + " " + +availableItem + "");
     }
-      }
+  };
+  const [empName, setEmpName] = useState([]);
+  const handleChange = (value, option) => {
+    let userId = option.key;
+    axios
+      .post("http://localhost:5000/getUserData", { userId })
+      .then((res) => {
+        if (res.data !== "") {
+          let data = res.data;
+          var emp_name = data.f_name + " " + data.l_name;
+          form1.setFieldsValue({
+            emp_code: data.emp_code,
+            job_title: data.designation,
+          });
+          setEmpName(emp_name);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handlenameSearch = (value) => {
+    // Fetch item suggestions based on the user's input
+    axios
+      .get(`http://localhost:5000/items/searchName?query=${value}`)
+      .then((response) => {
+        const items = response.data;
+        setUserSuggestions(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const columns = [
     {
       title: "Item Name",
@@ -292,17 +332,6 @@ const ShowIssuedEnventory = () => {
               <EditOutlined style={{ cursor: "pointer" }} />
             </span>
           </a>
-
-          {/* <a
-            onClick={() =>
-              handleDelete(record.key, record.quantity, record.item_name)
-            }
-          >
-            {" "}
-            <span>
-              <DeleteOutlined style={{ cursor: "pointer" }} />
-            </span>
-          </a> */}
         </div>
       ),
     },
@@ -337,11 +366,15 @@ const ShowIssuedEnventory = () => {
         </Link>
 
         <Link to={`/inventory-item`}>
-          <button className="filtercolorbtn">Total items</button>
+          <button className="filtercolorbtn">
+            Total items <i class="fa fa-eye" aria-hidden="true"></i>
+          </button>
         </Link>
 
         <Link to={`/show_itemrecord`}>
-          <button className="filtercolorbtn">Show Record</button>
+          <button className="filtercolorbtn">
+            Show Record <i class="fa fa-eye" aria-hidden="true"></i>
+          </button>
         </Link>
       </div>
 
@@ -420,11 +453,20 @@ const ShowIssuedEnventory = () => {
                         },
                       ]}
                     >
-                      <Input
-                        className="myAntIpt2"
-                        placeholder="Enter Employee Name"
-                        disabled
-                      />
+                      <AutoComplete
+                        placeholder="Select Item"
+                        onSearch={handlenameSearch}
+                        onChange={handleChange}
+                      >
+                        {userSuggestions.map((option) => (
+                          <Option
+                            key={option._id}
+                            value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
+                          >
+                            {`${option.f_name} ${option.l_name}`}
+                          </Option>
+                        ))}
+                      </AutoComplete>
                     </Form.Item>
                   </Col>
                   <Col span={12}>
@@ -464,18 +506,17 @@ const ShowIssuedEnventory = () => {
                     </Form.Item>
                   </Col>
 
-
                   <Col span={12}>
-                  <Form.Item
-                    label="Quantity"
-                    name="quantity"
-                    rules={[
-                      {
-                        required: true,
-                        message: "Please input Quantity!",
-                      },
-                    ]}
-                  >
+                    <Form.Item
+                      label="Quantity"
+                      name="quantity"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input Quantity!",
+                        },
+                      ]}
+                    >
                       <Input
                         className="myAntIpt2"
                         placeholder="Enter your Quantity"
@@ -537,7 +578,7 @@ const ShowIssuedEnventory = () => {
 
             <Col span={24}>
               <Form
-                form={form}
+                form={form1}
                 name="basic"
                 layout="vertical"
                 initialValues={{
@@ -558,12 +599,12 @@ const ShowIssuedEnventory = () => {
                           message: "Please input Your Name Of item",
                         },
                       ]}
-                      hasFeedback
                     >
                       <Input
                         className="myAntIpt2"
                         placeholder="Enter  your Name Of item"
                         size="small"
+                        disabled
                       />
                     </Form.Item>
                   </Col>
@@ -577,12 +618,12 @@ const ShowIssuedEnventory = () => {
                           message: "Please input serial number",
                         },
                       ]}
-                      hasFeedback
                     >
                       <Input
                         className="myAntIpt2"
                         placeholder="Enter Item serial number"
                         size="small"
+                        disabled
                       />
                     </Form.Item>
                   </Col>
@@ -599,10 +640,20 @@ const ShowIssuedEnventory = () => {
                       ]}
                       hasFeedback
                     >
-                      <Input
-                        className="myAntIpt2"
-                        placeholder="Enter Employee Name"
-                      />
+                      <AutoComplete
+                        placeholder="Select Item"
+                        onSearch={handlenameSearch}
+                        onChange={handleChange}
+                      >
+                        {userSuggestions.map((option) => (
+                          <Option
+                            key={option._id}
+                            value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
+                          >
+                            {`${option.f_name} ${option.l_name}`}
+                          </Option>
+                        ))}
+                      </AutoComplete>
                     </Form.Item>
                   </Col>
                   <Col span={12}>
@@ -661,25 +712,29 @@ const ShowIssuedEnventory = () => {
                       />
                     </Form.Item>
                   </Col>
-                  {/* <Col span={12}>
-                      <Form.Item
-                        label="Assigned Date"
-                        name="assignment_date"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input Assigned Date",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <DatePicker
-                          className="myAntIpt2"
-                          placeholder="Enter Assigned Date"
-
-                        />
-                      </Form.Item>
-                    </Col> */}
+                  <Col span={12}>
+                    <Form.Item label="Old Assigned Date">
+                      <Input
+                        value={oldasigneddate}
+                        disabled
+                        className="sameinput"
+                      />
+                    </Form.Item>
+                  </Col>
+                  <Col span={12}>
+                    <Form.Item
+                      label="Assigned Date"
+                      name="assignment_date"
+                      hasFeedback
+                    >
+                      <DatePicker
+                        style={{ width: "100%" }}
+                        disabledDate={(current) =>
+                          current && current < moment().startOf("day")
+                        }
+                      />
+                    </Form.Item>
+                  </Col>
                 </Row>
                 <Col span={24}>
                   <Form.Item>

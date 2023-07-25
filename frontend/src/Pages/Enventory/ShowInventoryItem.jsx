@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import {
   DeleteOutlined,
   EditOutlined,
@@ -23,7 +24,6 @@ import {
   Select,
 } from "antd";
 const { Option } = Select;
-
 const { Title } = Typography;
 const { confirm } = Modal;
 const ShowIssuedEnventory = () => {
@@ -71,7 +71,6 @@ const ShowIssuedEnventory = () => {
           const updatedAt = new Date(x.updatedAt);
           const formattedCreatedAt = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`;
           const formattedUpdatedAt = `${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`;
-
           newData.push({
             key: x._id,
             item_name: x.item_name,
@@ -166,15 +165,13 @@ const ShowIssuedEnventory = () => {
     values.availableItem = values.quantity;
     console.log(values.availableItem);
     values.lossDamageItem = 0;
-  
-     if(getsuggestedId !=undefined)
-     {
-      values.setSuggestedId=getsuggestedId;
-     }
-     if(getsuggestedId ==undefined)
-     {
-      values.setSuggestedId=0;
-     }
+
+    if (getsuggestedId != undefined) {
+      values.setSuggestedId = getsuggestedId;
+    }
+    if (getsuggestedId == undefined) {
+      values.setSuggestedId = 0;
+    }
     axios
       .post("http://localhost:5000/add-item", values)
       .then((res) => {
@@ -193,7 +190,6 @@ const ShowIssuedEnventory = () => {
     console.log("Failed:", errorInfo);
   };
 
-
   const handleSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
@@ -208,20 +204,14 @@ const ShowIssuedEnventory = () => {
       });
   };
 
-  const  handleSaveId  =(value,option)=>{
-    if(option.key !='undefined')
-    {
+  const handleSaveId = (value, option) => {
+    if (option.key != "undefined") {
       setSuggestedId(option.key);
-    }
-    else
-    {
+    } else {
       setSuggestedId(0);
-
     }
-  
-  
-   }
-  
+  };
+
   const columns = [
     {
       title: "Item Name",
@@ -284,7 +274,9 @@ const ShowIssuedEnventory = () => {
           <button className="filtercolorbtn">Assign Item +</button>
         </Link>
         <Link to={`/show_itemrecord`}>
-          <button className="filtercolorbtn">Show Record</button>
+          <button className="filtercolorbtn">
+            Show Record <i class="fa fa-eye" aria-hidden="true"></i>
+          </button>
         </Link>
       </div>
 
@@ -314,29 +306,28 @@ const ShowIssuedEnventory = () => {
               >
                 <Row gutter={24}>
                   <Col span={24}>
-                  <Form.Item
-                  label="Name of Item"
-                  name="item_name"
-                  rules={[
-                  {
-                  required: true,
-                  message: "Please input a valid item name!",
-                  },
-                  ]}
-                  >
-                  <AutoComplete
-                  placeholder="Input Item"
-                  allowClear
-                  onSearch={handleSearch}
-                  onChange={handleSaveId}
-                  >
-                  {suggestions.map((option) => (
-                  <Option key={option._id} value={option.item_name}>
-                  {option.item_name}
-                  </Option>
-                  ))}
-                  </AutoComplete>
-                 </Form.Item>
+                    <Form.Item
+                      label="Name of Item"
+                      name="item_name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input a valid item name!",
+                        },
+                      ]}
+                    >
+                      <AutoComplete
+                        placeholder="Input Item"
+                        onSearch={handleSearch}
+                        onChange={handleSaveId}
+                      >
+                        {suggestions.map((option) => (
+                          <Option key={option._id} value={option.item_name}>
+                            {option.item_name}
+                          </Option>
+                        ))}
+                      </AutoComplete>
+                    </Form.Item>
                   </Col>
                   <Col span={24}>
                     <Form.Item

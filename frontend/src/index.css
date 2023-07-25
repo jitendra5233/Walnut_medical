@@ -509,3 +509,162 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   color: #525252;
   font-size: "12px";
 }
+
+/* Jitendra New Css Start */
+
+.card_style {
+  background: #f0f1f6;
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 288px !important;
+}
+.set_img {
+  /* height: 80px !important;
+  width: 80px !important; */
+  border-radius: 50%;
+  margin-bottom: 10px;
+  width: 72px;
+  height: 72px;
+  top: 17px;
+  left: 21px;
+}
+.client_name {
+  color: #0071c5;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 21px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+.client-designation {
+  font-family: Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+.project-name {
+  font-family: Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 50px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+.setdata {
+  /* float: right !important; */
+  /* width: 4.354838848114014px; */
+  height: 15px;
+  top: 17px;
+  left: 212px;
+  color: #757d8a;
+  font-size: 21px;
+  cursor: pointer;
+  /* width: 24.354839px !important; */
+}
+
+.ant-space-vertical {
+  float: right !important;
+}
+.setplusdata {
+  float: right !important;
+  cursor: pointer;
+  margin: 8px;
+}
+.myAntIptSelect2 .ant-select-selection-item {
+  display: flex !important;
+}
+.setplusonedata {
+  display: flex !important;
+  float: left !important;
+}
+.setplusonedata a {
+  color: #757d8a !important ;
+}
+#setsize {
+  font-size: 16px !important;
+  margin: 8px;
+}
+
+#filtericon {
+  padding-left: 7px;
+}
+.AccountInfo_color {
+  float: left;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+.ant-table-cell {
+  color: #525252 !important;
+  font-family: Arial;
+}
+
+.Expensecolorbtn {
+  font-family: Arial;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 14px;
+  letter-spacing: 0em;
+  text-align: left;
+}
+.Expensecolor {
+  float: left;
+  font-family: Arial;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+/* .sameinput
+{
+  margin-top: 30px;
+} */
+
+.ant-btn-primary {
+  margin: 10px;
+}
+
+/* .sizebtn
+{
+  margin-top: 34px;
+
+} */
+.add-more-button,
+.remove-button {
+  margin-top: 8px;
+  margin-top: 34px;
+  font-size: 12px;
+}
+.remove-size {
+  width: 4% !important;
+}
+.list-style i {
+  margin: 5px;
+  margin-bottom: 10px !important;
+}
+.ant-upload {
+  padding: 10px !important;
+  /* width: 165px; */
+}
+.ant-upload-select {
+  width: 135px !important;
+}
+
+#deleteicon {
+  cursor: pointer;
+  font-size: 16px;
+  margin-left: 10px;
+}
+.colorname {
+  color: black;
+  font-size: 20px;
+}
+
+/* Jitendra New Css End */
