@@ -45,6 +45,8 @@ import AddIssuedEnventory from "./Pages/Enventory/addIssuedInventory";
 import AddEmployeeExit from "./Pages/Exit/AddEmployeeExit";
 import ShowEmployeeExit from "./Pages/Exit/ShowEmployeeExit";
 import EditEmployeeExit from "./Pages/Exit/EditEmployeeExit";
+import EmployeeAppraisal from "./Pages/Docs_Details/EmployeeAppraisal";
+import EmployeeDocs from "./Pages/Docs_Details/EmployeeDocs";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -75,6 +77,8 @@ const router = createBrowserRouter(
         <Route path="/show-all-employee" element={<ShowAllEmpolyees />} />
         <Route path="/show-old-employee" element={<ShowOldEmpolyees />} />
         <Route path="/employee-details/:id" element={<EmployeeDetails />} />
+        <Route path="/employee-docs/:id" element={<EmployeeDocs />} />
+        <Route path="/employee-appraisal/:id" element={<EmployeeAppraisal />} />
         {/* jitendra */}
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/expense" element={<ShowExpense />} />

@@ -29,6 +29,7 @@ const EmployeeAppraisal = () => {
   const [showModel, setShowModel] = useState(false);
   const [loading, setLoading] = useState(false);
   const [tableData, setTableData] = useState([]);
+  const [e_c_salary, setE_e_salary] = useState(0);
   const [api, contextHolder] = notification.useNotification();
   let { Option } = Select;
 
@@ -49,14 +50,19 @@ const EmployeeAppraisal = () => {
       key: "appraisal_p",
     },
     {
-      title: "Revised Salary",
-      dataIndex: "salary",
-      key: "salary",
+      title: "Salary",
+      dataIndex: "cureent_salary",
+      key: "cureent_salary",
     },
     {
       title: "Appraisal",
       dataIndex: "appraisal",
       key: "appraisal",
+    },
+    {
+      title: "New Salary",
+      dataIndex: "salary",
+      key: "salary",
     },
     {
       title: "Action",
@@ -66,10 +72,16 @@ const EmployeeAppraisal = () => {
         return (
           <div>
             <span style={{ marginRight: "10px", cursor: "pointer" }}>
-              <EditOutlined style={{ cursor: "pointer" }} />
+              <EditOutlined
+                onClick={() => handleEdit(id)}
+                style={{ cursor: "pointer" }}
+              />
             </span>
             <span>
-              <DeleteOutlined style={{ cursor: "pointer" }} />
+              <DeleteOutlined
+                onClick={() => handleDelete(id)}
+                style={{ cursor: "pointer" }}
+              />
             </span>
           </div>
         );
@@ -82,6 +94,20 @@ const EmployeeAppraisal = () => {
     getDepartments();
     getApprisals();
   }, []);
+
+  const handleDelete = (id) => {
+    axios
+      .post("http://localhost:5000/handleDeleteAppriasal")
+      .then((res) => {
+        console.log(res);
+      })
+      .then((err) => {
+        console.log(err);
+      });
+  };
+  const handleEdit = (id) => {
+    console.log(id);
+  };
 
   const getDepartments = () => {
     axios
@@ -117,8 +143,11 @@ const EmployeeAppraisal = () => {
           getAllJobProfiles(data.department);
           form.setFieldsValue(data);
 
+          setE_e_salary(data.salary);
+
           form2.setFieldsValue({
             c_salary: data.salary,
+            salary: data.salary,
           });
 
           setEmployee(data);
@@ -138,10 +167,12 @@ const EmployeeAppraisal = () => {
         res.data.map((x, i) => {
           data.push({
             no: i + 1,
-            date: x.date,
+            date: new Date(x.date).toLocaleDateString(),
             appraisal_p: x.appraisal_p + "%",
             salary: x.salary,
             appraisal: x.appraisal,
+            cureent_salary: x.salary - x.appraisal,
+            action: x._id,
           });
         });
 
@@ -154,14 +185,15 @@ const EmployeeAppraisal = () => {
 
   const handleSubmit = (values) => {
     values.ref_id = r_prams.id;
-    values.appraisal = "500";
 
     axios
       .post("http://localhost:5000/addAppraisal", values)
       .then((res) => {
+        form2.resetFields();
         message.success("Added");
         getApprisals();
         handleCancel();
+        getDetails();
       })
       .catch((err) => {
         console.log(err);
@@ -180,8 +212,14 @@ const EmployeeAppraisal = () => {
     setShowModel(false);
   };
 
-  const updateSalary = () => {
-    console.log("ok");
+  const updateSalary = (app) => {
+    if (app != null) {
+      let current_salary = parseInt(e_c_salary);
+      form2.setFieldsValue({
+        appraisal: (current_salary / 100) * app,
+        salary: (current_salary / 100) * app + current_salary,
+      });
+    }
   };
 
   return (
@@ -234,7 +272,7 @@ const EmployeeAppraisal = () => {
                         ]}
                       >
                         <InputNumber
-                          onChange={() => updateSalary()}
+                          onChange={(no) => updateSalary(no)}
                           className="myAntIpt2"
                           size="small"
                         />
@@ -246,18 +284,13 @@ const EmployeeAppraisal = () => {
                       </Form.Item>
                     </Col>
                     <Col span={12}>
-                      <Form.Item
-                        label="New Salary"
-                        name="salary"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your New Salary",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input className="myAntIpt2" size="small" />
+                      <Form.Item label="Appraisal" name="appraisal">
+                        <Input readOnly className="myAntIpt2" size="small" />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item label="New Salary" name="salary">
+                        <Input readOnly className="myAntIpt2" size="small" />
                       </Form.Item>
                     </Col>
 
