@@ -7,33 +7,21 @@ import {
   Typography,
   Row,
   Col,
-  Avatar,
   Form,
   Input,
-  Space,
   DatePicker,
 } from "antd";
 import { Link } from "react-router-dom";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import dayjs from "dayjs";
 import customParseFormat from "dayjs/plugin/customParseFormat";
 import moment from "moment";
 dayjs.extend(customParseFormat);
-const dateFormat = "M/D/YYYY";
 const { Title } = Typography;
 const { confirm } = Modal;
 
-const ShowExpense = ({ message }) => {
-  useEffect(() => {
-    console.log(message);
-  }, []);
-
+const ShowExpense = () => {
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
 
@@ -186,10 +174,6 @@ const ShowExpense = ({ message }) => {
       key: "action",
       render: (_, record) => (
         <div>
-          {/* <Link to={`/update-expense/${record.key}`}> <span style={{ marginRight: "10px", cursor: "pointer" }}>
-       <EditOutlined />
-        </span>
-        </Link> */}
           <a onClick={() => handleEdit(record.key)}>
             {" "}
             <span>

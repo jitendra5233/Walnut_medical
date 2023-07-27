@@ -3,12 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Button,
   Table,
@@ -16,7 +11,6 @@ import {
   Typography,
   Row,
   Col,
-  Avatar,
   notification,
   Form,
   Input,
@@ -33,18 +27,20 @@ const { Option } = Select;
 const moment = require("moment");
 
 const CompantAccount = () => {
+  const [smtpHost, setSmtpHost] = useState("");
+  const [smtpPort, setSmtpPort] = useState("");
+  const [smtpUsername, setSmtpUsername] = useState("");
+  const [smtpPassword, setSmtpPassword] = useState("");
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
-  const [resultModalVisible, setResultModalVisible] = useState(false);
-  const [isItemAssigned, setIsItemAssigned] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
 
+  console.log(tableData);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -68,8 +64,28 @@ const CompantAccount = () => {
   };
 
   useEffect(() => {
+    getWebsetting();
     getCompanyAccount();
   }, []);
+
+  const getWebsetting = () => {
+    axios
+      .get("http://localhost:5000/getwebsetting")
+      .then((result) => {
+        const data = result.data;
+        if (data && data.length > 0) {
+          setSmtpHost(data[0].smtp_host);
+          setSmtpPort(data[0].smtp_port);
+          setSmtpUsername(data[0].smtp_username);
+          setSmtpPassword(data[0].smtp_password);
+        } else {
+          console.error("Invalid response from API. SMTP settings not found.");
+        }
+      })
+      .catch((err) => {
+        console.error("Error fetching SMTP settings:", err);
+      });
+  };
 
   const getCompanyAccount = () => {
     axios
@@ -136,11 +152,8 @@ const CompantAccount = () => {
       .post("http://localhost:5000/add_companyaccount", formattedValues)
       .then((res) => {
         setLoading(false);
-        setIsSubmitted(true);
         form2.resetFields();
         handleCancel1(true);
-        setResultModalVisible(true);
-        setIsItemAssigned(true);
         getCompanyAccount();
         notification.success({
           message: "Company Account Added",
@@ -232,14 +245,19 @@ const CompantAccount = () => {
   const checkNotificationDate = () => {
     const currentDate = new Date();
     tableData.forEach((record) => {
-      const notificationDate = new Date(record.notification_date + " 11:15:00");
+      const notificationDate = new Date(record.notification_date + " 10:00:00");
       if (currentDate >= notificationDate && !record.emailSent) {
         handleSendMail(
           record.hosting_name,
           record.hosting_url,
           record.renewal_date,
-          record.client_name
+          record.client_name,
+          smtpHost,
+          smtpPort,
+          smtpUsername,
+          smtpPassword
         );
+        getWebsetting();
         // Mark the email as sent to prevent multiple emails on the same date
         record.emailSent = true;
       }
@@ -257,13 +275,21 @@ const CompantAccount = () => {
     hosting_name,
     hosting_url,
     renewal_date,
-    client_name
+    client_name,
+    smtpHost,
+    smtpPort,
+    smtpUsername,
+    smtpPassword
   ) => {
     const data = {
       hosting_name: hosting_name,
       hosting_url: hosting_url,
       renewal_date: renewal_date,
       client_name: client_name,
+      smtpHost: smtpHost,
+      smtpPort: smtpPort,
+      smtpUsername: smtpUsername,
+      smtpPassword: smtpPassword,
     };
 
     // Make a POST request to the server to send the email
@@ -321,6 +347,7 @@ const CompantAccount = () => {
       dataIndex: "notification_date",
       key: "notification_date",
     },
+
     {
       title: "Action",
       key: "action",
@@ -355,7 +382,11 @@ const CompantAccount = () => {
                   record.hosting_name,
                   record.hosting_url,
                   record.renewal_date,
-                  record.client_name
+                  record.client_name,
+                  record.smtpPort,
+                  record.smtpHort,
+                  record.smtpUsername,
+                  record.smtpPassword
                 )
               }
             >
@@ -377,7 +408,7 @@ const CompantAccount = () => {
           Add Account +
         </button>
         <button className="filtercolorbtn">
-          Filter <i class="fa fa-filter" aria-hidden="true"></i>
+          Filter <i className="fa fa-filter" aria-hidden="true"></i>
         </button>
       </div>
 

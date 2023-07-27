@@ -91,13 +91,19 @@ const EmployeeCard = ({ id, img, name, designation, ref_id = 0 }) => {
               </div>
               <div className="employeeCardTxt">Details</div>
             </div>
-            <div style={{ cursor: "pointer" }}>
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => openPage("/employee-docs")}
+            >
               <div>
                 <FileDoneOutlined style={{ fontSize: "20px" }} />
               </div>
               <div className="employeeCardTxt">Documents</div>
             </div>
-            <div style={{ cursor: "pointer" }}>
+            <div
+              style={{ cursor: "pointer" }}
+              onClick={() => openPage("/employee-appraisal")}
+            >
               <div>
                 <LineChartOutlined style={{ fontSize: "20px" }} />
               </div>

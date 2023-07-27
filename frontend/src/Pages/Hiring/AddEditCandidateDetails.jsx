@@ -181,10 +181,8 @@ const AddEditCandidateDetails = () => {
   const onFinish = (values) => {
     values.ref_id = r_prams.id;
 
-    values.department = canDetails.department;
-    values.job_title = canDetails.designation;
-
-    // console.log(canDetails);
+    values.department = canDetails.ref_id;
+    values.job_title = canDetails.profile_id;
 
     axios
       .post("http://localhost:5000/addCandidateDetails", values)

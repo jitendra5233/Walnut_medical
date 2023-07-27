@@ -3,13 +3,6 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { PlusOutlined, MoreOutlined } from "@ant-design/icons";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
 import {
   Card,
   Row,
@@ -20,12 +13,10 @@ import {
   Input,
   notification,
   Upload,
-  message,
   Spin,
   Space,
   Dropdown,
   Menu,
-  Table,
   Select,
 } from "antd";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
@@ -45,8 +36,6 @@ const ShowClientsDetails = () => {
   const [loading, setLoading] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
-  const [allDep, setAllDep] = useState([]);
-  const navigate = useNavigate();
 
   useEffect(() => {
     getAccountDetails();

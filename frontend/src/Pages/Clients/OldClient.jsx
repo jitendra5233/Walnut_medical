@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate,Link } from "react-router-dom";
-import { PlusOutlined, MoreOutlined} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { PlusOutlined, MoreOutlined } from "@ant-design/icons";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
 import {
   Card,
   Row,
@@ -18,7 +11,6 @@ import {
   Modal,
   Form,
   Input,
-  Avatar,
   notification,
   Upload,
   message,
@@ -26,10 +18,9 @@ import {
   Space,
   Dropdown,
   Menu,
-  Table,
   Select,
 } from "antd";
-import '@fortawesome/fontawesome-free/css/all.min.css'; // Import Font Awesome CSS
+import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 const { confirm } = Modal;
 let { Option } = Select;
 
@@ -37,16 +28,11 @@ const OldClient = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [isModalOpen2, setIsModalOpen2] = useState(false);
-  const [isModalOpen3, setIsModalOpen3] = useState(false);
   const [isModalOpen4, setIsModalOpen4] = useState(false);
-
-
-  const [tableData, setTableData] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
-  const [allDep, setAllDep] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -58,7 +44,6 @@ const OldClient = () => {
   const [getSocialAcountdata, setSocialAcountdata] = useState([]);
   const [getocialClientId, setSocialClientId] = useState([]);
 
-
   const getOldAccountDetails = () => {
     axios
       .get("http://localhost:5000/getOldAccountDetails")
@@ -66,12 +51,11 @@ const OldClient = () => {
         let data = result.data;
         setAcountdata(data);
       })
-      
+
       .catch((err) => {
         console.log(err);
       });
   };
-
 
   const getSocialAccountDetails = () => {
     axios
@@ -81,16 +65,14 @@ const OldClient = () => {
         setSocialAcountdata(data);
         let newData = [];
         data.map((x) => {
-          if(x.client_id == getocialClientId)
-          {
+          if (x.client_id == getocialClientId) {
             newData.push({
               key: x._id,
               icon_name: x.icon_name,
-              social_url:x.social_url,
+              social_url: x.social_url,
             });
           }
         });
-        setTableData(newData);
       })
       .catch((err) => {
         console.log(err);
@@ -136,7 +118,6 @@ const OldClient = () => {
     setIsModalOpen1(false);
   };
 
-
   const showModal2 = () => {
     setIsModalOpen2(true);
   };
@@ -150,21 +131,6 @@ const OldClient = () => {
     setIsModalOpen2(false);
   };
 
-
-  const showModal3 = () => {
-    setIsModalOpen3(true);
-  };
-
-  const handleOk3 = () => {
-    setIsModalOpen3(false);
-  };
-
-  const handleCancel3 = () => {
-    form.resetFields();
-    setIsModalOpen3(false);
-  };
-
-
   const showModal4 = () => {
     setIsModalOpen4(true);
   };
@@ -177,8 +143,6 @@ const OldClient = () => {
     form.resetFields();
     setIsModalOpen4(false);
   };
-  
-  
 
   const handleSubmit = (values) => {
     setLoading(true);
@@ -205,43 +169,45 @@ const OldClient = () => {
       });
   };
 
+  const [clientId, setClientId] = useState([]);
+  const handleIconEdit = (client_id) => {
+    showModal2();
+    setClientId(client_id);
+  };
 
-  const [clientId,setClientId]=useState([]);
-  const handleIconEdit =(client_id)=>{
-  showModal2();
-  setClientId(client_id)
-  }
+  const handleAddIcon = async (values) => {
+    try {
+      values.client_id = clientId;
+      setLoading(true);
+      const { client_id, icon_name, social_url, password } = values;
+      const data = {
+        client_id,
+        icon_name,
+        social_url,
+        password,
+      };
 
-const handleAddIcon = async (values) => {
-  try {
-    values.client_id = clientId;
-    setLoading(true);
-    const { client_id, icon_name, social_url, password } = values;
-    const data = {
-      client_id,
-      icon_name,
-      social_url,
-      password,
-    };
-
-    const response = await axios.post("http://localhost:5000/create_clientSocilaAccount", data);
-    if (response.status === 200) {
-      handleCancel2(true);
-      form.resetFields();
+      const response = await axios.post(
+        "http://localhost:5000/create_clientSocilaAccount",
+        data
+      );
+      if (response.status === 200) {
+        handleCancel2(true);
+        form.resetFields();
+        setLoading(false);
+        setTimeout(() => {
+          getOldAccountDetails();
+          getSocialAccountDetails();
+        }, 500);
+      } else {
+        console.log("Failed to add icon:", response);
+      }
+    } catch (err) {
       setLoading(false);
-      setTimeout(() => {
-        getOldAccountDetails();
-        getSocialAccountDetails();
-      }, 500);
-    } else {
-      console.log("Failed to add icon:", response);
+      console.log(err);
     }
-  } catch (err) {
-    setLoading(false);
-    console.log(err);
-  }
-};
-  
+  };
+
   const onFinishFailed = (errorInfo) => {
     console.log("Failed:", errorInfo);
   };
@@ -319,7 +285,6 @@ const handleAddIcon = async (values) => {
     }
   };
 
-
   const handleDelete = (id) => {
     confirm({
       title: "Delete the Issued Item",
@@ -332,7 +297,7 @@ const handleAddIcon = async (values) => {
         deleteItem(id);
       },
       onCancel() {
-        window.location.reload(); 
+        window.location.reload();
       },
     });
   };
@@ -342,80 +307,75 @@ const handleAddIcon = async (values) => {
       .delete(`http://localhost:5000/delete_account/${id}`)
       .then((response) => {
         console.log(response.data);
-        const updatedData = getAcountdata.filter((account) => account._id !== id);
+        const updatedData = getAcountdata.filter(
+          (account) => account._id !== id
+        );
         setAcountdata(updatedData);
         getOldAccountDetails();
-        window.location.reload(); 
+        window.location.reload();
       })
       .catch((error) => {
         console.error(error);
       });
   };
 
- const handleIconDelete = async (id) => {
-  try {
-    setSocialClientId(id);
-    await getSocialAccountDetails();
-    showModal3();
-  } catch (error) {
-    console.error(error);
-  }
-};
- 
-const handleSocialIconDelete=(id)=>{
-  confirm({
-    title: "Delete the Issued Item",
-    icon: <ExclamationCircleOutlined />,
-    content: "Are you sure to delete this Issue Item?",
-    okText: "Yes",
-    okType: "danger",
-    cancelText: "No",
-    onOk() {
-      deleteIcon(id);
-    },
-  });
-
-}
-
-const deleteIcon = (id) => {
-    axios.delete(`http://localhost:5000/delete_socialaccount/${id}`)
-    .then((response) => {
-      console.log(response.data);
-      const updatedData = getSocialAcountdata.filter((account) => account._id !== id);
-      setSocialAcountdata(updatedData);
-      getOldAccountDetails();
-      setIsModalOpen4(false);
-    })
-    .catch((error) => {
-      console.error(error);
+  const handleSocialIconDelete = (id) => {
+    confirm({
+      title: "Delete the Issued Item",
+      icon: <ExclamationCircleOutlined />,
+      content: "Are you sure to delete this Issue Item?",
+      okText: "Yes",
+      okType: "danger",
+      cancelText: "No",
+      onOk() {
+        deleteIcon(id);
+      },
     });
-};
+  };
 
-  const [iconId,setIconId]=useState([]);
-  const [iconName,seticonName]=useState([]);
+  const deleteIcon = (id) => {
+    axios
+      .delete(`http://localhost:5000/delete_socialaccount/${id}`)
+      .then((response) => {
+        console.log(response.data);
+        const updatedData = getSocialAcountdata.filter(
+          (account) => account._id !== id
+        );
+        setSocialAcountdata(updatedData);
+        getOldAccountDetails();
+        setIsModalOpen4(false);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const [iconId, setIconId] = useState([]);
+  const [iconName, seticonName] = useState([]);
   const handleShow = (id) => {
-    axios.get(`http://localhost:5000/getsocialmedia/${id}`)
-    .then((response) => {
-      showModal4();
-      let data=response.data;
-      setIconId(data._id);
-      seticonName(data.icon_name);
-      const formattedIconName = data.icon_name.replace("fab fa-", "");
+    axios
+      .get(`http://localhost:5000/getsocialmedia/${id}`)
+      .then((response) => {
+        showModal4();
+        let data = response.data;
+        setIconId(data._id);
+        seticonName(data.icon_name);
+        const formattedIconName = data.icon_name.replace("fab fa-", "");
         form.setFieldsValue({
           key: data._id,
           icon_name: formattedIconName,
           social_url: data.social_url,
           password: data.password,
         });
-    })
-    .catch((error) => {
-      console.error(error);
-    });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   const handleIconUpdate = (values) => {
     values.id = iconId;
-    values.icon_name=iconName;
+    values.icon_name = iconName;
     console.log(values);
     axios
       .post("http://localhost:5000/update-icon", values)
@@ -424,20 +384,26 @@ const deleteIcon = (id) => {
           getSocialAccountDetails();
           setIsModalOpen4(false);
           handleCancel4();
-         form.resetFields();
+          form.resetFields();
         }
       })
       .catch((err) => {
         console.log(err);
       });
   };
-  
+
   const handleMove = (id) => {
     axios
-      .post("http://localhost:5000/updatetoold-clientstatus", { id, client_status: "new" })
+      .post("http://localhost:5000/updatetoold-clientstatus", {
+        id,
+        client_status: "new",
+      })
       .then((res) => {
-        if (res.data !='') {
-         openNotificationWithIcon('success', 'Account Moved to New Clients List');
+        if (res.data != "") {
+          openNotificationWithIcon(
+            "success",
+            "Account Moved to New Clients List"
+          );
           getSocialAccountDetails();
           getOldAccountDetails();
         }
@@ -510,66 +476,57 @@ const deleteIcon = (id) => {
                   autoComplete="off"
                 >
                   <Row gutter={24}>
-                                <Col span={12}>
-                                <Form.Item
-                                label="Social Icon"
-                                name="icon_name"
-                                rules={[
-                                {
-                                required: true,
-                                message: 'Please select an icon!',
-                                },
-                                ]}
-                                >
-                                <Select
-                                placeholder="Select Icon"
-                                allowClear
-                                className="myAntIptSelect2"
-                                >
-                                <Option> Select icon</Option>
-                                  <Option value="fab fa-tiktok">
-                                  <i className="fab fa-tiktok"></i> tik-tok</Option>
-                                  <Option value="fab fa-twitch">
-                                  <i className="fab fa-twitch"></i> twitch</Option>
-                                  <Option value="fab fa-twitter">
-                                  <i className="fab fa-twitter"></i> twitter</Option>
-                                  <Option value="fab fa-instagram">
-                                  <i className="fab fa-instagram"></i> instagram</Option>
-                                  <Option value="fab fa-linkedin">
-                                  <i className="fab fa-linkedin"></i> linkedin</Option>
-                                  <Option value="fab fa-facebook">
-                                  <i className="fab fa-facebook"></i> facebook</Option>
-                                  <Option value="fab fa-facebook-f">
-                                  <i className="fab fa-facebook-f"></i> facebook-f</Option>
-                                  <Option value="fab fa-whatsapp">
-                                  <i className="fab fa-whatsapp"></i> whatsapp</Option>
-                                  <Option value="fab fa-google">
-                                  <i className="fab fa-google"></i> google</Option>
-                                  <Option value="fab fa-google-plus">
-                                  <i className="fab fa-google-plus"></i> google-plus</Option>
-                                  <Option value="fab fa-youtube">
-                                  <i className="fab fa-youtube"></i> youtube</Option>
-                                  <Option value="fab fa-youtube-play">
-                                  <i className="fab fa-youtube-play"></i> youtube-play</Option>
-                                  <Option value="fab fa-youtube-square">
-                                  <i className="fab fa-youtube-square"></i> youtube-square</Option>
-                                  <Option value="fab fa-pinterest">
-                                  <i className="fab fa-pinterest"></i> pinterest</Option>
-                                  <Option value="fab fa-pinterest-p">
-                                  <i className="fab fa-pinterest-p"></i> pinterest-p</Option>
-                                  <Option value="fab fa-pinterest-square">
-                                  <i className="fab fa-pinterest-square"></i> pinterest-square</Option>
-                                  <Option value="fab fa-github">
-                                  <i className="fab fa-github"></i> github</Option>
-                                  <Option value="fab fa-gitlab">
-                                  <i className="fab fa-gitlab"></i> gitlab</Option>
-                                  <Option value="fas fa-phone">
-                                  <i className="fas fa-phone"></i> phone</Option>
-                                  <Option value="fas fa-phone-square">
-                                  <i className="fas fa-phone-square"></i> phone-square</Option>
-                                </Select>
-                                </Form.Item>
-                                </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Social Icon"
+                        name="icon_name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please select an icon!",
+                          },
+                        ]}
+                      >
+                        <Select
+                          placeholder="Select Icon"
+                          allowClear
+                          className="myAntIptSelect2"
+                        >
+                          <Option> Select icon</Option>
+                          <Option value="fab fa-facebook">Facebook</Option>
+                          <Option value="fab fa-instagram">Instagram</Option>
+                          <Option value="fab fa-linkedin">LinkedIn</Option>
+                          <Option value="fab fa-tiktok">TikTok</Option>
+                          <Option value="fab fa-twitch">Twitch</Option>
+                          <Option value="fab fa-twitter">Twitter</Option>
+                          <Option value="fab fa-whatsapp">WhatsApp</Option>
+                          <Option value="fab fa-google">Google</Option>
+                          <Option value="fab fa-google-plus">
+                            Google Plus
+                          </Option>
+                          <Option value="fab fa-youtube">YouTube</Option>
+                          <Option value="fab fa-youtube-play">
+                            YouTube Play
+                          </Option>
+                          <Option value="fab fa-youtube-square">
+                            YouTube Square
+                          </Option>
+                          <Option value="fab fa-pinterest">Pinterest</Option>
+                          <Option value="fab fa-pinterest-p">
+                            Pinterest P
+                          </Option>
+                          <Option value="fab fa-pinterest-square">
+                            Pinterest Square
+                          </Option>
+                          <Option value="fab fa-github">GitHub</Option>
+                          <Option value="fab fa-gitlab">GitLab</Option>
+                          <Option value="fas fa-phone">Phone</Option>
+                          <Option value="fas fa-phone-square">
+                            Phone Square
+                          </Option>
+                        </Select>
+                      </Form.Item>
+                    </Col>
                     <Col span={12}>
                       <Form.Item
                         label="ID"
@@ -989,8 +946,7 @@ const deleteIcon = (id) => {
                   autoComplete="off"
                 >
                   <Row gutter={24}>
-
-                  <Col span={12}>
+                    <Col span={12}>
                       <Form.Item
                         label="Plateform Name"
                         name="icon_name"
@@ -1052,9 +1008,13 @@ const deleteIcon = (id) => {
                         <Button type="primary" htmlType="submit">
                           Update
                         </Button>
-                        <Button type="primary" onClick={() => handleSocialIconDelete(iconId)} danger>
-                         Delete
-                      </Button>
+                        <Button
+                          type="primary"
+                          onClick={() => handleSocialIconDelete(iconId)}
+                          danger
+                        >
+                          Delete
+                        </Button>
                       </Form.Item>
                     </Col>
                   </Row>
@@ -1077,10 +1037,7 @@ const deleteIcon = (id) => {
         ]}
       >
         {getAcountdata.map((x) => (
-          <Card
-            key={x._id}
-            className="card_style"
-          >
+          <Card key={x._id} className="card_style">
             <Space direction="vertical">
               <Space wrap>
                 <Dropdown
@@ -1105,12 +1062,12 @@ const deleteIcon = (id) => {
                         </a>
                       </Menu.Item>
                       <Menu.Item key="3">
-                      <a
+                        <a
                           target="_blank"
                           rel="noopener noreferrer"
                           onClick={() => handleMove(x._id)}
                         >
-                         Move to new client
+                          Move to new client
                         </a>
                       </Menu.Item>
                       {/* <Menu.Item key="4">
@@ -1132,23 +1089,25 @@ const deleteIcon = (id) => {
             <p className="client_name">{x.client_name}</p>
             <p className="client-designation">{x.client_designation}</p>
             <p className="project-name">{x.project_name}</p>
-              {getSocialAcountdata.map((y) => {
+            {getSocialAcountdata.map((y) => {
               if (x._id === y.client_id) {
-              return (
-              <li key={y._id} className="list-group-item setplusonedata">
-              <a target="_blank" onClick={() => handleShow(y._id)}>
-              <i id="setsize" className={y.icon_name}></i>
-              </a>
-              </li>
-              );
+                return (
+                  <li key={y._id} className="list-group-item setplusonedata">
+                    <a target="_blank" onClick={() => handleShow(y._id)}>
+                      <i id="setsize" className={y.icon_name}></i>
+                    </a>
+                  </li>
+                );
               }
               return null;
-              })}
+            })}
             {/* <DeleteOutlined className="setplusdata"   onClick={() => handleIconDelete(x._id)} /> */}
-            <PlusOutlined  className="setplusdata"   onClick={() => handleIconEdit(x._id)}/>
+            <PlusOutlined
+              className="setplusdata"
+              onClick={() => handleIconEdit(x._id)}
+            />
           </Card>
         ))}
-
       </Row>
     </div>
   );

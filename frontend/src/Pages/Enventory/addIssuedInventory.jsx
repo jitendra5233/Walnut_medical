@@ -8,13 +8,10 @@ import {
   Row,
   Typography,
   DatePicker,
-  Result,
-  Modal,
   notification,
   AutoComplete,
 } from "antd";
 import axios from "axios";
-import { Alert, Space } from "antd";
 import ShowIssuedEnventory from "./ShowIssuedEnventory";
 import moment from "moment";
 const { Title } = Typography;
@@ -22,11 +19,7 @@ const { Option } = Select;
 
 const AddIssuedEnventory = () => {
   const [loading, setLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [form] = Form.useForm();
-  const [resultModalVisible, setResultModalVisible] = useState(false);
-  const [isItemAssigned, setIsItemAssigned] = useState(false);
-  const [api, contextHolder] = notification.useNotification();
   const [ShowIssuedEnventoryKey, setShowIssuedEnventoryKey] = useState(
     Date.now()
   );
@@ -122,10 +115,7 @@ const AddIssuedEnventory = () => {
         .post("http://localhost:5000/issued_enventory", values)
         .then((res) => {
           setLoading(false);
-          setIsSubmitted(true);
           form.resetFields();
-          setResultModalVisible(true);
-          setIsItemAssigned(true);
           setShowIssuedEnventoryKey(Date.now());
         })
         .catch((err) => {
@@ -148,13 +138,7 @@ const AddIssuedEnventory = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const handleRetry = () => {
-    setIsSubmitted(false);
-    setResultModalVisible(false);
-  };
-
   const handleSearch = (value) => {
-    // Fetch item suggestions based on the user's input
     axios
       .get(`http://localhost:5000/items/search?query=${value}`)
       .then((response) => {
@@ -167,7 +151,6 @@ const AddIssuedEnventory = () => {
   };
 
   const handlenameSearch = (value) => {
-    // Fetch item suggestions based on the user's input
     axios
       .get(`http://localhost:5000/items/searchName?query=${value}`)
       .then((response) => {

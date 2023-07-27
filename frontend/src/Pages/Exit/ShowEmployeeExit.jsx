@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Col, Form, Input, Row, Typography } from "antd";
 import axios from "axios";
-import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
+import { DownloadOutlined } from "@ant-design/icons";
 import { useParams } from "react-router-dom";
 import { List } from "antd";
 import { Link } from "react-router-dom";
@@ -22,10 +22,11 @@ const ShowEmployeeExit = () => {
         const data = result.data;
 
         let newData = [];
-        data.map((x) => {
+        data.map((x, i) => {
           newData.push({
             key: x._id,
             url: x.url,
+            name: `Employee Document ${i + 1}`,
           });
         });
 
@@ -282,7 +283,7 @@ const ShowEmployeeExit = () => {
                     dataSource={accountData}
                     renderItem={(accountData) => (
                       <List.Item className="list-style">
-                        {accountData.url}
+                        {accountData.name}
                         <a
                           href={accountData.url}
                           className="colorname"

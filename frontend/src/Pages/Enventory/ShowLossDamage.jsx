@@ -1,26 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-import {
-  Button,
-  Table,
-  Modal,
-  Typography,
-  Row,
-  Col,
-  Avatar,
-  Form,
-  Input,
-  Space,
-  DatePicker,
-} from "antd";
+import { Button, Table, Modal, Typography, Row, Col, Form, Input } from "antd";
 const { TextArea } = Input;
 const { Title } = Typography;
 const { confirm } = Modal;
@@ -45,7 +25,6 @@ const ShowLossDamage = () => {
     getInventory();
   }, []);
 
-  // const [commentData, setCommentData] = useState();
   const getInventory = () => {
     axios
       .get("http://localhost:5000/GetDamageItem")
@@ -141,23 +120,6 @@ const ShowLossDamage = () => {
       dataIndex: "comment",
       key: "comment",
     },
-    // {
-    //   title: "Loss/Damage",
-    //   key: "action",
-    //   render: (_, record) => (
-    //     <div>
-    //       <Space wrap>
-    //         <Button
-    //           type="primary"
-    //           block
-    //           onClick={() => handleDamage(record.key)}
-    //         >
-    //           View
-    //         </Button>
-    //       </Space>
-    //     </div>
-    //   ),
-    // },
   ];
 
   return (

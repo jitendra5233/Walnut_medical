@@ -34,6 +34,22 @@ const Websetting = mongoose.Schema(
       type: String,
       required: true,
     },
+    smtp_host: {
+      type: String,
+      required: true,
+    },
+    smtp_port: {
+      type: String,
+      required: true,
+    },
+    smtp_username: {
+      type: String,
+      required: true,
+    },
+    smtp_password: {
+      type: String,
+      required: true,
+    },
    
   },
   { timestamps: true }

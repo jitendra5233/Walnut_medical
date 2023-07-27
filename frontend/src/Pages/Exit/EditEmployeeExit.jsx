@@ -7,15 +7,13 @@ import {
   Input,
   Row,
   Typography,
-  AutoComplete,
-  Upload,
   notification,
   message,
   Modal,
 } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { PlusOutlined, DownloadOutlined } from "@ant-design/icons";
+import { DownloadOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Dragger from "antd/es/upload/Dragger";
 
@@ -36,7 +34,6 @@ const EditEmployeeExit = () => {
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [api, contextHolder] = notification.useNotification();
-  const [updateId, setUpdateId] = useState(null);
   const [accountData, setAccountData] = useState([]);
   const openNotificationWithIcon = (type, message) => {
     if (type === "error") {
@@ -62,7 +59,8 @@ const EditEmployeeExit = () => {
         data.map((x, i) => {
           newData.push({
             key: x._id,
-            url: `${1}. Doc ${i + 1}`,
+            url: x.url,
+            name: `Employee Document ${i + 1}`,
           });
         });
 
@@ -415,7 +413,6 @@ const EditEmployeeExit = () => {
                       <Option value="Under Process">Under Process</Option>
                       <Option value="Hold">Hold</Option>
                       <Option value="Confirm">Confirm</Option>
-                      <Option value="Other">Other</Option>
                     </Select>
                   </Form.Item>
                 </Col>
@@ -432,28 +429,31 @@ const EditEmployeeExit = () => {
                     </Dragger>
                   </Form.Item>
                 </Col>
-                <List
-                  bordered
-                  dataSource={accountData}
-                  renderItem={(accountData) => (
-                    <List.Item className="list-style">
-                      {accountData.url}
-                      <i
-                        class="fa fa-trash"
-                        id="deleteicon"
-                        aria-hidden="true"
-                        onClick={() => handleDeleteIcon(accountData.key)}
-                      ></i>
-                      <a
-                        href={accountData.url}
-                        className="colorname"
-                        target="_blank"
-                      >
-                        <DownloadOutlined style={{ fontSize: "15px" }} />
-                      </a>
-                    </List.Item>
-                  )}
-                />
+                <Col span={8}>
+                  <List
+                    bordered
+                    dataSource={accountData}
+                    renderItem={(accountData) => (
+                      <List.Item className="list-style">
+                        {accountData.name}
+                        <i
+                          class="fa fa-trash"
+                          id="deleteicon"
+                          aria-hidden="true"
+                          onClick={() => handleDeleteIcon(accountData.key)}
+                        ></i>
+                        <a
+                          href={accountData.url}
+                          className="colorname"
+                          target="_blank"
+                        >
+                          <DownloadOutlined style={{ fontSize: "15px" }} />
+                        </a>
+                      </List.Item>
+                    )}
+                  />
+                </Col>
+
                 <Col span={24}>
                   <Form.Item>
                     <Button type="primary" htmlType="submit" loading={loading}>

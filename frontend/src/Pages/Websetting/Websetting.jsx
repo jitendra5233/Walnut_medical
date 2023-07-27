@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-  Card,
   Form,
   Input,
   Button,
@@ -16,15 +15,9 @@ import {
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
-import { Avatar, Divider, List, Skeleton } from "antd";
+import { List } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 
-import {
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
-// import InfiniteScroll from 'react-infinite-scroll-component';
 const { Title } = Typography;
 const { Option } = Select;
 
@@ -38,7 +31,7 @@ const HomeSettings = () => {
   ]);
   const [updateId, setUpdateId] = useState(null);
   const [accountData, setAccountData] = useState([]);
-  const [getAcountdata, setAcountdata] = useState([]);
+  console.log(accountData);
 
   useEffect(() => {
     getWebsetting();
@@ -71,6 +64,10 @@ const HomeSettings = () => {
       data.append("carrer_email", values.carrer_email);
       data.append("watsapp_number", values.watsapp_number);
       data.append("Contact_number", values.Contact_number);
+      data.append("smtp_host", values.smtp_host);
+      data.append("smtp_port", values.smtp_port);
+      data.append("smtp_username", values.smtp_username);
+      data.append("smtp_password", values.smtp_password);
       data.append("socialIcons", JSON.stringify(values.socialIcons));
 
       if (values.image) {
@@ -248,6 +245,62 @@ const HomeSettings = () => {
                     {
                       required: true,
                       message: "Please input WhatsApp number!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  label="SMTP Host"
+                  name="smtp_host"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input SMTP Host!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  label="SMTP Port"
+                  name="smtp_port"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input SMTP Port!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  label="SMTP Username"
+                  name="smtp_username"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input SMTP Username!",
+                    },
+                  ]}
+                >
+                  <Input />
+                </Form.Item>
+              </Col>
+              <Col span={8}>
+                <Form.Item
+                  label="SMTP Password"
+                  name="smtp_password"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Please input SMTP Password!",
                     },
                   ]}
                 >

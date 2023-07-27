@@ -8,7 +8,6 @@ import {
   Row,
   Typography,
   DatePicker,
-  Result,
   Modal,
   notification,
   AutoComplete,
@@ -18,16 +17,9 @@ import {
   Table,
 } from "antd";
 import axios from "axios";
-import { Alert, Space } from "antd";
-import {
-  PlusOutlined,
-  MoreOutlined,
-  DeleteOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { useParams, Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import moment from "moment";
 const { Title } = Typography;
@@ -36,13 +28,10 @@ let { Option } = Select;
 
 const AccountDetails = () => {
   const [loading, setLoading] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
   const [form] = Form.useForm();
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
   const [form3] = Form.useForm();
-  const [resultModalVisible, setResultModalVisible] = useState(false);
-  const [isItemAssigned, setIsItemAssigned] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
@@ -169,7 +158,6 @@ const AccountDetails = () => {
     console.log("Failed:", errorInfo);
   };
 
-  const [suggestions, setSuggestions] = useState([]);
   const [userSuggestions, setUserSuggestions] = useState([]);
   const [empName, setEmpName] = useState([]);
 
@@ -252,17 +240,13 @@ const AccountDetails = () => {
     }
   };
 
-  const [tableData, setTableData] = useState([]);
   const [assignedEmployeeData, setassignedEmployeeData] = useState([]);
-  const [getAcountdata, setAcountdata] = useState([]);
-  const [getSocialAcountdata, setSocialAcountdata] = useState([]);
   const [getocialClientId, setSocialClientId] = useState([]);
   const getSocialAccountDetails = () => {
     axios
       .get("http://localhost:5000/getsocialAccountDeatils")
       .then((result) => {
         let data = result.data;
-        setSocialAcountdata(data);
         let newData = [];
         data.map((x) => {
           if (x.client_id == getocialClientId) {
@@ -273,7 +257,6 @@ const AccountDetails = () => {
             });
           }
         });
-        setTableData(newData);
       })
       .catch((err) => {
         console.log(err);
@@ -343,24 +326,6 @@ const AccountDetails = () => {
       .then((response) => {
         getAccountDetails();
         getAssignedEmplyee();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-
-  const handleRetry = () => {
-    setIsSubmitted(false);
-    setResultModalVisible(false);
-  };
-
-  const handleSearch = (value) => {
-    // Fetch item suggestions based on the user's input
-    axios
-      .get(`http://localhost:5000/items/search?query=${value}`)
-      .then((response) => {
-        const items = response.data;
-        setSuggestions(items);
       })
       .catch((error) => {
         console.error(error);

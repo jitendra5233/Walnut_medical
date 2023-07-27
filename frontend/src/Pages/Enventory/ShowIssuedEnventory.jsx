@@ -3,12 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import moment from "moment";
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import {
   Button,
   Table,
@@ -16,7 +11,6 @@ import {
   Typography,
   Row,
   Col,
-  Avatar,
   Form,
   Input,
   Space,
@@ -25,7 +19,6 @@ import {
   Select,
 } from "antd";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
-const { TextArea } = Input;
 const { Title } = Typography;
 const { confirm } = Modal;
 const { Option } = Select;
@@ -97,23 +90,16 @@ const ShowIssuedEnventory = () => {
   const handleEdit = (id) => {
     showModal();
     setUpdateItemId(id);
-    // Make an HTTP GET request to the API endpoint
     axios
       .get(`http://localhost:5000/available-items/${id}`)
       .then((response) => {
-        const availableItem = response.data.availableItem; // Corrected
+        const availableItem = response.data.availableItem;
         setAvailableItem(availableItem.availableItem);
         setAvailableItemId(availableItem._id);
-
-        // Perform any necessary operations with the available item
-        // For example, you can set it in state variables or update the UI
       })
       .catch((error) => {
-        // Handle any errors that occur during the request
         console.error(error);
       });
-
-    // Rest of your code..
 
     tableData.map((x) => {
       if (x.key == id) {
@@ -127,7 +113,7 @@ const ShowIssuedEnventory = () => {
           quantity: x.quantity,
           emp_name: x.emp_name,
           emp_code: x.emp_code,
-          job_title: x.designation,
+          job_title: x.job_title,
         });
       }
     });
@@ -143,7 +129,6 @@ const ShowIssuedEnventory = () => {
         setdamageItemId(data.item_id);
       })
       .catch((error) => {
-        // Handle any errors that occur during the request
         console.error(error);
       });
     showModal1();
@@ -225,7 +210,7 @@ const ShowIssuedEnventory = () => {
   const deleteItem = (itemId, quantity, itemname) => {
     axios
       .delete("http://localhost:5000/deleteissue_item", {
-        data: { itemId, quantity, itemname }, // Pass the data as an object
+        data: { itemId, quantity, itemname },
       })
       .then((response) => {
         console.log(response.data);
@@ -268,7 +253,6 @@ const ShowIssuedEnventory = () => {
       });
   };
   const handlenameSearch = (value) => {
-    // Fetch item suggestions based on the user's input
     axios
       .get(`http://localhost:5000/items/searchName?query=${value}`)
       .then((response) => {

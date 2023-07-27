@@ -70,11 +70,11 @@ const AddEmployeeExit = () => {
           var emp_name = data.f_name + " " + data.l_name;
           form.setFieldsValue({
             personal_email: data.email,
-            joining_date: "7/14/2022",
-            experience: "2 Years",
-            salary: "50,000",
-            office_email: "officialemail@gmail.com",
-            password: "1345",
+            joining_date: new Date(data.date_of_joining).toLocaleDateString(),
+            experience: `${data.experience} Years`,
+            salary: data.salary,
+            office_email: data.office_email,
+            password: data.office_email_password,
           });
           setEmpName(emp_name);
         }
@@ -156,7 +156,7 @@ const AddEmployeeExit = () => {
                       {userSuggestions.map((option) => (
                         <Option
                           key={option._id}
-                          value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
+                          value={`${option.f_name} ${option.l_name}`}
                         >
                           {`${option.f_name} ${option.l_name}`}
                         </Option>
@@ -349,7 +349,6 @@ const AddEmployeeExit = () => {
                       <Option value="Under Process">Under Process</Option>
                       <Option value="Hold">Hold</Option>
                       <Option value="Confirm">Confirm</Option>
-                      <Option value="Other">Other</Option>
                     </Select>
                   </Form.Item>
                 </Col>

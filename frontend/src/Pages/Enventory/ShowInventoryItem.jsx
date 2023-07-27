@@ -3,12 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
-import {
-  DeleteOutlined,
-  EditOutlined,
-  LogoutOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import {
   Button,
   Table,
@@ -16,10 +11,8 @@ import {
   Typography,
   Row,
   Col,
-  Avatar,
   Form,
   Input,
-  Space,
   AutoComplete,
   Select,
 } from "antd";
@@ -235,11 +228,6 @@ const ShowIssuedEnventory = () => {
       dataIndex: "lossDamageItem",
       key: "lossDamageItem",
     },
-    // {
-    //   title: "Updated Date",
-    //   dataIndex: "updatedAt",
-    //   key: "updatedAt",
-    // },
     {
       title: "Action",
       key: "action",
@@ -251,11 +239,6 @@ const ShowIssuedEnventory = () => {
               <EditOutlined style={{ cursor: "pointer" }} />
             </span>
           </a>
-          {/* <a onClick={() => handleDelete(record.key)}>
-            <span>
-              <DeleteOutlined style={{ cursor: "pointer" }} />
-            </span>
-          </a> */}
         </div>
       ),
     },
