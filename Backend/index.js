@@ -1294,6 +1294,10 @@ app.post("/update_websetting", upload.single("image"), async (req, res) => {
       carrer_email,
       watsapp_number,
       Contact_number,
+      smtp_host,
+      smtp_port,
+      smtp_username,
+      smtp_password,
       socialIcons,
     } = req.body;
     let websetting = await Websetting.findById(id);
@@ -1318,6 +1322,10 @@ app.post("/update_websetting", upload.single("image"), async (req, res) => {
       carrer_email,
       watsapp_number,
       Contact_number,
+      smtp_host,
+      smtp_port,
+      smtp_username,
+      smtp_password,
       img: imgLocation,
       socialIcons: websetting.socialIcons,
     };
@@ -1487,30 +1495,51 @@ app.get("/client/search", async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 app.post("/mail", async (req, res) => {
   try {
-    const { hosting_name, hosting_url, renewal_date, client_name } = req.body;
+    const {
+      hosting_name,
+      hosting_url,
+      renewal_date,
+      client_name,
+      smtpHost,
+      smtpPort,
+      smtpUsername,
+      smtpPassword,
+    } = req.body;
 
-    if (!hosting_name || !hosting_url || !renewal_date || !client_name) {
+    if (
+      !hosting_name ||
+      !hosting_url ||
+      !renewal_date ||
+      !client_name ||
+      !smtpHost ||
+      !smtpPort ||
+      !smtpUsername ||
+      !smtpPassword
+    ) {
       // Check if all required fields are present in the request body
       return res.status(400).json({ error: "All fields are required." });
     }
-
-    // Now you have access to the data sent from the client-side
-    // You can use this data to send an email using the sendMail function
     await sendMail(
       "Techies Infotech",
       "techies@gmail.com",
       "js0995276@gmail.com",
       hosting_name,
       renewal_date,
-      client_name
+      client_name,
+      smtpHost,
+      smtpPort,
+      smtpUsername,
+      smtpPassword
     );
 
     // Sending a successful response back to the client
     res.status(200).json({ message: "Email sent successfully!" });
   } catch (error) {
     // Sending an error response if something goes wrong with sending the email
+    console.error("Error sending email:", error);
     res
       .status(500)
       .json({ error: "An error occurred while sending the email." });
@@ -1619,6 +1648,20 @@ app.delete("/delete_exitemployeedocs/:id", async (req, res) => {
     const result = await EmployeeExitDocs.deleteOne({ _id: id });
 
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+app.delete("/delete_employeeexit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result1 = await EmployeeExit.deleteOne({ _id: id });
+    const result2 = await EmployeeExitDocs.deleteMany({ ref_id: id });
+    if (result1.deletedCount === 1 && result2.deletedCount >= 1) {
+      res.status(200).json({ message: "Deletion successful" });
+    } else {
+      res.status(404).json({ message: "Record not found" });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
