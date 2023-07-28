@@ -20,17 +20,45 @@ import {
   Spin,
   Empty,
   Select,
+  Dropdown,
 } from "antd";
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-const EmployeeCard = ({ id, img, name, designation, ref_id = 0 }) => {
+const EmployeeCard = ({
+  id,
+  img,
+  name,
+  designation,
+  ref_id = 0,
+  getEmployee,
+}) => {
   const navigate = useNavigate();
 
   const openPage = (name) => {
     navigate(name + "/" + (ref_id != null ? ref_id : id));
   };
+
+  const SaveAsOldEmployee = () => {
+    axios
+      .post("http://localhost:5000/saveToOldEmp", { id })
+      .then((result) => {
+        getEmployee();
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const items = [
+    {
+      key: "1",
+      label: <Link onClick={() => SaveAsOldEmployee()}>Move to Old</Link>,
+    },
+  ];
+
   return (
     <div>
       <Card
@@ -57,7 +85,14 @@ const EmployeeCard = ({ id, img, name, designation, ref_id = 0 }) => {
             )}
           </div>
           <div>
-            <MoreOutlined style={{ fontSize: "15px", cursor: "pointer" }} />
+            <Dropdown
+              menu={{ items }}
+              placement="bottomLeft"
+              arrow
+              trigger={["click"]}
+            >
+              <MoreOutlined style={{ fontSize: "15px", cursor: "pointer" }} />
+            </Dropdown>
           </div>
         </div>
         <div style={{ margin: "20px 0" }}>
@@ -475,17 +510,20 @@ const ShowAllEmpolyees = () => {
       >
         {allEmp.map((x, i) => {
           let { _id, f_name, l_name, profile_img, designation, ref_id } = x;
-          return (
-            <Col xs={24} sm={24} md={8} lg={6} key={i}>
-              <EmployeeCard
-                id={_id}
-                ref_id={ref_id}
-                img={profile_img}
-                name={`${f_name} ${l_name}`}
-                designation={designation}
-              />
-            </Col>
-          );
+          if (x.old_emp == "false") {
+            return (
+              <Col xs={24} sm={24} md={8} lg={6} key={i}>
+                <EmployeeCard
+                  id={_id}
+                  ref_id={ref_id}
+                  img={profile_img}
+                  name={`${f_name} ${l_name}`}
+                  designation={designation}
+                  getEmployee={getEmployee()}
+                />
+              </Col>
+            );
+          }
         })}
       </Row>
     </div>

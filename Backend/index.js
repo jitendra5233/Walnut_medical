@@ -619,6 +619,37 @@ app.post("/handleDeleteAppriasal", async (req, res) => {
   try {
     const result = await AppraisalSchema.findByIdAndDelete(req.body.id);
 
+    const result2 = await CandidateDetailsSchema.findOneAndUpdate(
+      { ref_id: req.body.ref_id },
+      {
+        salary: req.body.s,
+      }
+    );
+
+    res.status(200).json(result2);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/saveToOldEmp", async (req, res) => {
+  try {
+    const result = await EmployeeSchema.findByIdAndUpdate(req.body.id, {
+      old_emp: "true",
+    });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/saveToNewEmp", async (req, res) => {
+  try {
+    const result = await EmployeeSchema.findByIdAndUpdate(req.body.id, {
+      old_emp: "false",
+    });
+
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });

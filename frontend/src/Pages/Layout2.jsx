@@ -67,7 +67,9 @@ const LayoutCom2 = () => {
         />
       </div>
       <div>
-        <h4>Harmanpreet Singh</h4>
+        <h4>
+          {f_name} {l_name}
+        </h4>
       </div>
       <div>
         <h5>Admin</h5>
@@ -332,7 +334,7 @@ const LayoutCom2 = () => {
                 />
               </div>
               <div>
-                <Link to="/users" className="menuText">
+                <Link to="/manage-accounts" className="menuText">
                   Manage Accounts
                 </Link>
               </div>

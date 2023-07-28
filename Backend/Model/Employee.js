@@ -30,6 +30,10 @@ const Employee = mongoose.Schema(
       type: String,
       required: true,
     },
+    old_emp: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

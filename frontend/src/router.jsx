@@ -47,6 +47,7 @@ import ShowEmployeeExit from "./Pages/Exit/ShowEmployeeExit";
 import EditEmployeeExit from "./Pages/Exit/EditEmployeeExit";
 import EmployeeAppraisal from "./Pages/Docs_Details/EmployeeAppraisal";
 import EmployeeDocs from "./Pages/Docs_Details/EmployeeDocs";
+import ManageAccount from "./Pages/ManageAccounts/ManageAccount";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -79,6 +80,8 @@ const router = createBrowserRouter(
         <Route path="/employee-details/:id" element={<EmployeeDetails />} />
         <Route path="/employee-docs/:id" element={<EmployeeDocs />} />
         <Route path="/employee-appraisal/:id" element={<EmployeeAppraisal />} />
+        <Route path="/manage-accounts" element={<ManageAccount />} />
+
         {/* jitendra */}
         <Route path="/add-expense" element={<AddExpense />} />
         <Route path="/expense" element={<ShowExpense />} />

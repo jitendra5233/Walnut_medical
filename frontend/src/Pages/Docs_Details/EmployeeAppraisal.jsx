@@ -68,20 +68,28 @@ const EmployeeAppraisal = () => {
       title: "Action",
       dataIndex: "action",
       key: "action",
-      render: (id) => {
+
+      render: ({ id, cureent_salary, ref_id }, i) => {
+        console.log(i.last);
         return (
           <div>
-            <span style={{ marginRight: "10px", cursor: "pointer" }}>
+            {/* <span style={{ marginRight: "10px", cursor: "pointer" }}>
               <EditOutlined
                 onClick={() => handleEdit(id)}
                 style={{ cursor: "pointer" }}
               />
-            </span>
+            </span> */}
             <span>
-              <DeleteOutlined
-                onClick={() => handleDelete(id)}
-                style={{ cursor: "pointer" }}
-              />
+              {i.last !== true ? (
+                <></>
+              ) : (
+                <>
+                  <DeleteOutlined
+                    onClick={() => handleDelete(id, cureent_salary, ref_id)}
+                    style={{ cursor: "pointer" }}
+                  />
+                </>
+              )}
             </span>
           </div>
         );
@@ -95,16 +103,23 @@ const EmployeeAppraisal = () => {
     getApprisals();
   }, []);
 
-  const handleDelete = (id) => {
+  const handleDelete = (id, cureent_salary, ref_id) => {
     axios
-      .post("http://localhost:5000/handleDeleteAppriasal")
+      .post("http://localhost:5000/handleDeleteAppriasal", {
+        id,
+        s: cureent_salary,
+        ref_id,
+      })
       .then((res) => {
-        console.log(res);
+        message.success("Deleted");
+        getDetails();
+        getApprisals();
       })
       .then((err) => {
         console.log(err);
       });
   };
+
   const handleEdit = (id) => {
     console.log(id);
   };
@@ -172,7 +187,12 @@ const EmployeeAppraisal = () => {
             salary: x.salary,
             appraisal: x.appraisal,
             cureent_salary: x.salary - x.appraisal,
-            action: x._id,
+            action: {
+              id: x._id,
+              cureent_salary: x.salary - x.appraisal,
+              ref_id: x.ref_id,
+            },
+            last: i == res.data.length - 1 ? true : false,
           });
         });
 
