@@ -870,7 +870,7 @@ const AccountDetails = () => {
                           {userSuggestions.map((option) => (
                             <Option
                               key={option._id}
-                              value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
+                              value={`${option.f_name} ${option.l_name}`}
                             >
                               {`${option.f_name} ${option.l_name}`}
                             </Option>

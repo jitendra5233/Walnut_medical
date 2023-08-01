@@ -2,15 +2,27 @@ const mongoose = require("mongoose");
 
 const UserSchema = mongoose.Schema(
   {
+    employee_id: {
+      type: String,
+      required: false,
+    },
+    email: {
+      type: String,
+      required: false,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    employee_type: {
+      type: String,
+      required: false,
+    },
     f_name: {
       type: String,
       required: false,
     },
     l_name: {
-      type: String,
-      required: false,
-    },
-    email: {
       type: String,
       required: false,
     },
@@ -21,10 +33,6 @@ const UserSchema = mongoose.Schema(
     job_title: {
       type: String,
       required: false,
-    },
-    password: {
-      type: String,
-      required: true,
     },
     aadhar_no: {
       type: String,
@@ -39,10 +47,6 @@ const UserSchema = mongoose.Schema(
       required: false,
     },
 
-    employee_type: {
-      type: String,
-      required: false,
-    },
     expected_salary: {
       type: String,
       required: false,

@@ -11,12 +11,15 @@ import {
   Select,
   notification,
   Modal,
+  message,
 } from "antd";
 import "@fortawesome/fontawesome-free/css/all.min.css";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import { InboxOutlined } from "@ant-design/icons";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { List } from "antd";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
+import Dragger from "antd/es/upload/Dragger";
 
 const { Title } = Typography;
 const { Option } = Select;
@@ -31,7 +34,6 @@ const HomeSettings = () => {
   ]);
   const [updateId, setUpdateId] = useState(null);
   const [accountData, setAccountData] = useState([]);
-  console.log(accountData);
 
   useEffect(() => {
     getWebsetting();
@@ -69,11 +71,6 @@ const HomeSettings = () => {
       data.append("smtp_username", values.smtp_username);
       data.append("smtp_password", values.smtp_password);
       data.append("socialIcons", JSON.stringify(values.socialIcons));
-
-      if (values.image) {
-        data.append("image", values.image[0].originFileObj);
-      }
-
       await axios.post("http://localhost:5000/update_websetting", data);
       setLoading(false);
       getWebsetting();
@@ -89,6 +86,67 @@ const HomeSettings = () => {
       console.log(error);
       openNotificationWithIcon("error", "Failed to update account");
     }
+  };
+  const deleteDoc = (id) => {
+    axios
+      .post("http://localhost:5000/deleteloginimg", { id })
+      .then((res) => {
+        console.log(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const props1 = {
+    name: "file",
+    multiple: true,
+    action: "http://localhost:5000/update_loginimage",
+    data: { id: updateId },
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+      }
+      if (status === "removed") {
+        deleteDoc(info.file.uid);
+      }
+      if (status === "done") {
+        getWebsetting();
+        message.success(`${info.file.name} file uploaded successfully.`);
+        form.resetFields();
+      } else if (status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+    defaultFileList: [],
+  };
+
+  const props2 = {
+    name: "file",
+    multiple: true,
+    action: "http://localhost:5000/update_logo",
+    data: { id: updateId },
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+      }
+      if (status === "removed") {
+        deleteDoc(info.file.uid);
+      }
+      if (status === "done") {
+        getWebsetting();
+        message.success(`${info.file.name} file uploaded successfully.`);
+        form.resetFields();
+      } else if (status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+    defaultFileList: [],
   };
 
   const handleAddMore = () => {
@@ -107,13 +165,6 @@ const HomeSettings = () => {
       message: message,
       placement: "bottomRight",
     });
-  };
-
-  const normFile = (e) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
   };
 
   const handleDeleteIcon = (socialIconId) => {
@@ -166,19 +217,25 @@ const HomeSettings = () => {
             onFinish={handleSubmit}
           >
             <Row gutter={24}>
-              <Col span={24} style={{ marginBottom: "20px" }}>
-                <Form.Item
-                  label="Upload Logo"
-                  valuePropName="fileList"
-                  getValueFromEvent={normFile}
-                  name="image"
-                >
-                  <Upload listType="picture-card" maxCount={1}>
-                    <div>
-                      <PlusOutlined />
-                      <div style={{ marginTop: 8 }}>Upload</div>
-                    </div>
-                  </Upload>
+              <Col span={24}>
+                <Form.Item label="Upload Logo" name="image">
+                  <Dragger {...props2}>
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">Drag and Drop Files here</p>
+                  </Dragger>
+                </Form.Item>
+              </Col>
+
+              <Col span={24}>
+                <Form.Item label="Upload Login Image" name="loginimg">
+                  <Dragger {...props1}>
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                    <p className="ant-upload-text">Drag and Drop Files here</p>
+                  </Dragger>
                 </Form.Item>
               </Col>
               <Col span={8}>

@@ -296,9 +296,7 @@ const OldClient = () => {
       onOk() {
         deleteItem(id);
       },
-      onCancel() {
-        window.location.reload();
-      },
+      onCancel() {},
     });
   };
 
@@ -312,7 +310,7 @@ const OldClient = () => {
         );
         setAcountdata(updatedData);
         getOldAccountDetails();
-        window.location.reload();
+        form.resetFields();
       })
       .catch((error) => {
         console.error(error);
@@ -342,6 +340,7 @@ const OldClient = () => {
           (account) => account._id !== id
         );
         setSocialAcountdata(updatedData);
+        form.resetFields();
         getOldAccountDetails();
         setIsModalOpen4(false);
       })
@@ -413,27 +412,6 @@ const OldClient = () => {
         openNotificationWithIcon("error", "Failed to Move account");
       });
   };
-  // const columns = [
-  //   {
-  //     title: 'ID',
-  //     dataIndex: 'social_url',
-  //     key: 'social_url',
-  //     render: (text) => <a>{text}</a>,
-  //   },
-  //   {
-  //     title: "Action",
-  //     key: "action",
-  //     render: (_, record) => (
-  //       <div>
-  //         <a onClick={() => handleSocialIconDelete(record.key)}>
-  //           <span>
-  //             <DeleteOutlined style={{ cursor: "pointer" }} />
-  //           </span>
-  //         </a>
-  //       </div>
-  //     ),
-  //   },
-  // ];
 
   return (
     <div>

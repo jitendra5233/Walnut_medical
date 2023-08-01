@@ -48,6 +48,7 @@ import EditEmployeeExit from "./Pages/Exit/EditEmployeeExit";
 import EmployeeAppraisal from "./Pages/Docs_Details/EmployeeAppraisal";
 import EmployeeDocs from "./Pages/Docs_Details/EmployeeDocs";
 import ManageAccount from "./Pages/ManageAccounts/ManageAccount";
+import AdminProfile from "./Pages/Profile/AdminProfile";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -101,6 +102,7 @@ const router = createBrowserRouter(
         <Route path="/add-employeeexit" element={<AddEmployeeExit />} />
         <Route path="/view-employeeexit/:id" element={<ShowEmployeeExit />} />
         <Route path="/edit-employeeexit/:id" element={<EditEmployeeExit />} />
+        <Route path="/profile/:id" element={<AdminProfile />} />
       </Route>
     </Route>
   )

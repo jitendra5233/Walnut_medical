@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 const ManageAccount = () => {
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
+  const [emp, setEmp] = useState([]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -67,7 +68,7 @@ const ManageAccount = () => {
 
   useEffect(() => {
     getUsers();
-    getRoles();
+    getEmployee();
   }, []);
 
   const columns = [
@@ -131,11 +132,11 @@ const ManageAccount = () => {
     },
   ];
 
-  const getRoles = () => {
+  const getEmployee = () => {
     axios
-      .get("http://localhost:5000/getJobProfiles")
+      .get("http://localhost:5000/getAllEmployee")
       .then((res) => {
-        console.log(res);
+        setEmp(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -209,58 +210,74 @@ const ManageAccount = () => {
   let { Title } = Typography;
 
   const handleSubmit = (values) => {
-    if (activeId == "") {
-      setLoading(true);
+    axios
+      .post("http://localhost:5000/create_User", values)
+      .then((res) => {
+        console.log(res.data);
+        setLoading(false);
+        if (res.data.length === 0) {
+          openNotificationWithIcon("error");
+        } else {
+          openNotificationWithIcon("success");
+          getUsers();
+          setIsModalOpen(false);
+        }
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+      });
 
-      let data = new FormData();
-      data.append("email", values.email);
-      data.append("emp_code", values.emp_code);
-      data.append("f_name", values.f_name);
-      data.append("l_name", values.l_name);
-      data.append("image", "image");
-      data.append("job_title", values.job_title);
-      data.append("password", values.password);
-
-      axios
-        .post("http://localhost:5000/create_User", values)
-        .then((res) => {
-          console.log(res.data);
-          // setLoading(false);
-          // if (res.data.length === 0) {
-          //   openNotificationWithIcon("error");
-          // } else {
-          //   openNotificationWithIcon("success");
-          //   dispatch(handleLogin({ name: "harman" }));
-          //   getUsers();
-          //   form.resetFields();
-          //   setIsModalOpen(false);
-          // }
-        })
-        .catch((err) => {
-          setLoading(false);
-          console.log(err);
-        });
-    } else {
-      console.log(values);
-      values.id = activeId;
-      axios
-        .post("http://localhost:5000/update_User", values)
-        .then((res) => {
-          setLoading(false);
-          if (res.data.length === 0) {
-            openNotificationWithIcon("error");
-          } else {
-            openNotificationWithIcon("success");
-            dispatch(handleLogin({ name: "harman" }));
-            getUsers();
-            setIsModalOpen(false);
-          }
-        })
-        .catch((err) => {
-          setLoading(false);
-          console.log(err);
-        });
-    }
+    //   if (activeId == "") {
+    //     setLoading(true);
+    //     let data = new FormData();
+    //     data.append("email", values.email);
+    //     data.append("emp_code", values.emp_code);
+    //     data.append("f_name", values.f_name);
+    //     data.append("l_name", values.l_name);
+    //     data.append("image", "image");
+    //     data.append("job_title", values.job_title);
+    //     data.append("password", values.password);
+    //     axios
+    //       .post("http://localhost:5000/create_User", values)
+    //       .then((res) => {
+    //         console.log(res.data);
+    //         // setLoading(false);
+    //         // if (res.data.length === 0) {
+    //         //   openNotificationWithIcon("error");
+    //         // } else {
+    //         //   openNotificationWithIcon("success");
+    //         //   dispatch(handleLogin({ name: "harman" }));
+    //         //   getUsers();
+    //         //   form.resetFields();
+    //         //   setIsModalOpen(false);
+    //         // }
+    //       })
+    //       .catch((err) => {
+    //         setLoading(false);
+    //         console.log(err);
+    //       });
+    //   } else {
+    //     console.log(values);
+    //     values.id = activeId;
+    //     axios
+    //       .post("http://localhost:5000/update_User", values)
+    //       .then((res) => {
+    //         setLoading(false);
+    //         if (res.data.length === 0) {
+    //           openNotificationWithIcon("error");
+    //         } else {
+    //           openNotificationWithIcon("success");
+    //           dispatch(handleLogin({ name: "harman" }));
+    //           getUsers();
+    //           setIsModalOpen(false);
+    //         }
+    //       })
+    //       .catch((err) => {
+    //         setLoading(false);
+    //         console.log(err);
+    //       });
+    //   }
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -318,7 +335,7 @@ const ManageAccount = () => {
                       <Col span={12}>
                         <Form.Item
                           label="Employee"
-                          name="employee"
+                          name="employee_id"
                           rules={[
                             {
                               required: true,
@@ -331,11 +348,34 @@ const ManageAccount = () => {
                             allowClear
                             className="myAntIptSelect2"
                           >
-                            <Option value="1">Software Enginner</Option>
-                            <Option value="2">Software Developer</Option>
-                            <Option value="3">QA Engineer</Option>
-                            <Option value="4">Frontend Developer</Option>
-                            <Option value="5">Backend Developer</Option>
+                            {emp.map((x, i) => {
+                              return (
+                                <Option key={i} value={x._id}>
+                                  {x.f_name} {x.l_name}
+                                </Option>
+                              );
+                            })}
+                          </Select>
+                        </Form.Item>
+                      </Col>
+                      <Col span={12}>
+                        <Form.Item
+                          label="Role"
+                          name="employee_type"
+                          rules={[
+                            {
+                              required: true,
+                              message: "Please input your Employee Role!",
+                            },
+                          ]}
+                        >
+                          <Select
+                            placeholder="Select Employee Role"
+                            allowClear
+                            className="myAntIptSelect2"
+                          >
+                            <Option value="hr">HR</Option>
+                            <Option value="emp">Employee</Option>
                           </Select>
                         </Form.Item>
                       </Col>

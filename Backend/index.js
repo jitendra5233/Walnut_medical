@@ -34,16 +34,14 @@ const docUpload = upload.single("file");
 require("dotenv").config();
 
 let app = express();
-let port = 5000;
+let port = process.env.PORT;
 
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose
-  .connect(
-    "mongodb+srv://harman:qT5otKfu6HOCqG3y@documentmanagementsyste.wgavprz.mongodb.net/?retryWrites=true&w=majority"
-  )
+  .connect(process.env.MONGO_DB)
   .then(() => {
     console.log("Connected!");
     app.listen(port, () => {
@@ -85,7 +83,16 @@ app.post("/create_User", async (req, res) => {
 
 app.get("/usres", async (req, res) => {
   try {
-    const users = await Users.find({});
+    let users = await Users.find({});
+
+    await users.map(async (x) => {
+      let otherData = await EmployeeSchema.find({ _id: x.employee_id });
+      // // if (otherData.length != 0) {
+      x.f_name = "Harman";
+      // console.log(otherData[0].f_name);
+      // }
+    });
+
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -819,14 +826,22 @@ app.delete("/delete_item/:id", async (req, res) => {
 
 app.post("/update-expense", async (req, res) => {
   try {
-    const { id, item_name, paid_amount, quantity, r_getamt, r_paidamt } =
-      req.body;
+    const {
+      id,
+      item_name,
+      paid_amount,
+      quantity,
+      r_getamt,
+      r_paidamt,
+      buying_date,
+    } = req.body;
     const result = await Expense.findByIdAndUpdate(id, {
       item_name,
       paid_amount,
       quantity,
       r_getamt,
       r_paidamt,
+      buying_date,
     });
     if (!result) {
       return res
@@ -1377,6 +1392,7 @@ app.post("/update_websetting", upload.single("image"), async (req, res) => {
       smtp_username,
       smtp_password,
       img: imgLocation,
+      loginimg: "null",
       socialIcons: websetting.socialIcons,
     };
 
@@ -1385,6 +1401,42 @@ app.post("/update_websetting", upload.single("image"), async (req, res) => {
     res.status(200).json({ status: true });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/update_loginimage", async (req, res) => {
+  try {
+    await doc1Upload(req, res);
+    await Websetting.findByIdAndUpdate(req.body.id, {
+      loginimg: req.file.location,
+    });
+
+    res.status(200).json({ status: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+app.post("/update_logo", async (req, res) => {
+  try {
+    await doc1Upload(req, res);
+    await Websetting.findByIdAndUpdate(req.body.id, {
+      img: req.file.location,
+    });
+
+    res.status(200).json({ status: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/deleteloginimg", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const result = await Websetting.deleteOne({ _id: id });
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -1714,5 +1766,300 @@ app.delete("/delete_employeeexit/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+});
+
+// Admin Profile Api
+
+app.post("/update_password", async (req, res) => {
+  const { id, oldpassword, newpassword } = req.body;
+  try {
+    const user = await Users.findOne({ _id: id });
+    if (!user) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    if (oldpassword == user.password) {
+      user.password = newpassword;
+      await user.save();
+
+      res.json({ message: "Password updated successfully" });
+    }
+    if (oldpassword != user.password) {
+      res.json({ message: "Old Password does Not Matched!" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update password" });
+  }
+});
+
+app.post("/usresdata", async (req, res) => {
+  try {
+    const { id } = req.body;
+    await Users.findOne({ _id: id }).then(function (doc) {
+      res.status(200).json(doc);
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/update_adminprofilepic", async (req, res) => {
+  try {
+    await doc1Upload(req, res);
+    await Users.findByIdAndUpdate(req.body.id, {
+      img: req.file.location,
+    });
+
+    res.status(200).json({ status: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/update_profile", upload.single("image"), async (req, res) => {
+  try {
+    const {
+      id,
+      l_name: l_name,
+      f_name: f_name,
+      job_title: job_title,
+      emp_code: emp_code,
+      department: department,
+    } = req.body;
+
+    if (req.file) {
+      const imgLocation = req.file.location;
+      await Users.findByIdAndUpdate(id, {
+        l_name: l_name,
+        f_name: f_name,
+        job_title: job_title,
+        emp_code: emp_code,
+        department: department,
+        img: imgLocation,
+      });
+    } else {
+      await Users.findByIdAndUpdate(id, {
+        l_name: l_name,
+        f_name: f_name,
+        job_title: job_title,
+        emp_code: emp_code,
+        department: department,
+      });
+    }
+    res.status(200).json({ status: true });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+//Get DashBoard Data
+app.get("/getAllEmployeedata", async (req, res) => {
+  try {
+    const totalEmployeeCount = await EmployeeSchema.countDocuments();
+    res.status(200).json(totalEmployeeCount);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getAllPermanentEmployeedata", async (req, res) => {
+  try {
+    const permanentEmployeeCount = await EmployeeSchema.countDocuments({
+      emp_status: "permanent",
+    });
+    res.status(200).json(permanentEmployeeCount);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getAllInternEmployeedata", async (req, res) => {
+  try {
+    const inetrnEmployeeCount = await EmployeeSchema.countDocuments({
+      emp_status: "intern",
+    });
+    res.status(200).json(inetrnEmployeeCount);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getJobPositions", async (req, res) => {
+  try {
+    const currentDate = new Date();
+    const currentYear = currentDate.getUTCFullYear();
+    const currentMonth = currentDate.getUTCMonth() + 1;
+    const currentMonthISO = `${currentYear}-${currentMonth
+      .toString()
+      .padStart(2, "0")}`;
+    const firstDayOfMonth = new Date(`${currentMonthISO}-01T00:00:00.000Z`);
+    const lastDayOfMonth = new Date(
+      new Date(firstDayOfMonth).setUTCMonth(firstDayOfMonth.getUTCMonth() + 1) -
+        1
+    );
+    const query = {
+      createdAt: {
+        $gte: firstDayOfMonth,
+        $lte: lastDayOfMonth,
+      },
+    };
+    const jobPositionCount = await DepartmentPositions.countDocuments(query);
+    const hiredEmployee = await DepartmentPositionsCandidate.countDocuments({
+      hired: true,
+      ...query,
+    }); // Spread the query object here
+    if (jobPositionCount != 0) {
+      hiredCandidatePer = ((hiredEmployee / jobPositionCount) * 100).toFixed(2);
+      jobOpeningper = 100;
+    } else {
+      hiredCandidatePer = 0;
+      jobOpeningper = 0;
+    }
+    res
+      .status(200)
+      .json({ jobPositionCount, hiredEmployee, hiredCandidatePer }); // Corrected response format
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// app.get("/getHiredCandidatecount", async (req, res) => {
+//   try {
+//     const hiredEmployee = await DepartmentPositionsCandidate.countDocuments({ hired: true });
+//     res.status(200).json(hiredEmployee);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+// app.get("/getHiredCandidatePercentage", async (req, res) => {
+//   try {
+//     const hiredEmployee = await DepartmentPositionsCandidate.countDocuments({ hired: true });
+//     const totalJobPositions = await DepartmentPositions.countDocuments();
+//     const hiredCandidatePer = (hiredEmployee / totalJobPositions * 100).toFixed(2);
+//     res.status(200).json(hiredCandidatePer);
+//   } catch (err) {
+//     res.status(500).json({ message: err.message });
+//   }
+// });
+
+app.get("/totalItemQuantity", async (req, res) => {
+  try {
+    const totalQuantityResult = await Inventoryitem.aggregate([
+      { $group: { _id: null, totalQuantity: { $sum: "$quantity" } } },
+    ]);
+    const totalAssignedQuantityResult = await Enventory.aggregate([
+      { $group: { _id: null, totalQuantity: { $sum: "$quantity" } } },
+    ]);
+    const TotalLossAndDamageQuantityResult = await Inventoryitem.aggregate([
+      { $group: { _id: null, totalQuantity: { $sum: "$lossDamageItem" } } },
+    ]);
+    const totalQuantity =
+      totalQuantityResult.length > 0 ? totalQuantityResult[0].totalQuantity : 0;
+    const totalAssignedQuantity =
+      totalAssignedQuantityResult.length > 0
+        ? totalAssignedQuantityResult[0].totalQuantity
+        : 0;
+    const TotalLossAndDamageQuantity =
+      TotalLossAndDamageQuantityResult.length > 0
+        ? TotalLossAndDamageQuantityResult[0].totalQuantity
+        : 0;
+
+    // Calculate the total available quantity
+    const totalAvailableQuantity =
+      totalQuantity - totalAssignedQuantity - TotalLossAndDamageQuantity;
+
+    // Calculate the percentage of available items
+    const totalAvailableItemPer = (
+      (totalAvailableQuantity / totalQuantity) *
+      100
+    ).toFixed(2);
+    const totalLossDamageItemPer = (
+      (TotalLossAndDamageQuantity / totalQuantity) *
+      100
+    ).toFixed(2);
+
+    // Return the results as a response
+    res.status(200).json({
+      totalQuantity,
+      totalAssignedQuantity,
+      totalAvailableQuantity,
+      totalAvailableItemPer,
+      TotalLossAndDamageQuantity,
+      totalLossDamageItemPer,
+    });
+  } catch (err) {
+    // Handle errors
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getAssignedItemWithPercentage", async (req, res) => {
+  try {
+    const totalQuantityResult = await Inventoryitem.aggregate([
+      { $group: { _id: null, totalQuantity: { $sum: "$quantity" } } },
+    ]);
+    const totalAssignedQuantityResult = await Enventory.aggregate([
+      { $group: { _id: null, totalQuantity: { $sum: "$quantity" } } },
+    ]);
+    const totalQuantity =
+      totalQuantityResult.length > 0 ? totalQuantityResult[0].totalQuantity : 0;
+    const totalAssignedQuantity =
+      totalAssignedQuantityResult.length > 0
+        ? totalAssignedQuantityResult[0].totalQuantity
+        : 0;
+    const assignedPercentage = (
+      (totalAssignedQuantity / totalQuantity) *
+      100
+    ).toFixed(2);
+    res.status(200).json({
+      assignedPercentage,
+      totalAssignedQuantity,
+    });
+  } catch (err) {
+    // Handle errors
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/totalClientwithPercentage", async (req, res) => {
+  try {
+    const totalClient = await ClientAccount.countDocuments();
+    if (totalClient != 0) {
+      const newClient = await ClientAccount.countDocuments({
+        client_status: "new",
+      });
+      const oldClient = await ClientAccount.countDocuments({
+        client_status: "old",
+      });
+      const oldClientPer = ((oldClient / totalClient) * 100).toFixed(2);
+      const newClientPer = ((newClient / totalClient) * 100).toFixed(2);
+      const totalClientPer = 100;
+      res.status(200).json({
+        totalClientPer,
+        newClient,
+        oldClient,
+        newClientPer,
+        oldClientPer,
+        totalClient,
+      });
+    } else {
+      const totalClientPer = 0;
+      const newClient = 0;
+      const oldClient = 0;
+      const newClientPer = 0;
+      const oldClientPer = 0;
+      res.status(200).json({
+        totalClientPer,
+        newClient,
+        oldClient,
+        newClientPer,
+        oldClientPer,
+        totalClient,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
   }
 });

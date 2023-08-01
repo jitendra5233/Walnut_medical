@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Progress, Tooltip, Avatar } from "antd";
-
+import axios from "axios";
 const myStyle = {
   cardTxtContainer: {
     display: "flex",
@@ -19,8 +19,9 @@ const CardComp = ({
   sno2,
   sno3,
   sno4,
+  sno5,
+  sno6,
 }) => {
-  console.log(title);
   return (
     <Card className="dashboardCard">
       <div style={myStyle.cardTxtContainer}>
@@ -118,7 +119,7 @@ const CardComp = ({
             {threetxt}
           </div>
           <div>
-            {sno3} {sno4}
+            {sno5} {sno6}
           </div>
         </div>
       ) : (
@@ -129,59 +130,228 @@ const CardComp = ({
 };
 
 export const Dashboard = () => {
+  useEffect(() => {
+    getAllInternEmployee();
+    getAllpermanetEmployee();
+    // getHiredCandidate();
+    getJobPositions();
+    getAllEmployee();
+    // getHiredCandidatePercentage();
+    totalItemQuantity();
+    getAssignedItemWithPercentage();
+    totalClientwithPercentage();
+  }, []);
+  const [EmployeeCount, setEmployeeCount] = useState("2");
+  const [InterEmployee, setInterEmployee] = useState("1");
+  const [PermanentEmployee, setPermanentEmployee] = useState("1");
+  const [PermanentEmpPer, setPermanentEmpPer] = useState("0%");
+  const [InterEmpPer, setInterEmpPer] = useState("0%");
+  const [JobPositions, setJobPositions] = useState("0");
+  const [hiredCandidate, sethiredCandidate] = useState("0");
+  const [hiredCandidatePer, sethiredCandidatePer] = useState("0%");
+  const [jobOpeningPer, setjobOpeningPer] = useState("0%");
+  const [TotalItem, setTotalItem] = useState("0");
+  const [AssignedItem, setAssignedItem] = useState("0");
+  const [AssignedItemPer, setAssignedItemPer] = useState("0%");
+  const [TotalAvailableItem, setTotalAvailableItem] = useState("0");
+  const [totalAvailableItemPer, settotalAvailableItemPer] = useState("0%");
+  const [TotalLossDamageItem, setTotalLossDamageItem] = useState("0");
+  const [totalLossDamageItemPer, settotalLossDamageItemPer] = useState("0%");
+  const [totalClient, setTotalClient] = useState("0");
+  const [newClient, setNewClient] = useState("0");
+  const [oldClient, setOldClient] = useState("0");
+  const [newClientPer, setNewClientPer] = useState("0%");
+  const [oldClientPer, setOldClientPer] = useState("0");
+  const [totalClientPer, setTotalClientPer] = useState("0%");
+  
+  const getAllEmployee = () => {
+    axios
+      .get("http://localhost:5000/getAllEmployeedata")
+      .then((result) => {
+        let data = result.data;
+        setEmployeeCount(data);
+        setInterEmployee(1);
+        setPermanentEmployee(1);
+        let PermanentEmpPer = (1 / 2) * (100).toFixed(2) + "%";
+        let InterEmpPer = (1 / 2) * (100).toFixed(2) + "%";
+        setPermanentEmpPer(PermanentEmpPer);
+        setInterEmpPer(InterEmpPer);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getAllpermanetEmployee = () => {
+    axios
+      .get("http://localhost:5000/getAllPermanentEmployeedata")
+      .then((result) => {
+        let data = result.data;
+        setPermanentEmployee(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getAllInternEmployee = () => {
+    axios
+      .get("http://localhost:5000/getAllInternEmployeedata")
+      .then((result) => {
+        let data = result.data;
+        setInterEmployee(data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // const getHiredCandidate = () => {
+  //   axios
+  //     .get("http://localhost:5000/getHiredCandidatecount")
+  //     .then((result) => {
+  //       let data = result.data;
+  //       sethiredCandidate(data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
+  const getJobPositions = () => {
+    axios
+      .get("http://localhost:5000/getJobPositions")
+      .then((result) => {
+        let data = result.data;
+        setJobPositions(data.jobPositionCount);
+        sethiredCandidate(data.hiredEmployee);
+        sethiredCandidatePer(data.hiredCandidatePer + "%");
+        setjobOpeningPer=(data.jobOpeningper + "%");
+        
+        // sethiredCandidatePer(hiredCandidatePer);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  // const getHiredCandidatePercentage = () => {
+  //   axios
+  //     .get("http://localhost:5000/getHiredCandidatePercentage")
+  //     .then((result) => {
+  //       let data = result.data;
+  //       sethiredCandidatePer(data + "%");
+  //     })
+  //     .catch((err) => {
+  //       console.log(err);
+  //     });
+  // };
+
+  const totalItemQuantity = () => {
+    axios
+      .get("http://localhost:5000/totalItemQuantity")
+      .then((result) => {
+        let data = result.data;
+        setTotalItem(data.totalQuantity);
+        setTotalAvailableItem(data.totalAvailableQuantity);
+        settotalAvailableItemPer(data.totalAvailableItemPer + "%");
+        setTotalLossDamageItem(data.TotalLossAndDamageQuantity);
+        settotalLossDamageItemPer(data.totalLossDamageItemPer + "%");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const getAssignedItemWithPercentage = () => {
+    axios
+      .get("http://localhost:5000/getAssignedItemWithPercentage")
+      .then((result) => {
+        let data = result.data;
+        setAssignedItem(data.totalAssignedQuantity);
+        setAssignedItemPer(data.assignedPercentage + "%");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const totalClientwithPercentage = () => {
+    axios
+      .get("http://localhost:5000/totalClientwithPercentage")
+      .then((result) => {
+        let data = result.data;
+        console.log(data);
+        setTotalClient(data.totalClient);
+        setNewClient(data.newClient);
+        setOldClient(data.oldClient);
+        setNewClientPer(data.newClientPer + "%");
+        setOldClientPer(data.oldClientPer + "%");
+        setTotalClientPer(data.totalClientPer + "%");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <div>
       <Row>
         <Col span={12} style={{ padding: "20px" }}>
           <CardComp
             title="Total No of employees"
-            totalNo="60"
+            totalNo={EmployeeCount}
             onetxt="Permanent"
-            twotxt="Contract"
+            twotxt="Intern"
             threetxt=""
-            sno1="40"
-            sno2="60%"
-            sno3="40"
-            sno4="60%"
-          />
-        </Col>
-        <Col span={12} style={{ padding: "20px" }}>
-          <CardComp
-            title="Total items in inventory"
-            totalNo="60"
-            onetxt="Given"
-            twotxt="Lost"
-            threetxt="Damaged"
-            sno1="40"
-            sno2="60%"
-            sno3="40"
-            sno4="60%"
+            sno1={PermanentEmployee}
+            sno2={PermanentEmpPer}
+            sno3={InterEmployee}
+            sno4={InterEmpPer}
           />
         </Col>
         <Col span={12} style={{ padding: "20px" }}>
           <CardComp
             title="Job positions this month"
-            totalNo="60"
-            onetxt="Offer"
-            twotxt="Hired"
-            threetxt="Opening"
-            sno1="40"
-            sno2="60%"
-            sno3="40"
-            sno4="60%"
+            totalNo={JobPositions}
+            onetxt="Hired"
+            twotxt="Opening"
+            threetxt=""
+            sno1={hiredCandidate}
+            sno2={hiredCandidatePer}
+            sno3={JobPositions}
+            sno4={jobOpeningPer}
           />
         </Col>
+
+        <Col span={12} style={{ padding: "20px" }}>
+          <CardComp
+            title="Total items in inventory"
+            totalNo={TotalItem}
+            onetxt="Assigned"
+            twotxt="Available"
+            threetxt="Loss/Damage"
+            sno1={AssignedItem}
+            sno2={AssignedItemPer}
+            sno3={TotalAvailableItem}
+            sno4={totalAvailableItemPer}
+            sno5={TotalLossDamageItem}
+            sno6={totalLossDamageItemPer}
+          />
+        </Col>
+
         <Col span={12} style={{ padding: "20px" }}>
           <CardComp
             title="Client Accounts"
-            totalNo="60"
-            onetxt="Existing Client"
+            totalNo={totalClient}
+            onetxt="New Client"
             twotxt="Old Clients"
             threetxt="Total Clients"
-            sno1="40"
-            sno2="60%"
-            sno3="40"
-            sno4="60%"
+            sno1={newClient}
+            sno2={newClientPer}
+            sno3={oldClient}
+            sno4={oldClientPer}
+            sno5={totalClient}
+            sno6={totalClientPer}
           />
         </Col>
       </Row>

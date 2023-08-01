@@ -24,7 +24,6 @@ const { confirm } = Modal;
 const ShowExpense = () => {
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
-
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {

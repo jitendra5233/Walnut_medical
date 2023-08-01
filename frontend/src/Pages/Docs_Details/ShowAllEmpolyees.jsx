@@ -519,7 +519,7 @@ const ShowAllEmpolyees = () => {
                   img={profile_img}
                   name={`${f_name} ${l_name}`}
                   designation={designation}
-                  getEmployee={getEmployee()}
+                  getEmployee={() => getEmployee()}
                 />
               </Col>
             );

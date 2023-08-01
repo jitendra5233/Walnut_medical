@@ -119,7 +119,6 @@ const EmployeeExit = () => {
         <div>
           <Link to={`/view-employeeexit/${record.key}`}>
             <a>
-              {" "}
               <span>
                 <EyeOutlined style={{ cursor: "pointer" }} />
               </span>

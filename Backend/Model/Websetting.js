@@ -34,6 +34,10 @@ const Websetting = mongoose.Schema(
       type: String,
       required: true,
     },
+    loginimg: {
+      type: String,
+      required: true,
+    },
     smtp_host: {
       type: String,
       required: true,
