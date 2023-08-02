@@ -27,7 +27,7 @@ const ShowLossDamage = () => {
 
   const getInventory = () => {
     axios
-      .get("http://localhost:5000/GetDamageItem")
+      .get(process.env.REACT_APP_API_URL + "/GetDamageItem")
       .then((result) => {
         let data = result.data;
         let newData = [];

@@ -188,7 +188,9 @@ const ShowHiredCandidate = () => {
 
   const handleDelete = () => {
     axios
-      .post("http://localhost:5000/delete_candidate", { id: activeId })
+      .post(process.env.REACT_APP_API_URL + "/delete_candidate", {
+        id: activeId,
+      })
       .then((result) => {
         let data = result.data;
 
@@ -202,7 +204,7 @@ const ShowHiredCandidate = () => {
 
   const getUsers = () => {
     axios
-      .get("http://localhost:5000/getRejectedCandidate")
+      .get(process.env.REACT_APP_API_URL + "/getRejectedCandidate")
       .then((result) => {
         let data = result.data;
 

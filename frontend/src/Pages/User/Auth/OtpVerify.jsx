@@ -59,7 +59,7 @@ const OtpVerify = () => {
     setLoading(true);
     let token = selector.user.token;
     axios
-      .post("http://localhost:5000/verifyotp", { token: token, otp })
+      .post(process.env.REACT_APP_API_URL + "/verifyotp", { token: token, otp })
       .then((res) => {
         setLoading(false);
         let data = res.data;

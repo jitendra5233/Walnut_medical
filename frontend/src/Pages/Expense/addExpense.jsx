@@ -14,7 +14,7 @@ const AddExpense = () => {
   const onFinish = (values) => {
     setLoading(true);
     axios
-      .post("http://localhost:5000/create_expense", values)
+      .post(process.env.REACT_APP_API_URL + "/create_expense", values)
       .then((res) => {
         setLoading(false);
         form.resetFields();

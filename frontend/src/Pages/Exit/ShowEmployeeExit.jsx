@@ -17,7 +17,7 @@ const ShowEmployeeExit = () => {
   const [accountData, setAccountData] = useState([]);
   const getExitEmployeeDocs = () => {
     axios
-      .post("http://localhost:5000/getexitemployeedocs", { id })
+      .post(process.env.REACT_APP_API_URL + "/getexitemployeedocs", { id })
       .then((result) => {
         const data = result.data;
 
@@ -38,7 +38,7 @@ const ShowEmployeeExit = () => {
   };
   const getEmployeeExit = () => {
     axios
-      .get("http://localhost:5000/GetEmployeeExit")
+      .get(process.env.REACT_APP_API_URL + "/GetEmployeeExit")
       .then((result) => {
         let data = result.data;
         console.log(data);

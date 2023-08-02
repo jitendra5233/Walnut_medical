@@ -144,7 +144,7 @@ const ManageAccount = () => {
 
   const getEmployee = () => {
     axios
-      .get("http://localhost:5000/getAllEmployee")
+      .get(process.env.REACT_APP_API_URL + "/getAllEmployee")
       .then((res) => {
         setEmp(res.data);
         getUsers(res.data);
@@ -173,7 +173,7 @@ const ManageAccount = () => {
 
   const handleDelete = (id) => {
     axios
-      .post("http://localhost:5000/delete_user", { id })
+      .post(process.env.REACT_APP_API_URL + "/delete_user", { id })
       .then((result) => {
         let data = result.data;
 
@@ -187,7 +187,7 @@ const ManageAccount = () => {
 
   const getUsers = (p_data = []) => {
     axios
-      .get("http://localhost:5000/usres")
+      .get(process.env.REACT_APP_API_URL + "/usres")
       .then((result) => {
         let data = result.data;
 
@@ -231,7 +231,7 @@ const ManageAccount = () => {
   const handleSubmit = (values) => {
     if (activeId == "") {
       axios
-        .post("http://localhost:5000/create_User", values)
+        .post(process.env.REACT_APP_API_URL + "/create_User", values)
         .then((res) => {
           console.log(res.data);
           setLoading(false);
@@ -250,7 +250,7 @@ const ManageAccount = () => {
     } else {
       values.id = activeId;
       axios
-        .post("http://localhost:5000/update_User", values)
+        .post(process.env.REACT_APP_API_URL + "/update_User", values)
         .then((res) => {
           setLoading(false);
           if (res.data.length === 0) {
@@ -278,7 +278,7 @@ const ManageAccount = () => {
     //     data.append("job_title", values.job_title);
     //     data.append("password", values.password);
     //     axios
-    //       .post("http://localhost:5000/create_User", values)
+    //       .post(process.env.REACT_APP_API_URL + "/create_User", values)
     //       .then((res) => {
     //         console.log(res.data);
     //         // setLoading(false);
@@ -300,7 +300,7 @@ const ManageAccount = () => {
     //     console.log(values);
     //     values.id = activeId;
     //     axios
-    //       .post("http://localhost:5000/update_User", values)
+    //       .post(process.env.REACT_APP_API_URL + "/update_User", values)
     //       .then((res) => {
     //         setLoading(false);
     //         if (res.data.length === 0) {

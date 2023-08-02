@@ -53,7 +53,7 @@ const ChangePasword = () => {
     };
 
     axios
-      .post("http://localhost:5000/updatePassword", obj)
+      .post(process.env.REACT_APP_API_URL + "/updatePassword", obj)
       .then((res) => {
         setLoading(false);
         if (res.data.length === 0) {

@@ -50,6 +50,9 @@ import EmployeeAppraisal from "./Pages/Docs_Details/EmployeeAppraisal";
 import EmployeeDocs from "./Pages/Docs_Details/EmployeeDocs";
 import ManageAccount from "./Pages/ManageAccounts/ManageAccount";
 import AdminProfile from "./Pages/Profile/AdminProfile";
+import AllMessage from "./Pages/EmployeeInquiry/AllMessage";
+import AnonymousMessage from "./Pages/EmployeeInquiry/AnonymousMessage";
+import EmployeeMessage from "./Pages/EmployeeInquiry/EmployeeMessage";
 
 const router = createHashRouter(
   createRoutesFromElements(
@@ -83,6 +86,10 @@ const router = createHashRouter(
         <Route path="/employee-docs/:id" element={<EmployeeDocs />} />
         <Route path="/employee-appraisal/:id" element={<EmployeeAppraisal />} />
         <Route path="/manage-accounts" element={<ManageAccount />} />
+
+        <Route path="/anonymous-message" element={<AnonymousMessage />} />
+        <Route path="/employee-message" element={<EmployeeMessage />} />
+        <Route path="/all-message" element={<AllMessage />} />
 
         {/* jitendra */}
         <Route path="/add-expense" element={<AddExpense />} />

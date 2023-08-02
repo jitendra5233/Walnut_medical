@@ -14,7 +14,7 @@ const EmployeeExit = () => {
   }, []);
   const getEmployeeExit = () => {
     axios
-      .get("http://localhost:5000/GetEmployeeExit")
+      .get(process.env.REACT_APP_API_URL + "/GetEmployeeExit")
       .then((result) => {
         let data = result.data;
         console.log(data);
@@ -56,7 +56,7 @@ const EmployeeExit = () => {
 
   const deleteItem = (id) => {
     axios
-      .delete(`http://localhost:5000/delete_employeeexit/${id}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete_employeeexit/${id}`)
       .then((response) => {
         console.log(response.data);
         setTableData((prevData) => prevData.filter((item) => item.key !== id));

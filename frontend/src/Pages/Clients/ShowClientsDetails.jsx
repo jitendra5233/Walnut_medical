@@ -48,7 +48,7 @@ const ShowClientsDetails = () => {
 
   const getAccountDetails = () => {
     axios
-      .get("http://localhost:5000/getAccountDetails")
+      .get(process.env.REACT_APP_API_URL + "/getAccountDetails")
       .then((result) => {
         let data = result.data;
         setAcountdata(data);
@@ -62,7 +62,7 @@ const ShowClientsDetails = () => {
   const getSocialAccountDetails = async () => {
     try {
       const result = await axios.get(
-        "http://localhost:5000/getsocialAccountDeatils"
+        process.env.REACT_APP_API_URL + "/getsocialAccountDeatils"
       );
       const data = result.data;
       setSocialAcountdata(data);
@@ -170,7 +170,7 @@ const ShowClientsDetails = () => {
     data.append("password", values.password);
     data.append("client_status", "new");
     axios
-      .post("http://localhost:5000/create_clientAccount", data)
+      .post(process.env.REACT_APP_API_URL + "/create_clientAccount", data)
       .then((res) => {
         handleCancel(true);
         form.resetFields();
@@ -204,7 +204,7 @@ const ShowClientsDetails = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:5000/create_clientSocilaAccount",
+        process.env.REACT_APP_API_URL + "/create_clientSocilaAccount",
         data
       );
       if (response.status === 200) {
@@ -268,7 +268,7 @@ const ShowClientsDetails = () => {
       data.append("password", values.password);
 
       const response = await axios.post(
-        "http://localhost:5000/update_clientAccount",
+        process.env.REACT_APP_API_URL + "/update_clientAccount",
         data
       );
       form.resetFields();
@@ -299,7 +299,7 @@ const ShowClientsDetails = () => {
 
   const deleteItem = (id) => {
     axios
-      .delete(`http://localhost:5000/delete_account/${id}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete_account/${id}`)
       .then((response) => {
         console.log(response.data);
         const updatedData = getAcountdata.filter(
@@ -339,7 +339,7 @@ const ShowClientsDetails = () => {
 
   const deleteIcon = (id) => {
     axios
-      .delete(`http://localhost:5000/delete_socialaccount/${id}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete_socialaccount/${id}`)
       .then((response) => {
         console.log(response.data);
         const updatedData = getSocialAcountdata.filter(
@@ -359,7 +359,7 @@ const ShowClientsDetails = () => {
   const [iconName, seticonName] = useState([]);
   const handleShow = (id) => {
     axios
-      .get(`http://localhost:5000/getsocialmedia/${id}`)
+      .get(`process.env.REACT_APP_API_URL + "/getsocialmedia/${id}`)
       .then((response) => {
         showModal4();
         let data = response.data;
@@ -382,7 +382,7 @@ const ShowClientsDetails = () => {
     seticonName(values.icon_name);
     values.id = iconId;
     axios
-      .post("http://localhost:5000/update-icon", values)
+      .post(process.env.REACT_APP_API_URL + "/update-icon", values)
       .then((res) => {
         if (res !== "") {
           getSocialAccountDetails();
@@ -398,7 +398,7 @@ const ShowClientsDetails = () => {
 
   const handleMove = (id) => {
     axios
-      .post("http://localhost:5000/update-clientstatus", {
+      .post(process.env.REACT_APP_API_URL + "/update-clientstatus", {
         id,
         client_status: "old",
       })

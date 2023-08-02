@@ -55,7 +55,7 @@ const ShowIssuedEnventory = () => {
 
   const getInventory = () => {
     axios
-      .get("http://localhost:5000/getItem")
+      .get(process.env.REACT_APP_API_URL + "/getItem")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -109,7 +109,7 @@ const ShowIssuedEnventory = () => {
     let FinalAvailableItem = values.availableItem + AvailableItem;
     values.availableItem = FinalAvailableItem;
     axios
-      .post("http://localhost:5000/update-item", values)
+      .post(process.env.REACT_APP_API_URL + "/update-item", values)
       .then((res) => {
         if (res !== "") {
           getInventory();
@@ -142,7 +142,7 @@ const ShowIssuedEnventory = () => {
 
   const deleteItem = (itemId) => {
     axios
-      .delete(`http://localhost:5000/delete_item/${itemId}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete_item/${itemId}`)
       .then((response) => {
         console.log(response.data);
         setTableData((prevData) =>
@@ -166,7 +166,7 @@ const ShowIssuedEnventory = () => {
       values.setSuggestedId = 0;
     }
     axios
-      .post("http://localhost:5000/add-item", values)
+      .post(process.env.REACT_APP_API_URL + "/add-item", values)
       .then((res) => {
         if (res != "") {
           getInventory();
@@ -186,7 +186,7 @@ const ShowIssuedEnventory = () => {
   const handleSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`http://localhost:5000/items/searchItem?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/items/searchItem?query=${value}`)
       .then((response) => {
         const items = response.data;
         console.log(items);

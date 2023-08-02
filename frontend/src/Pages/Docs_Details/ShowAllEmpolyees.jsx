@@ -42,7 +42,7 @@ const EmployeeCard = ({
 
   const SaveAsOldEmployee = () => {
     axios
-      .post("http://localhost:5000/saveToOldEmp", { id })
+      .post(process.env.REACT_APP_API_URL + "/saveToOldEmp", { id })
       .then((result) => {
         getEmployee();
         console.log(result);
@@ -185,7 +185,7 @@ const ShowAllEmpolyees = () => {
 
   const getTotalNoOfEmp = () => {
     axios
-      .get("http://localhost:5000/getTotalNumberOfEmp")
+      .get(process.env.REACT_APP_API_URL + "/getTotalNumberOfEmp")
       .then((res) => {
         let data = res.data + 1;
         form.setFieldsValue({
@@ -207,7 +207,7 @@ const ShowAllEmpolyees = () => {
 
   const getDepartments = () => {
     axios
-      .get("http://localhost:5000/getDepartment")
+      .get(process.env.REACT_APP_API_URL + "/getDepartment")
       .then((res) => {
         setAllDep(res.data);
       })
@@ -219,7 +219,9 @@ const ShowAllEmpolyees = () => {
   const getAllJobProfiles = (ref_id) => {
     console.log(ref_id);
     axios
-      .post("http://localhost:5000/getDepartmentPostions", { id: ref_id })
+      .post(process.env.REACT_APP_API_URL + "/getDepartmentPostions", {
+        id: ref_id,
+      })
       .then((res) => {
         setAllJobs(res.data);
       })
@@ -230,7 +232,7 @@ const ShowAllEmpolyees = () => {
 
   const getEmployee = () => {
     axios
-      .get("http://localhost:5000/getAllEmployee")
+      .get(process.env.REACT_APP_API_URL + "/getAllEmployee")
       .then((res) => {
         setAllEmp(res.data);
       })
@@ -279,7 +281,7 @@ const ShowAllEmpolyees = () => {
     values.photo = ProfileLink;
 
     axios
-      .post("http://localhost:5000/addNewEmployee", values)
+      .post(process.env.REACT_APP_API_URL + "/addNewEmployee", values)
       .then((res) => {
         setLoading(false);
         handleCancel();
@@ -308,7 +310,7 @@ const ShowAllEmpolyees = () => {
   const props1 = {
     name: "image",
     multiple: true,
-    action: "http://localhost:5000/uploadProfileImg",
+    action: process.env.REACT_APP_API_URL + "/uploadProfileImg",
     onChange(info) {
       const { status } = info.file;
       if (status !== "uploading") {

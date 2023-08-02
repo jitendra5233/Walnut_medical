@@ -194,7 +194,7 @@ const ShowHiredCandidate = () => {
 
   const getTotalNoOfEmp = () => {
     axios
-      .get("http://localhost:5000/getTotalNumberOfEmp")
+      .get(process.env.REACT_APP_API_URL + "/getTotalNumberOfEmp")
       .then((res) => {
         let data = res.data + 1;
         setTotalNoOfEmp(data);
@@ -217,7 +217,7 @@ const ShowHiredCandidate = () => {
         };
 
         axios
-          .post("http://localhost:5000/addNewEmployee", dataObj)
+          .post(process.env.REACT_APP_API_URL + "/addNewEmployee", dataObj)
           .then((res) => {
             message.success("Saved");
             getTotalNoOfEmp();
@@ -233,7 +233,9 @@ const ShowHiredCandidate = () => {
 
   const handleDelete = () => {
     axios
-      .post("http://localhost:5000/delete_candidate", { id: activeId })
+      .post(process.env.REACT_APP_API_URL + "/delete_candidate", {
+        id: activeId,
+      })
       .then((result) => {
         let data = result.data;
 
@@ -247,7 +249,7 @@ const ShowHiredCandidate = () => {
 
   const getUsers = () => {
     axios
-      .get("http://localhost:5000/getHiredCandidate")
+      .get(process.env.REACT_APP_API_URL + "/getHiredCandidate")
       .then((result) => {
         let data = result.data;
         setEmployees(data);
@@ -294,7 +296,7 @@ const ShowHiredCandidate = () => {
     //   data.append("password", values.password);
 
     //   axios
-    //     .post("http://localhost:5000/create_User", values)
+    //     .post(process.env.REACT_APP_API_URL + "/create_User", values)
     //     .then((res) => {
     //       console.log(res.data);
     //       // setLoading(false);
@@ -316,7 +318,7 @@ const ShowHiredCandidate = () => {
     //   console.log(values);
     //   values.id = activeId;
     //   axios
-    //     .post("http://localhost:5000/update_User", values)
+    //     .post(process.env.REACT_APP_API_URL + "/update_User", values)
     //     .then((res) => {
     //       setLoading(false);
     //       if (res.data.length === 0) {

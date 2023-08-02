@@ -158,7 +158,7 @@ const ShowPostions = () => {
 
   const getDepartment = () => {
     axios
-      .post("http://localhost:5000/getDepartmentPostions", {
+      .post(process.env.REACT_APP_API_URL + "/getDepartmentPostions", {
         id: r_prams.id,
       })
       .then((res) => {
@@ -183,7 +183,7 @@ const ShowPostions = () => {
     values.ref_id = r_prams.id;
     values.slug = createSlug(values.name);
     axios
-      .post("http://localhost:5000/addDepartmentPostions", values)
+      .post(process.env.REACT_APP_API_URL + "/addDepartmentPostions", values)
       .then((res) => {
         setLoading(false);
         handleCancel();

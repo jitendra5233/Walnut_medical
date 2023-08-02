@@ -105,7 +105,7 @@ const EmployeeAppraisal = () => {
 
   const handleDelete = (id, cureent_salary, ref_id) => {
     axios
-      .post("http://localhost:5000/handleDeleteAppriasal", {
+      .post(process.env.REACT_APP_API_URL + "/handleDeleteAppriasal", {
         id,
         s: cureent_salary,
         ref_id,
@@ -126,7 +126,7 @@ const EmployeeAppraisal = () => {
 
   const getDepartments = () => {
     axios
-      .get("http://localhost:5000/getDepartment")
+      .get(process.env.REACT_APP_API_URL + "/getDepartment")
       .then((res) => {
         setAllDep(res.data);
       })
@@ -137,7 +137,9 @@ const EmployeeAppraisal = () => {
 
   const getAllJobProfiles = (ref_id) => {
     axios
-      .post("http://localhost:5000/getDepartmentPostions", { id: ref_id })
+      .post(process.env.REACT_APP_API_URL + "/getDepartmentPostions", {
+        id: ref_id,
+      })
       .then((res) => {
         setAllJobs(res.data);
       })
@@ -148,7 +150,7 @@ const EmployeeAppraisal = () => {
 
   const getDetails = () => {
     axios
-      .post("http://localhost:5000/getCandidateDataByIdDetail", {
+      .post(process.env.REACT_APP_API_URL + "/getCandidateDataByIdDetail", {
         id: r_prams.id,
       })
       .then((res) => {
@@ -175,7 +177,7 @@ const EmployeeAppraisal = () => {
 
   const getApprisals = () => {
     axios
-      .post("http://localhost:5000/getAppraisal", { id: r_prams.id })
+      .post(process.env.REACT_APP_API_URL + "/getAppraisal", { id: r_prams.id })
       .then((res) => {
         let data = [];
 
@@ -207,7 +209,7 @@ const EmployeeAppraisal = () => {
     values.ref_id = r_prams.id;
 
     axios
-      .post("http://localhost:5000/addAppraisal", values)
+      .post(process.env.REACT_APP_API_URL + "/addAppraisal", values)
       .then((res) => {
         form2.resetFields();
         message.success("Added");

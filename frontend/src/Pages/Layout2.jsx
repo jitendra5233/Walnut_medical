@@ -140,7 +140,7 @@ const LayoutCom2 = () => {
       try {
         const { id, old_password, new_password } = values;
         const response = await axios.post(
-          "http://localhost:5000/update_password",
+          process.env.REACT_APP_API_URL + "/update_password",
           {
             id,
             oldpassword: old_password,
@@ -205,7 +205,7 @@ const LayoutCom2 = () => {
           width={250}
         >
           <img
-            src="../../logo.png"
+            src="./logo.png"
             alt=""
             style={{ width: "100%", padding: "44px 24px" }}
           />
@@ -347,13 +347,13 @@ const LayoutCom2 = () => {
               }
             >
               <Menu.Item key="13">
-                <Link to="/users">Anonymous message</Link>
+                <Link to="/anonymous-message">Anonymous message</Link>
               </Menu.Item>
               <Menu.Item key="14">
-                <Link to="/users">Employee message</Link>
+                <Link to="/employee-message">Employee message</Link>
               </Menu.Item>
               <Menu.Item key="15">
-                <Link to="/users">All message</Link>
+                <Link to="/all-message">All message</Link>
               </Menu.Item>
             </SubMenu>
             <SubMenu
@@ -486,13 +486,13 @@ const LayoutCom2 = () => {
                   >
                     <img
                       style={{ width: "22px", margin: "22px  0" }}
-                      src="/icon/bellicon.svg"
+                      src="./icon/bellicon.svg"
                     />
                   </Col>
                   <Col span={4} className="h64p">
                     <Avatar
                       size={35}
-                      src={<img src="/icon/userImg.png" alt="avatar" />}
+                      src={<img src="./icon/userImg.png" alt="avatar" />}
                       style={{ margin: " 0 15px" }}
                     />
                   </Col>
@@ -516,7 +516,7 @@ const LayoutCom2 = () => {
                         </div>
                         <img
                           style={{ margin: "0 20px" }}
-                          src="/icon/ArrowDown.png"
+                          src="./icon/ArrowDown.png"
                         />
                       </div>
                     </Popover>

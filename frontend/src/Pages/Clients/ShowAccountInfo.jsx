@@ -11,7 +11,7 @@ const ShowAccountInfo = () => {
   const [tableData, setTableData] = useState([]);
   const getAssignedEmplyee = () => {
     axios
-      .get("http://localhost:5000/getAssignedEmp")
+      .get(process.env.REACT_APP_API_URL + "/getAssignedEmp")
       .then((result) => {
         let data = result.data;
         let newData = [];

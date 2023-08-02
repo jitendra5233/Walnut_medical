@@ -77,7 +77,7 @@ const PostionCard = ({
 
   const RejectInterview = () => {
     axios
-      .post("http://localhost:5000/rejectInterview", { id })
+      .post(process.env.REACT_APP_API_URL + "/rejectInterview", { id })
       .then((res) => {
         message.success("Rejected");
         getDatFun();
@@ -90,7 +90,7 @@ const PostionCard = ({
 
   const handleHire = () => {
     axios
-      .post("http://localhost:5000/handleHire", { id })
+      .post(process.env.REACT_APP_API_URL + "/handleHire", { id })
       .then((res) => {
         message.success("Hired");
         getDatFun();
@@ -111,7 +111,7 @@ const PostionCard = ({
 
     values.id = id;
     axios
-      .post("http://localhost:5000/addInterviewData", values)
+      .post(process.env.REACT_APP_API_URL + "/addInterviewData", values)
       .then((res) => {
         setLoading(false);
         handleCancel();
@@ -162,7 +162,7 @@ const PostionCard = ({
     values.id = id;
 
     axios
-      .post("http://localhost:5000/addComment", values)
+      .post(process.env.REACT_APP_API_URL + "/addComment", values)
       .then((res) => {
         message.success("Comment Added");
         commentCancle();
@@ -590,7 +590,7 @@ const ShowCandidate = () => {
 
   const getDepartment = () => {
     axios
-      .post("http://localhost:5000/getPostionsCandidate", {
+      .post(process.env.REACT_APP_API_URL + "/getPostionsCandidate", {
         id: r_prams.id,
         name: r_prams.name,
       })
@@ -631,7 +631,7 @@ const ShowCandidate = () => {
     data.append("interview", false);
 
     axios
-      .post("http://localhost:5000/addPostionsCandidate", data)
+      .post(process.env.REACT_APP_API_URL + "/addPostionsCandidate", data)
       .then((res) => {
         setLoading(false);
         handleCancel();

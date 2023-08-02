@@ -15,7 +15,7 @@ const ShowAvailableItems = () => {
 
   const getInventory = () => {
     axios
-      .get("http://localhost:5000/getItemrecord")
+      .get(process.env.REACT_APP_API_URL + "/getItemrecord")
       .then((result) => {
         let data = result.data;
         let newData = [];

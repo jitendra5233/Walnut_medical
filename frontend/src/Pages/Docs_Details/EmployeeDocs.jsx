@@ -24,7 +24,9 @@ const EmployeeDocs = () => {
 
   const getDocs = () => {
     axios
-      .post("http://localhost:5000/getCandidateDocs", { id: r_prams.id })
+      .post(process.env.REACT_APP_API_URL + "/getCandidateDocs", {
+        id: r_prams.id,
+      })
       .then((res) => {
         res.data.map((x, i) => {
           if (x.name == "offerletter") {
@@ -69,7 +71,7 @@ const EmployeeDocs = () => {
 
   const deleteDoc = (id) => {
     axios
-      .post("http://localhost:5000/deleteCandidateDocs", { id })
+      .post(process.env.REACT_APP_API_URL + "/deleteCandidateDocs", { id })
       .then((res) => {
         message.success("Doc Deleted");
       })
@@ -81,7 +83,7 @@ const EmployeeDocs = () => {
   const props1 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "offerletter", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;
@@ -106,7 +108,7 @@ const EmployeeDocs = () => {
   const props2 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "appraisalletter", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;
@@ -131,7 +133,7 @@ const EmployeeDocs = () => {
   const props3 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "PFForm11", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;
@@ -156,7 +158,7 @@ const EmployeeDocs = () => {
   const props4 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "EmployeeDetailsheet", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;

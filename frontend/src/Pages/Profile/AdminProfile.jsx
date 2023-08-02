@@ -62,7 +62,7 @@ const AdminProfile = () => {
   const { id } = useParams();
   const getUsers = () => {
     axios
-      .post("http://localhost:5000/usresdata", { id })
+      .post(process.env.REACT_APP_API_URL + "/usresdata", { id })
       .then((result) => {
         let x = result.data;
         setjobTitle(x.job_title);
@@ -83,7 +83,7 @@ const AdminProfile = () => {
   const props1 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/update_adminprofilepic",
+    action: process.env.REACT_APP_API_URL + "/update_adminprofilepic",
     data: { id: id },
     onChange(info) {
       const { status } = info.file;
@@ -116,7 +116,7 @@ const AdminProfile = () => {
       data.append("emp_code", values.emp_code);
       data.append("department", values.department);
       const response = await axios.post(
-        "http://localhost:5000/update_profile",
+        process.env.REACT_APP_API_URL + "/update_profile",
         data
       );
       setLoading(false);
@@ -146,7 +146,7 @@ const AdminProfile = () => {
       try {
         const { id, old_password, new_password } = values;
         const response = await axios.post(
-          "http://localhost:5000/update_password",
+          process.env.REACT_APP_API_URL + "/update_password",
           {
             id,
             oldpassword: old_password,

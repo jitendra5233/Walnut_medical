@@ -51,7 +51,7 @@ const EditEmployeeExit = () => {
 
   const getExitEmployeeDocs = () => {
     axios
-      .post("http://localhost:5000/getexitemployeedocs", { id })
+      .post(process.env.REACT_APP_API_URL + "/getexitemployeedocs", { id })
       .then((result) => {
         const data = result.data;
 
@@ -72,7 +72,7 @@ const EditEmployeeExit = () => {
   };
   const getEmployeeExit = () => {
     axios
-      .get("http://localhost:5000/GetEmployeeExit")
+      .get(process.env.REACT_APP_API_URL + "/GetEmployeeExit")
       .then((result) => {
         let data = result.data;
         console.log(data);
@@ -105,7 +105,7 @@ const EditEmployeeExit = () => {
   };
   const deleteDoc = (id) => {
     axios
-      .post("http://localhost:5000/deleteemployeeexitDocs", { id })
+      .post(process.env.REACT_APP_API_URL + "/deleteemployeeexitDocs", { id })
       .then((res) => {
         console.log(res.data);
       })
@@ -117,7 +117,7 @@ const EditEmployeeExit = () => {
   const props1 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/update_employeeexitdocs",
+    action: process.env.REACT_APP_API_URL + "/update_employeeexitdocs",
     data: { name: "employee_docs", ref_id: id },
     onChange(info) {
       const { status } = info.file;
@@ -154,7 +154,7 @@ const EditEmployeeExit = () => {
         }
       }
       const response = await axios.post(
-        "http://localhost:5000/update_employeeexit",
+        process.env.REACT_APP_API_URL + "/update_employeeexit",
         data
       );
       console.log(response.data);
@@ -184,7 +184,7 @@ const EditEmployeeExit = () => {
 
   const deleteSocialIcon = (id) => {
     axios
-      .delete(`http://localhost:5000/delete_exitemployeedocs/${id}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete_exitemployeedocs/${id}`)
       .then((response) => {
         console.log(response.data);
         getEmployeeExit();

@@ -47,7 +47,7 @@ const ForgotPassword = () => {
   const handleSubmit = (values) => {
     setLoading(true);
     axios
-      .post("http://localhost:5000/checkUserEmail", values)
+      .post(process.env.REACT_APP_API_URL + "/checkUserEmail", values)
       .then((res) => {
         setLoading(false);
         if (res.data.length === 0) {

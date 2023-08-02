@@ -77,7 +77,7 @@ const AccountDetails = () => {
   const [ClientData, setClientData] = useState([]);
   const getAccountDetails = () => {
     axios
-      .post("http://localhost:5000/getAcountData", { id })
+      .post(process.env.REACT_APP_API_URL + "/getAcountData", { id })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -108,7 +108,7 @@ const AccountDetails = () => {
     data.append("password", values.password);
     data.append("client_status", "new");
     axios
-      .post("http://localhost:5000/create_clientAccount", data)
+      .post(process.env.REACT_APP_API_URL + "/create_clientAccount", data)
       .then((res) => {
         handleCancel1(true);
         form1.resetFields();
@@ -139,7 +139,7 @@ const AccountDetails = () => {
       data.append("password", values.password);
 
       const response = await axios.post(
-        "http://localhost:5000/update_clientAccount",
+        process.env.REACT_APP_API_URL + "/update_clientAccount",
         data
       );
       getAccountDetails();
@@ -164,7 +164,7 @@ const AccountDetails = () => {
   const handleChange = (value, option) => {
     let userId = option.key;
     axios
-      .post("http://localhost:5000/getUserData", { userId })
+      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -184,7 +184,7 @@ const AccountDetails = () => {
   const handleAssignEmpSerch = (value, option) => {
     let userId = option.key;
     axios
-      .post("http://localhost:5000/getUserData", { userId })
+      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -244,7 +244,7 @@ const AccountDetails = () => {
   const [getocialClientId, setSocialClientId] = useState([]);
   const getSocialAccountDetails = () => {
     axios
-      .get("http://localhost:5000/getsocialAccountDeatils")
+      .get(process.env.REACT_APP_API_URL + "/getsocialAccountDeatils")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -265,7 +265,7 @@ const AccountDetails = () => {
 
   const getAssignedEmplyee = () => {
     axios
-      .get("http://localhost:5000/getAssignedEmp")
+      .get(process.env.REACT_APP_API_URL + "/getAssignedEmp")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -322,7 +322,7 @@ const AccountDetails = () => {
   };
   const deleteIcon = (id) => {
     axios
-      .delete(`http://localhost:5000/delete_assignemployee/${id}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete_assignemployee/${id}`)
       .then((response) => {
         getAccountDetails();
         getAssignedEmplyee();
@@ -335,7 +335,7 @@ const AccountDetails = () => {
   const handlenameSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`http://localhost:5000/items/searchName?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);
@@ -355,7 +355,7 @@ const AccountDetails = () => {
     values.client_projectname = ClientData.project_name;
     setLoading(true);
     axios
-      .post("http://localhost:5000/assign_employee", values)
+      .post(process.env.REACT_APP_API_URL + "/assign_employee", values)
       .then((res) => {
         getAssignedEmplyee();
         setLoading(false);
@@ -375,7 +375,7 @@ const AccountDetails = () => {
     }
     setLoading(true);
     axios
-      .post("http://localhost:5000/update_assignmployee", values)
+      .post(process.env.REACT_APP_API_URL + "/update_assignmployee", values)
       .then((res) => {
         if (res !== "") {
           setLoading(false);

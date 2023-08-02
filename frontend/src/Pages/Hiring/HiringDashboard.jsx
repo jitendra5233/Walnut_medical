@@ -86,7 +86,7 @@ const HiringDashboard = () => {
 
   const getDepartment = () => {
     axios
-      .get("http://localhost:5000/getDepartment")
+      .get(process.env.REACT_APP_API_URL + "/getDepartment")
       .then((res) => {
         setAllDep(res.data);
       })
@@ -111,7 +111,7 @@ const HiringDashboard = () => {
     data.append("slug", createSlug(values.name));
     data.append("image", values.image[0].originFileObj);
     axios
-      .post("http://localhost:5000/addDepartment", data)
+      .post(process.env.REACT_APP_API_URL + "/addDepartment", data)
       .then((res) => {
         setLoading(false);
         handleCancel();

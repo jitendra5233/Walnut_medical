@@ -43,7 +43,7 @@ const AddUsers = () => {
   const onFinish = (values) => {
     setLoading(true);
     axios
-      .post("http://localhost:5000/create_User", values)
+      .post(process.env.REACT_APP_API_URL + "/create_User", values)
       .then((res) => {
         setLoading(false);
         if (res.data.length === 0) {

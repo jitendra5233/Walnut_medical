@@ -57,7 +57,7 @@ const ShowIssuedEnventory = () => {
   const [userSuggestions, setUserSuggestions] = useState([]);
   const getInventory = () => {
     axios
-      .get("http://localhost:5000/issued")
+      .get(process.env.REACT_APP_API_URL + "/issued")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -91,7 +91,7 @@ const ShowIssuedEnventory = () => {
     showModal();
     setUpdateItemId(id);
     axios
-      .get(`http://localhost:5000/available-items/${id}`)
+      .get(`process.env.REACT_APP_API_URL + "/available-items/${id}`)
       .then((response) => {
         const availableItem = response.data.availableItem;
         setAvailableItem(availableItem.availableItem);
@@ -123,7 +123,7 @@ const ShowIssuedEnventory = () => {
   const [issueItemId, setissueItemId] = useState([]);
   const handleDamage = (id) => {
     axios
-      .get(`http://localhost:5000/getissuedata/${id}`)
+      .get(`process.env.REACT_APP_API_URL + "/getissuedata/${id}`)
       .then((response) => {
         let data = response.data;
         setdamageItemId(data.item_id);
@@ -158,7 +158,7 @@ const ShowIssuedEnventory = () => {
     values.finalavailableItem = getavailableitem;
     values.item_id = AvailableItemId;
     axios
-      .post("http://localhost:5000/update-issueitem", values)
+      .post(process.env.REACT_APP_API_URL + "/update-issueitem", values)
       .then((res) => {
         if (res != "") {
           getInventory();
@@ -176,7 +176,7 @@ const ShowIssuedEnventory = () => {
     values.id = issueItemId;
     values.damageItemId = damageItemId;
     axios
-      .post("http://localhost:5000/addToDamage", values)
+      .post(process.env.REACT_APP_API_URL + "/addToDamage", values)
       .then((res) => {
         if (res != "") {
           getInventory();
@@ -209,7 +209,7 @@ const ShowIssuedEnventory = () => {
 
   const deleteItem = (itemId, quantity, itemname) => {
     axios
-      .delete("http://localhost:5000/deleteissue_item", {
+      .delete(process.env.REACT_APP_API_URL + "/deleteissue_item", {
         data: { itemId, quantity, itemname },
       })
       .then((response) => {
@@ -236,7 +236,7 @@ const ShowIssuedEnventory = () => {
   const handleChange = (value, option) => {
     let userId = option.key;
     axios
-      .post("http://localhost:5000/getUserData", { userId })
+      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -254,7 +254,7 @@ const ShowIssuedEnventory = () => {
   };
   const handlenameSearch = (value) => {
     axios
-      .get(`http://localhost:5000/items/searchName?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);

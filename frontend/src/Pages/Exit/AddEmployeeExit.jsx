@@ -42,7 +42,7 @@ const AddEmployeeExit = () => {
   const handleChange = (value, option) => {
     let userId = option.key;
     axios
-      .post("http://localhost:5000/getUserData", { userId })
+      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -63,7 +63,7 @@ const AddEmployeeExit = () => {
 
   const getcandidateData = (id) => {
     axios
-      .post("http://localhost:5000/getcandidatedata", { id })
+      .post(process.env.REACT_APP_API_URL + "/getcandidatedata", { id })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -86,7 +86,7 @@ const AddEmployeeExit = () => {
   const handlenameSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`http://localhost:5000/items/searchName?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);
@@ -102,7 +102,7 @@ const AddEmployeeExit = () => {
   const handleAddEmployeeExit = (values) => {
     values.emp_name = empName;
     axios
-      .post("http://localhost:5000/add_employeeexit", values)
+      .post(process.env.REACT_APP_API_URL + "/add_employeeexit", values)
       .then((res) => {
         setLoading(false);
         form.resetFields();

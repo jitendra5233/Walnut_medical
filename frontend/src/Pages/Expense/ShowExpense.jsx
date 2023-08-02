@@ -43,7 +43,7 @@ const ShowExpense = () => {
 
   const getExpense = () => {
     axios
-      .get("http://localhost:5000/expense")
+      .get(process.env.REACT_APP_API_URL + "/expense")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -90,7 +90,7 @@ const ShowExpense = () => {
       values.buying_date = updateDate;
     }
     axios
-      .post("http://localhost:5000/update-expense", values)
+      .post(process.env.REACT_APP_API_URL + "/update-expense", values)
       .then((res) => {
         if (res != "") {
           getExpense();
@@ -122,7 +122,7 @@ const ShowExpense = () => {
 
   const deleteItem = (itemId) => {
     axios
-      .delete(`http://localhost:5000/delete/${itemId}`)
+      .delete(`process.env.REACT_APP_API_URL + "/delete/${itemId}`)
       .then((response) => {
         console.log(response.data);
         // Update tableData after deletion

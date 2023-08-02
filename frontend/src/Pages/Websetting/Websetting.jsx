@@ -41,7 +41,7 @@ const HomeSettings = () => {
 
   const getWebsetting = () => {
     axios
-      .get("http://localhost:5000/getwebsetting")
+      .get(process.env.REACT_APP_API_URL + "/getwebsetting")
       .then((result) => {
         const data = result.data;
         if (data.length > 0) {
@@ -71,7 +71,10 @@ const HomeSettings = () => {
       data.append("smtp_username", values.smtp_username);
       data.append("smtp_password", values.smtp_password);
       data.append("socialIcons", JSON.stringify(values.socialIcons));
-      await axios.post("http://localhost:5000/update_websetting", data);
+      await axios.post(
+        process.env.REACT_APP_API_URL + "/update_websetting",
+        data
+      );
       setLoading(false);
       getWebsetting();
       form.resetFields();
@@ -89,7 +92,7 @@ const HomeSettings = () => {
   };
   const deleteDoc = (id) => {
     axios
-      .post("http://localhost:5000/deleteloginimg", { id })
+      .post(process.env.REACT_APP_API_URL + "/deleteloginimg", { id })
       .then((res) => {
         console.log(res.data);
       })
@@ -100,7 +103,7 @@ const HomeSettings = () => {
   const props1 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/update_loginimage",
+    action: process.env.REACT_APP_API_URL + "/update_loginimage",
     data: { id: updateId },
     onChange(info) {
       const { status } = info.file;
@@ -126,7 +129,7 @@ const HomeSettings = () => {
   const props2 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/update_logo",
+    action: process.env.REACT_APP_API_URL + "/update_logo",
     data: { id: updateId },
     onChange(info) {
       const { status } = info.file;
@@ -187,7 +190,7 @@ const HomeSettings = () => {
     console.log(websettingId);
     axios
       .delete(
-        `http://localhost:5000/delete_social_icon/${websettingId}/${socialIconId}`
+        `process.env.REACT_APP_API_URL + "/delete_social_icon/${websettingId}/${socialIconId}`
       )
       .then((response) => {
         console.log(response.data);

@@ -34,7 +34,7 @@ const AddIssuedEnventory = () => {
 
   const getInventory = () => {
     axios
-      .get("http://localhost:5000/getItem")
+      .get(process.env.REACT_APP_API_URL + "/getItem")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -50,7 +50,7 @@ const AddIssuedEnventory = () => {
   const handleChange = (value, option) => {
     let userId = option.key;
     axios
-      .post("http://localhost:5000/getUserData", { userId })
+      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -74,7 +74,7 @@ const AddIssuedEnventory = () => {
   const handleUpdateItem = (value, option) => {
     let item_id = option.key;
     axios
-      .post("http://localhost:5000/getItemData", { item_id })
+      .post(process.env.REACT_APP_API_URL + "/getItemData", { item_id })
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
@@ -92,7 +92,7 @@ const AddIssuedEnventory = () => {
 
   const getUsers = () => {
     axios
-      .get("http://localhost:5000/usres")
+      .get(process.env.REACT_APP_API_URL + "/usres")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -112,7 +112,7 @@ const AddIssuedEnventory = () => {
     setLoading(true);
     if (values.quantity <= updateAvailableItem) {
       axios
-        .post("http://localhost:5000/issued_enventory", values)
+        .post(process.env.REACT_APP_API_URL + "/issued_enventory", values)
         .then((res) => {
           setLoading(false);
           form.resetFields();
@@ -140,7 +140,7 @@ const AddIssuedEnventory = () => {
 
   const handleSearch = (value) => {
     axios
-      .get(`http://localhost:5000/items/search?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/items/search?query=${value}`)
       .then((response) => {
         const items = response.data;
         setSuggestions(items);
@@ -152,7 +152,7 @@ const AddIssuedEnventory = () => {
 
   const handlenameSearch = (value) => {
     axios
-      .get(`http://localhost:5000/items/searchName?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);

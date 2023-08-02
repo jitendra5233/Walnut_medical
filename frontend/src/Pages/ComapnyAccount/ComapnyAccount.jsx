@@ -70,7 +70,7 @@ const CompantAccount = () => {
 
   const getWebsetting = () => {
     axios
-      .get("http://localhost:5000/getwebsetting")
+      .get(process.env.REACT_APP_API_URL + "/getwebsetting")
       .then((result) => {
         const data = result.data;
         if (data && data.length > 0) {
@@ -89,7 +89,7 @@ const CompantAccount = () => {
 
   const getCompanyAccount = () => {
     axios
-      .get("http://localhost:5000/getCompanyAccount_details")
+      .get(process.env.REACT_APP_API_URL + "/getCompanyAccount_details")
       .then((result) => {
         let data = result.data;
         let newData = [];
@@ -149,7 +149,10 @@ const CompantAccount = () => {
       renewal_date: moment(renewalDate).format("YYYY-MM-DD"),
     };
     axios
-      .post("http://localhost:5000/add_companyaccount", formattedValues)
+      .post(
+        process.env.REACT_APP_API_URL + "/add_companyaccount",
+        formattedValues
+      )
       .then((res) => {
         setLoading(false);
         form2.resetFields();
@@ -178,7 +181,7 @@ const CompantAccount = () => {
         .format("YYYY-MM-DD");
     }
     axios
-      .post("http://localhost:5000/update-companyaccount", values)
+      .post(process.env.REACT_APP_API_URL + "/update-companyaccount", values)
       .then((res) => {
         if (res != "") {
           getCompanyAccount();
@@ -217,7 +220,7 @@ const CompantAccount = () => {
 
   const deleteItem = (id) => {
     axios
-      .delete("http://localhost:5000/delete_companyaccount", {
+      .delete(process.env.REACT_APP_API_URL + "/delete_companyaccount", {
         data: { id }, // Pass the data as an object
       })
       .then((response) => {
@@ -232,7 +235,7 @@ const CompantAccount = () => {
   const handleSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`http://localhost:5000/client/search?query=${value}`)
+      .get(`process.env.REACT_APP_API_URL + "/client/search?query=${value}`)
       .then((response) => {
         const client = response.data;
         setSuggestions(client);
@@ -294,7 +297,7 @@ const CompantAccount = () => {
 
     // Make a POST request to the server to send the email
     axios
-      .post("http://localhost:5000/mail", data)
+      .post(process.env.REACT_APP_API_URL + "/mail", data)
       .then((res) => {
         console.log(res.data); // Assuming the response contains the data you want to display
       })

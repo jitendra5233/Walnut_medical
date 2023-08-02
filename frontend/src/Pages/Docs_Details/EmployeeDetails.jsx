@@ -34,7 +34,7 @@ const EmployeeDetails = () => {
 
   const getDepartments = () => {
     axios
-      .get("http://localhost:5000/getDepartment")
+      .get(process.env.REACT_APP_API_URL + "/getDepartment")
       .then((res) => {
         setAllDep(res.data);
       })
@@ -45,7 +45,9 @@ const EmployeeDetails = () => {
 
   const getAllJobProfiles = (ref_id) => {
     axios
-      .post("http://localhost:5000/getDepartmentPostions", { id: ref_id })
+      .post(process.env.REACT_APP_API_URL + "/getDepartmentPostions", {
+        id: ref_id,
+      })
       .then((res) => {
         setAllJobs(res.data);
       })
@@ -56,7 +58,7 @@ const EmployeeDetails = () => {
 
   const getCandidateData = (id) => {
     axios
-      .post("http://localhost:5000/getCandidateDataById", { id })
+      .post(process.env.REACT_APP_API_URL + "/getCandidateDataById", { id })
       .then((res) => {
         let data = res.data;
         if (data.length != 0) {
@@ -69,7 +71,9 @@ const EmployeeDetails = () => {
           form.setFieldsValue(formData);
           getAllJobProfiles(formData.department);
           axios
-            .post("http://localhost:5000/getCandidateData2ById", { id })
+            .post(process.env.REACT_APP_API_URL + "/getCandidateData2ById", {
+              id,
+            })
             .then((res) => {
               // console.log(res);
             })
@@ -89,7 +93,7 @@ const EmployeeDetails = () => {
     values.ref_id = r_prams.id;
     console.log(values);
     axios
-      .post("http://localhost:5000/addCandidateDetails", values)
+      .post(process.env.REACT_APP_API_URL + "/addCandidateDetails", values)
       .then((res) => {
         console.log(res.data);
         message.success("Added");

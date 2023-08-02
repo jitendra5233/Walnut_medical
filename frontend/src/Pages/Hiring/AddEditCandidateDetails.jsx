@@ -22,7 +22,7 @@ const AddEditCandidateDetails = () => {
 
   const getTotalNoOfEmp = () => {
     axios
-      .get("http://localhost:5000/getTotalNumberOfEmp")
+      .get(process.env.REACT_APP_API_URL + "/getTotalNumberOfEmp")
       .then((res) => {
         let data = res.data + 1;
         form.setFieldsValue({
@@ -36,7 +36,9 @@ const AddEditCandidateDetails = () => {
 
   const getCandidateData = (id) => {
     axios
-      .post("http://localhost:5000/getCandidateDataByIdDetail", { id })
+      .post(process.env.REACT_APP_API_URL + "/getCandidateDataByIdDetail", {
+        id,
+      })
       .then((res) => {
         let data = res.data;
         if (data.length != 0) {
@@ -50,7 +52,7 @@ const AddEditCandidateDetails = () => {
 
           form.setFieldsValue(formData);
           axios
-            .post("http://localhost:5000/getCandidateDocs", { id })
+            .post(process.env.REACT_APP_API_URL + "/getCandidateDocs", { id })
             .then((res) => {
               res.data.map((x, i) => {
                 if (x.name == "salary_slip") {
@@ -94,7 +96,7 @@ const AddEditCandidateDetails = () => {
 
   const deleteDoc = (id) => {
     axios
-      .post("http://localhost:5000/deleteCandidateDocs", { id })
+      .post(process.env.REACT_APP_API_URL + "/deleteCandidateDocs", { id })
       .then((res) => {
         console.log(res.data);
       })
@@ -106,7 +108,7 @@ const AddEditCandidateDetails = () => {
   const props1 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "salary_slip", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;
@@ -131,7 +133,7 @@ const AddEditCandidateDetails = () => {
   const props2 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "experience", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;
@@ -156,7 +158,7 @@ const AddEditCandidateDetails = () => {
   const props3 = {
     name: "file",
     multiple: true,
-    action: "http://localhost:5000/uploadDocs",
+    action: process.env.REACT_APP_API_URL + "/uploadDocs",
     data: { name: "education", ref_id: r_prams.id },
     onChange(info) {
       const { status } = info.file;
@@ -185,7 +187,7 @@ const AddEditCandidateDetails = () => {
     values.job_title = canDetails.profile_id;
 
     axios
-      .post("http://localhost:5000/addCandidateDetails", values)
+      .post(process.env.REACT_APP_API_URL + "/addCandidateDetails", values)
       .then((res) => {
         message.success("Added");
       })

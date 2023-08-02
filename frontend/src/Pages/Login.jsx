@@ -53,7 +53,7 @@ const Login = () => {
   const handleSubmit = (values) => {
     setLoading(true);
     axios
-      .post("http://localhost:5000/login", values)
+      .post(process.env.REACT_APP_API_URL + "/login", values)
       .then((res) => {
         setLoading(false);
         if (res.data.length === 0) {

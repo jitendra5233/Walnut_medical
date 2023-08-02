@@ -166,7 +166,7 @@ export const Dashboard = () => {
 
   const getAllEmployee = () => {
     axios
-      .get("http://localhost:5000/getAllEmployeedata")
+      .get(process.env.REACT_APP_API_URL + "/getAllEmployeedata")
       .then((result) => {
         let data = result.data;
         setEmployeeCount(data);
@@ -184,7 +184,7 @@ export const Dashboard = () => {
 
   const getAllpermanetEmployee = () => {
     axios
-      .get("http://localhost:5000/getAllPermanentEmployeedata")
+      .get(process.env.REACT_APP_API_URL + "/getAllPermanentEmployeedata")
       .then((result) => {
         let data = result.data;
         setPermanentEmployee(data);
@@ -196,7 +196,7 @@ export const Dashboard = () => {
 
   const getAllInternEmployee = () => {
     axios
-      .get("http://localhost:5000/getAllInternEmployeedata")
+      .get(process.env.REACT_APP_API_URL + "/getAllInternEmployeedata")
       .then((result) => {
         let data = result.data;
         setInterEmployee(data);
@@ -208,7 +208,7 @@ export const Dashboard = () => {
 
   // const getHiredCandidate = () => {
   //   axios
-  //     .get("http://localhost:5000/getHiredCandidatecount")
+  //     .get(process.env.REACT_APP_API_URL + "/getHiredCandidatecount")
   //     .then((result) => {
   //       let data = result.data;
   //       sethiredCandidate(data);
@@ -220,7 +220,7 @@ export const Dashboard = () => {
 
   const getJobPositions = () => {
     axios
-      .get("http://localhost:5000/getJobPositions")
+      .get(process.env.REACT_APP_API_URL + "/getJobPositions")
       .then((result) => {
         let data = result.data;
         setJobPositions(data.jobPositionCount);
@@ -237,7 +237,7 @@ export const Dashboard = () => {
 
   // const getHiredCandidatePercentage = () => {
   //   axios
-  //     .get("http://localhost:5000/getHiredCandidatePercentage")
+  //     .get(process.env.REACT_APP_API_URL + "/getHiredCandidatePercentage")
   //     .then((result) => {
   //       let data = result.data;
   //       sethiredCandidatePer(data + "%");
@@ -249,7 +249,7 @@ export const Dashboard = () => {
 
   const totalItemQuantity = () => {
     axios
-      .get("http://localhost:5000/totalItemQuantity")
+      .get(process.env.REACT_APP_API_URL + "/totalItemQuantity")
       .then((result) => {
         let data = result.data;
         setTotalItem(data.totalQuantity);
@@ -264,7 +264,7 @@ export const Dashboard = () => {
   };
   const getAssignedItemWithPercentage = () => {
     axios
-      .get("http://localhost:5000/getAssignedItemWithPercentage")
+      .get(process.env.REACT_APP_API_URL + "/getAssignedItemWithPercentage")
       .then((result) => {
         let data = result.data;
         setAssignedItem(data.totalAssignedQuantity);
@@ -277,7 +277,7 @@ export const Dashboard = () => {
 
   const totalClientwithPercentage = () => {
     axios
-      .get("http://localhost:5000/totalClientwithPercentage")
+      .get(process.env.REACT_APP_API_URL + "/totalClientwithPercentage")
       .then((result) => {
         let data = result.data;
         console.log(data);
