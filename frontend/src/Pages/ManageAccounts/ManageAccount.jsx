@@ -30,6 +30,7 @@ const ManageAccount = () => {
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
   const [emp, setEmp] = useState([]);
+  const [dummyState, setDummyState] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -43,12 +44,12 @@ const ManageAccount = () => {
   const openNotificationWithIcon = (type) => {
     if (type === "error") {
       api[type]({
-        message: "Invalid Email or Password",
+        message: "Server Error",
         description: "",
       });
     } else {
       api[type]({
-        message: "Login Successful",
+        message: "Successful",
         description: "",
       });
     }
@@ -67,7 +68,6 @@ const ManageAccount = () => {
   };
 
   useEffect(() => {
-    getUsers();
     getEmployee();
   }, []);
 
@@ -81,6 +81,16 @@ const ManageAccount = () => {
       title: "Profile Picture",
       dataIndex: "img",
       key: "img",
+      render: (img) => {
+        return (
+          <div style={{ textAlign: "center" }}>
+            <img
+              src={img}
+              style={{ height: "35px", width: "35px", borderRadius: "100%" }}
+            />
+          </div>
+        );
+      },
     },
     {
       title: "Emp Code",
@@ -137,6 +147,7 @@ const ManageAccount = () => {
       .get("http://localhost:5000/getAllEmployee")
       .then((res) => {
         setEmp(res.data);
+        getUsers(res.data);
       })
       .catch((err) => {
         console.log(err);
@@ -147,11 +158,10 @@ const ManageAccount = () => {
     setActiveId(id);
     tableData.map((x) => {
       if (x.key == id) {
+        console.log(x);
         form.setFieldsValue({
-          f_name: x.f_name,
-          l_name: x.l_name,
-          emp_code: x.empcode,
-          title: x.jobtitle,
+          employee_id: x.employee_id,
+          employee_type: x.employee_type,
           email: x.emailid,
           password: x.password,
           c_password: x.password,
@@ -168,14 +178,14 @@ const ManageAccount = () => {
         let data = result.data;
 
         console.log(data);
-        getUsers();
+        getEmployee();
       })
       .catch((err) => {
         console.log(err);
       });
   };
 
-  const getUsers = () => {
+  const getUsers = (p_data = []) => {
     axios
       .get("http://localhost:5000/usres")
       .then((result) => {
@@ -183,20 +193,29 @@ const ManageAccount = () => {
 
         let newData = [];
 
-        data.map((x) => {
-          // console.log(x);
-          newData.push({
-            key: x._id,
-            name: `${x.f_name} ${x.l_name}`,
-            img: "ysdg8e7.jpg",
-            empcode: x.emp_code,
-            jobtitle: x.job_title,
-            assigningdate: new Date(x.createdAt).toLocaleDateString(),
-            emailid: x.email,
-            password: x.password,
-            edit: x._id,
-            f_name: x.f_name,
-            l_name: x.l_name,
+        p_data.map((x) => {
+          data.map((y) => {
+            if (x._id == y.employee_id) {
+              y.f_name = x.f_name;
+              y.l_name = x.l_name;
+              y.emp_code = x.emp_code;
+              y.jobtitle = x.designation;
+              newData.push({
+                employee_id: y.employee_id,
+                employee_type: y.employee_type,
+                key: y._id,
+                name: `${y.f_name} ${y.l_name}`,
+                img: x.photo == undefined ? "./user1.png" : x.photo,
+                empcode: y.emp_code,
+                jobtitle: y.jobtitle,
+                assigningdate: new Date(y.createdAt).toLocaleDateString(),
+                emailid: y.email,
+                password: y.password,
+                edit: y._id,
+                f_name: y.f_name,
+                l_name: y.l_name,
+              });
+            }
           });
         });
 
@@ -210,24 +229,44 @@ const ManageAccount = () => {
   let { Title } = Typography;
 
   const handleSubmit = (values) => {
-    axios
-      .post("http://localhost:5000/create_User", values)
-      .then((res) => {
-        console.log(res.data);
-        setLoading(false);
-        if (res.data.length === 0) {
-          openNotificationWithIcon("error");
-        } else {
-          openNotificationWithIcon("success");
-          getUsers();
-          setIsModalOpen(false);
-        }
-      })
-      .catch((err) => {
-        setLoading(false);
-        console.log(err);
-      });
-
+    if (activeId == "") {
+      axios
+        .post("http://localhost:5000/create_User", values)
+        .then((res) => {
+          console.log(res.data);
+          setLoading(false);
+          if (res.data.length === 0) {
+            openNotificationWithIcon("error");
+          } else {
+            openNotificationWithIcon("success");
+            getEmployee();
+            setIsModalOpen(false);
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+        });
+    } else {
+      values.id = activeId;
+      axios
+        .post("http://localhost:5000/update_User", values)
+        .then((res) => {
+          setLoading(false);
+          if (res.data.length === 0) {
+            openNotificationWithIcon("error");
+          } else {
+            openNotificationWithIcon("success");
+            dispatch(handleLogin({ name: "harman" }));
+            getEmployee();
+            setIsModalOpen(false);
+          }
+        })
+        .catch((err) => {
+          setLoading(false);
+          console.log(err);
+        });
+    }
     //   if (activeId == "") {
     //     setLoading(true);
     //     let data = new FormData();

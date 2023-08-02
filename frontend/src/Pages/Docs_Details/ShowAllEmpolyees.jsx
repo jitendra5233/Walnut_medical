@@ -159,6 +159,7 @@ const ShowAllEmpolyees = () => {
   const [allDep, setAllDep] = useState([]);
   const [allJobs, setAllJobs] = useState([]);
   const [allEmp, setAllEmp] = useState([]);
+  const [ProfileLink, setProfileLink] = useState("");
 
   const { Option } = Select;
 
@@ -266,12 +267,16 @@ const ShowAllEmpolyees = () => {
     data.append("department", values.department);
     data.append("designation", values.designation);
     data.append("emp_code", values.emp_code);
+    data.append("emp_code", values.emp_code);
+    data.append("old_emp", false);
 
     if (values.image != undefined && values.image.length != 0) {
       data.append("image", values.image[0].originFileObj);
     }
 
     values.ref_id = null;
+    values.old_emp = false;
+    values.photo = ProfileLink;
 
     axios
       .post("http://localhost:5000/addNewEmployee", values)
@@ -298,6 +303,29 @@ const ShowAllEmpolyees = () => {
       return e;
     }
     return e?.fileList;
+  };
+
+  const props1 = {
+    name: "image",
+    multiple: true,
+    action: "http://localhost:5000/uploadProfileImg",
+    onChange(info) {
+      const { status } = info.file;
+      if (status !== "uploading") {
+        // console.log(info.file, info.fileList);
+      }
+
+      if (status === "done") {
+        setProfileLink(info.file.response.link);
+        // message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    onDrop(e) {
+      console.log("Dropped files", e.dataTransfer.files);
+    },
+    defaultFileList: [],
   };
 
   return (
@@ -347,7 +375,11 @@ const ShowAllEmpolyees = () => {
                         getValueFromEvent={normFile}
                         name="image"
                       >
-                        <Upload listType="picture-card" maxCount={1}>
+                        <Upload
+                          listType="picture-card"
+                          maxCount={1}
+                          {...props1}
+                        >
                           <div>
                             <PlusOutlined />
                             <div
@@ -509,14 +541,15 @@ const ShowAllEmpolyees = () => {
         ]}
       >
         {allEmp.map((x, i) => {
-          let { _id, f_name, l_name, profile_img, designation, ref_id } = x;
+          console.log(x);
+          let { _id, f_name, l_name, photo, designation, ref_id } = x;
           if (x.old_emp == "false") {
             return (
               <Col xs={24} sm={24} md={8} lg={6} key={i}>
                 <EmployeeCard
                   id={_id}
                   ref_id={ref_id}
-                  img={profile_img}
+                  img={photo}
                   name={`${f_name} ${l_name}`}
                   designation={designation}
                   getEmployee={() => getEmployee()}

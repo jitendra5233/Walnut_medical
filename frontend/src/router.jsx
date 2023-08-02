@@ -1,6 +1,7 @@
 import React from "react";
 import {
   createBrowserRouter,
+  createHashRouter,
   createRoutesFromElements,
   Route,
   RouterProvider,
@@ -50,7 +51,7 @@ import EmployeeDocs from "./Pages/Docs_Details/EmployeeDocs";
 import ManageAccount from "./Pages/ManageAccounts/ManageAccount";
 import AdminProfile from "./Pages/Profile/AdminProfile";
 
-const router = createBrowserRouter(
+const router = createHashRouter(
   createRoutesFromElements(
     <Route>
       {/* <Route path="/login" element={<Login />}></Route> */}

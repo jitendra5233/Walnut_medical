@@ -163,7 +163,7 @@ export const Dashboard = () => {
   const [newClientPer, setNewClientPer] = useState("0%");
   const [oldClientPer, setOldClientPer] = useState("0");
   const [totalClientPer, setTotalClientPer] = useState("0%");
-  
+
   const getAllEmployee = () => {
     axios
       .get("http://localhost:5000/getAllEmployeedata")
@@ -226,8 +226,8 @@ export const Dashboard = () => {
         setJobPositions(data.jobPositionCount);
         sethiredCandidate(data.hiredEmployee);
         sethiredCandidatePer(data.hiredCandidatePer + "%");
-        setjobOpeningPer=(data.jobOpeningper + "%");
-        
+        setjobOpeningPer = data.jobOpeningper + "%";
+
         // sethiredCandidatePer(hiredCandidatePer);
       })
       .catch((err) => {

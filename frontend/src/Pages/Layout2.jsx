@@ -412,7 +412,7 @@ const LayoutCom2 = () => {
                   />
                 </div>
                 <div>
-                  <Link to="/users" className="menuText">
+                  <Link to="/manage-accounts" className="menuText">
                     Manage Accounts
                   </Link>
                 </div>

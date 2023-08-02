@@ -31,6 +31,18 @@ const AppraisalSchema = require("./Model/Appraisal");
 const singleUpload = upload.single("image");
 const docUpload = upload.single("file");
 
+const doc1Upload = (req, res) => {
+  return new Promise((resolve, reject) => {
+    upload.single("file")(req, res, function (err) {
+      if (err) {
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+};
+
 require("dotenv").config();
 
 let app = express();
@@ -81,17 +93,27 @@ app.post("/create_User", async (req, res) => {
   }
 });
 
+let getName = async (users) => {
+  let newUsers = users.map(async (x) => {
+    let name = await EmployeeSchema.find({ _id: x.employee_id });
+    x.f_name = name[0];
+    return x;
+  });
+
+  return await newUsers;
+};
+
 app.get("/usres", async (req, res) => {
   try {
     let users = await Users.find({});
-
-    await users.map(async (x) => {
-      let otherData = await EmployeeSchema.find({ _id: x.employee_id });
-      // // if (otherData.length != 0) {
-      x.f_name = "Harman";
-      // console.log(otherData[0].f_name);
-      // }
-    });
+    // users = await getName(users);
+    // users.map((x) => {
+    //   // let otherData = EmployeeSchema.find({ _id: x.employee_id });
+    //   // // if (otherData.length != 0) {
+    //   x.f_name = await getName(x.employee_id);
+    //   // console.log(otherData[0].f_name);
+    //   // }
+    // });
 
     res.status(200).json(users);
   } catch (error) {
@@ -182,13 +204,11 @@ app.post("/delete_user", async (req, res) => {
 
 app.post("/update_User", async (req, res) => {
   try {
-    const { id, emp_code, f_name, l_name, title, email, password } = req.body;
+    const { id, employee_id, employee_type, email, password } = req.body;
 
     const users = await Users.findByIdAndUpdate(id, {
-      emp_code,
-      f_name,
-      l_name,
-      title,
+      employee_id,
+      employee_type,
       email,
       password,
     });
@@ -244,6 +264,20 @@ app.post("/addDepartmentPostions", async (req, res) => {
   try {
     const users = await DepartmentPositions.create(req.body);
     res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/uploadProfileImg", async (req, res) => {
+  try {
+    singleUpload(req, res, function (err) {
+      if (err) {
+        res.status(500).json({ message: err.message });
+      } else {
+        res.status(200).json({ link: req.file.location });
+      }
+    });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

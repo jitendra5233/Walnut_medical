@@ -158,7 +158,9 @@ const ShowPostions = () => {
 
   const getDepartment = () => {
     axios
-      .post("http://localhost:5000/getDepartmentPostions", { id: r_prams.id })
+      .post("http://localhost:5000/getDepartmentPostions", {
+        id: r_prams.id,
+      })
       .then((res) => {
         setAllDep(res.data);
       })
