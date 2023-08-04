@@ -235,7 +235,7 @@ const CompantAccount = () => {
   const handleSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`process.env.REACT_APP_API_URL + "/client/search?query=${value}`)
+      .get(`${process.env.REACT_APP_API_URL}/client/search?query=${value}`)
       .then((response) => {
         const client = response.data;
         setSuggestions(client);

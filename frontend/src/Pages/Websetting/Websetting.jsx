@@ -190,7 +190,7 @@ const HomeSettings = () => {
     console.log(websettingId);
     axios
       .delete(
-        `process.env.REACT_APP_API_URL + "/delete_social_icon/${websettingId}/${socialIconId}`
+        `${process.env.REACT_APP_API_URL}/delete_social_icon/${websettingId}/${socialIconId}`
       )
       .then((response) => {
         console.log(response.data);

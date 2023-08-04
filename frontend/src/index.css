@@ -510,6 +510,65 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   font-size: "12px";
 }
 
+.EmpName {
+  color: #000;
+  font-family: Arial;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.32px;
+}
+.EmpProfile {
+  color: #000;
+  font-family: Arial;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.32px;
+}
+
+.EmpTabHeading {
+  color: #0071c5;
+  font-family: Arial;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+
+.EmpMessageContent {
+  color: #525252;
+  text-align: justify;
+  font-family: Arial;
+  font-size: 11px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  letter-spacing: 0.2px;
+}
+
+.EmpMessageContainer {
+  justify-content: space-between;
+  width: 100%;
+  background-color: #ffffff;
+  padding: 10px;
+}
+
+.ant-tabs-content-holder {
+  background-color: #f5f6fa;
+}
+
+.messageHeading {
+  cursor: pointer;
+}
+
+.messageHeading:hover {
+  color: #0071c5;
+}
+
 /* Jitendra New Css Start */
 
 .card_style {

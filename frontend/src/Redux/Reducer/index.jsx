@@ -2,8 +2,11 @@ const iSate = {
   isLogin: false,
   user: {
     token: "",
+    token2: "",
     f_name: "",
     l_name: "",
+    role: "",
+    photo: "",
   },
 };
 
@@ -17,8 +20,13 @@ export const Reducer = (state = iSate, action) => {
         user: {
           ...state.user,
           token: action.payload.id,
-          f_name: action.payload.f_name,
-          l_name: action.payload.l_name,
+          token2: action.payload.token2,
+          role: action.payload.role,
+          photo: action.payload.photo,
+          f_name:
+            action.payload.f_name == undefined ? "" : action.payload.f_name,
+          l_name:
+            action.payload.l_name == undefined ? "" : action.payload.l_name,
         },
       };
     }
@@ -29,6 +37,9 @@ export const Reducer = (state = iSate, action) => {
         user: {
           ...state.user,
           token: "",
+          token2: "",
+          photo: "",
+          role: "",
           f_name: "",
           l_name: "",
         },

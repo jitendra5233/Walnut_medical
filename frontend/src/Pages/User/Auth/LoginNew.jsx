@@ -54,7 +54,6 @@ const LoginNew = () => {
   };
 
   const handleSubmit = (values) => {
-    console.log(values);
     setLoading(true);
     axios
       .post(process.env.REACT_APP_API_URL + "/login", values)
@@ -65,15 +64,28 @@ const LoginNew = () => {
         } else {
           let data = res.data[0];
 
-          dispatch(
-            handleLogin({
-              id: data._id,
-              f_name: data.f_name,
-              l_name: data.l_name,
+          axios
+            .post(process.env.REACT_APP_API_URL + "/getEmpData", {
+              token: data._id,
             })
-          );
-          openNotificationWithIcon("success");
-          navigate("/");
+            .then((res2) => {
+              console.log(res2.data);
+              dispatch(
+                handleLogin({
+                  id: data._id,
+                  token2: data.employee_id,
+                  f_name: res2.data[0].f_name,
+                  l_name: res2.data[0].l_name,
+                  role: data.employee_type,
+                  photo: res2.data[0].photo,
+                })
+              );
+              openNotificationWithIcon("success");
+              navigate("/");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       })
       .catch((err) => {

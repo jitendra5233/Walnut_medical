@@ -299,7 +299,7 @@ const ShowClientsDetails = () => {
 
   const deleteItem = (id) => {
     axios
-      .delete(`process.env.REACT_APP_API_URL + "/delete_account/${id}`)
+      .delete(`${process.env.REACT_APP_API_URL}/delete_account/${id}`)
       .then((response) => {
         console.log(response.data);
         const updatedData = getAcountdata.filter(
@@ -339,7 +339,7 @@ const ShowClientsDetails = () => {
 
   const deleteIcon = (id) => {
     axios
-      .delete(`process.env.REACT_APP_API_URL + "/delete_socialaccount/${id}`)
+      .delete(`${process.env.REACT_APP_API_URL}/delete_socialaccount/${id}`)
       .then((response) => {
         console.log(response.data);
         const updatedData = getSocialAcountdata.filter(
@@ -359,7 +359,7 @@ const ShowClientsDetails = () => {
   const [iconName, seticonName] = useState([]);
   const handleShow = (id) => {
     axios
-      .get(`process.env.REACT_APP_API_URL + "/getsocialmedia/${id}`)
+      .get(`${process.env.REACT_APP_API_URL}/getsocialmedia/${id}`)
       .then((response) => {
         showModal4();
         let data = response.data;

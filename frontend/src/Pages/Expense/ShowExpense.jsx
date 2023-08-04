@@ -122,7 +122,7 @@ const ShowExpense = () => {
 
   const deleteItem = (itemId) => {
     axios
-      .delete(`process.env.REACT_APP_API_URL + "/delete/${itemId}`)
+      .delete(`${process.env.REACT_APP_API_URL}/delete/${itemId}`)
       .then((response) => {
         console.log(response.data);
         // Update tableData after deletion

@@ -226,7 +226,7 @@ export const Dashboard = () => {
         setJobPositions(data.jobPositionCount);
         sethiredCandidate(data.hiredEmployee);
         sethiredCandidatePer(data.hiredCandidatePer + "%");
-        setjobOpeningPer = data.jobOpeningper + "%";
+        // setjobOpeningPer = data.jobOpeningper + "%";
 
         // sethiredCandidatePer(hiredCandidatePer);
       })
@@ -280,7 +280,7 @@ export const Dashboard = () => {
       .get(process.env.REACT_APP_API_URL + "/totalClientwithPercentage")
       .then((result) => {
         let data = result.data;
-        console.log(data);
+
         setTotalClient(data.totalClient);
         setNewClient(data.newClient);
         setOldClient(data.oldClient);

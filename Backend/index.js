@@ -27,6 +27,7 @@ const EmployeeSchema = require("./Model/Employee");
 const EmployeeExit = require("./Model/Employeeexit");
 const EmployeeExitDocs = require("./Model/EmployeeExitDocs");
 const AppraisalSchema = require("./Model/Appraisal");
+const IssuesAndFeedbackRoot = require("./Model/IssuesAndFeedbackRoot");
 
 const singleUpload = upload.single("image");
 const docUpload = upload.single("file");
@@ -697,12 +698,56 @@ app.post("/saveToNewEmp", async (req, res) => {
   }
 });
 
+app.post("/getEmpData", async (req, res) => {
+  try {
+    const users = await Users.find({
+      _id: req.body.token,
+    });
+
+    const usersDetails = await EmployeeSchema.find({
+      _id: users[0].employee_id,
+    });
+
+    res.status(200).json(usersDetails);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/addFeedbackIssues", async (req, res) => {
+  try {
+    const result = await IssuesAndFeedbackRoot.create(req.body);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getFeedbackIssues", async (req, res) => {
+  try {
+    const result = await IssuesAndFeedbackRoot.find({
+      ref_id: req.body.id,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 // jitender's code
 
 app.post("/create_expense", async (req, res) => {
   try {
+    if (!req.body || !req.body.item_name || !req.body.quantity) {
+      return res.status(400).json({ message: "Invalid input data" });
+    }
     const expense = await Expense.create(req.body);
-    res.status(200).json(expense);
+    const result = await ExpenseRecord.create({
+      item_name: req.body.item_name,
+      quantity: req.body.quantity,
+      item_id: expense._id,
+    });
+    res.status(201).json({ expense, result });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -710,7 +755,7 @@ app.post("/create_expense", async (req, res) => {
 
 app.get("/expense", async (req, res) => {
   try {
-    const expnese = await Expense.find({});
+    const expnese = await Expense.find({}).sort({ createdAt: -1 });
     res.status(200).json(expnese);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -723,6 +768,64 @@ app.get("/getExpense/:id", async (req, res) => {
     const result = await Expense.findById({ _id: id });
 
     res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/update-expense", async (req, res) => {
+  try {
+    const {
+      id,
+      item_name,
+      paid_amount,
+      quantity,
+      r_getamt,
+      r_paidamt,
+      buying_date,
+      newPurchase,
+    } = req.body;
+    if (newPurchase != 0) {
+      const result = await ExpenseRecord.create({
+        item_name: item_name,
+        quantity: newPurchase,
+        item_id: id,
+        buying_date: buying_date,
+      });
+    }
+    const result1 = await Expense.findByIdAndUpdate(id, {
+      item_name,
+      paid_amount,
+      quantity,
+      r_getamt,
+      r_paidamt,
+      buying_date,
+    });
+    if (!result1) {
+      return res
+        .status(404)
+        .json({ message: `cannot find any product with ID ${id}` });
+    }
+    res.status(200).json(true);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/delete_expneserecord", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const result = await ExpenseRecord.deleteOne({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getexpenserecord", async (req, res) => {
+  try {
+    const expenseItems = await ExpenseRecord.find({}).sort({ createdAt: -1 });
+    res.status(200).json(expenseItems);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -757,7 +860,8 @@ app.post("/issued_enventory", async (req, res) => {
 
 app.get("/issued", async (req, res) => {
   try {
-    const enventory = await Enventory.find({});
+    // const enventory = await Enventory.find({});
+    const enventory = await Enventory.find({}).sort({ createdAt: -1 });
     res.status(200).json(enventory);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -831,7 +935,8 @@ app.post("/add-item", async (req, res) => {
 
 app.get("/getItem", async (req, res) => {
   try {
-    const inventoryitem = await Inventoryitem.find({});
+    const inventoryitem = await Inventoryitem.find({}).sort({ createdAt: -1 });
+    // const enventory = await Enventory.find({}).sort({ createdAt: -1 });
     res.status(200).json(inventoryitem);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -840,7 +945,7 @@ app.get("/getItem", async (req, res) => {
 
 app.get("/getItemrecord", async (req, res) => {
   try {
-    const inventoryitem = await Showrecord.find({});
+    const inventoryitem = await Showrecord.find({}).sort({ createdAt: -1 });
     res.status(200).json(inventoryitem);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -853,36 +958,6 @@ app.delete("/delete_item/:id", async (req, res) => {
     const result = await Inventoryitem.deleteOne({ _id: id });
 
     res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-});
-
-app.post("/update-expense", async (req, res) => {
-  try {
-    const {
-      id,
-      item_name,
-      paid_amount,
-      quantity,
-      r_getamt,
-      r_paidamt,
-      buying_date,
-    } = req.body;
-    const result = await Expense.findByIdAndUpdate(id, {
-      item_name,
-      paid_amount,
-      quantity,
-      r_getamt,
-      r_paidamt,
-      buying_date,
-    });
-    if (!result) {
-      return res
-        .status(404)
-        .json({ message: `cannot find any product with ID ${id}` });
-    }
-    res.status(200).json(true);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -940,18 +1015,35 @@ app.post("/update-issueitem", async (req, res) => {
 
 app.post("/update-item", async (req, res) => {
   try {
-    const { id, item_name, quantity, availableItem } = req.body;
-    const result = await Inventoryitem.findByIdAndUpdate(id, {
+    const { id, item_name, quantity, availableItem, newPurchase } = req.body;
+    if (newPurchase != 0) {
+      const result = await Showrecord.create({
+        item_name: item_name,
+        quantity: newPurchase,
+        item_id: id,
+      });
+    }
+    const result1 = await Inventoryitem.findByIdAndUpdate(id, {
       item_name,
       quantity,
       availableItem,
     });
-    if (!result) {
+    if (!result1) {
       return res
         .status(404)
         .json({ message: `cannot find any product with ID ${id}` });
     }
     res.status(200).json(true);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/delete_showrecord", async (req, res) => {
+  try {
+    const { id } = req.body;
+    const result = await Showrecord.deleteOne({ _id: id });
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -999,7 +1091,7 @@ app.post("/addToDamage", async (req, res) => {
 
 app.get("/GetDamageItem", async (req, res) => {
   try {
-    const lossDamage = await LossDamageItem.find({});
+    const lossDamage = await LossDamageItem.find({}).sort({ createdAt: -1 });
     res.status(200).json(lossDamage);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1108,7 +1200,9 @@ app.post("/create_clientAccount", async (req, res) => {
 
 app.get("/getAccountDetails", async (req, res) => {
   try {
-    const accounts = await ClientAccount.find({ client_status: "new" });
+    const accounts = await ClientAccount.find({ client_status: "new" }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(accounts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1116,7 +1210,9 @@ app.get("/getAccountDetails", async (req, res) => {
 });
 app.get("/getOldAccountDetails", async (req, res) => {
   try {
-    const accounts = await ClientAccount.find({ client_status: "old" });
+    const accounts = await ClientAccount.find({ client_status: "old" }).sort({
+      createdAt: -1,
+    });
     res.status(200).json(accounts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1230,7 +1326,7 @@ app.post("/create_clientSocilaAccount", async (req, res) => {
 
 app.get("/getsocialAccountDeatils", async (req, res) => {
   try {
-    const Sociladata = await SocialIcon.find({});
+    const Sociladata = await SocialIcon.find({}).sort({ createdAt: -1 });
     res.status(200).json(Sociladata);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1336,7 +1432,7 @@ app.post("/assign_employee", async (req, res) => {
 
 app.get("/getAssignedEmp", async (req, res) => {
   try {
-    const result = await ClientAssign.find({});
+    const result = await ClientAssign.find({}).sort({ createdAt: -1 });
     res.status(200).json(result);
   } catch {
     res.status(500).json({ message: error.message });
@@ -1501,7 +1597,7 @@ app.delete(
 
 app.get("/getCompanyAccount_details", async (req, res) => {
   try {
-    const company = await CompanyAccount.find({});
+    const company = await CompanyAccount.find({}).sort({ createdAt: -1 });
     res.status(200).json(company);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1705,7 +1801,7 @@ app.post("/add_employeeexit", async (req, res) => {
 
 app.get("/GetEmployeeExit", async (req, res) => {
   try {
-    const company = await EmployeeExit.find({});
+    const company = await EmployeeExit.find({}).sort({ createdAt: -1 });
     res.status(200).json(company);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1830,7 +1926,7 @@ app.post("/update_password", async (req, res) => {
 app.post("/usresdata", async (req, res) => {
   try {
     const { id } = req.body;
-    await Users.findOne({ _id: id }).then(function (doc) {
+    await EmployeeSchema.findOne({ _id: id }).then(function (doc) {
       res.status(200).json(doc);
     });
   } catch (error) {
@@ -1841,8 +1937,8 @@ app.post("/usresdata", async (req, res) => {
 app.post("/update_adminprofilepic", async (req, res) => {
   try {
     await doc1Upload(req, res);
-    await Users.findByIdAndUpdate(req.body.id, {
-      img: req.file.location,
+    await EmployeeSchema.findByIdAndUpdate(req.body.id, {
+      photo: req.file.location,
     });
 
     res.status(200).json({ status: true });
@@ -2095,5 +2191,35 @@ app.get("/totalClientwithPercentage", async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getEmployeeData", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    const doc = await CandidateDetails.findOne({ ref_id: userId });
+    if (doc != "") {
+      getEmployeeImg = await EmployeeSchema.findOne({ ref_id: doc.ref_id });
+    }
+    res.status(200).json({ getEmployeeImg, doc });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/items/searchEmployeeName", async (req, res) => {
+  try {
+    const query = req.query.query;
+
+    // Query the database to search for items matching the query
+    const items = await EmployeeSchema.find({
+      f_name: { $regex: query, $options: "i" },
+      ref_id: { $ne: null },
+    });
+    // Return the results
+    res.json(items);
+  } catch (err) {
+    console.error("Error searching for items:", err);
+    res.status(500).json({ error: "Server error" });
   }
 });

@@ -91,7 +91,7 @@ const ShowIssuedEnventory = () => {
     showModal();
     setUpdateItemId(id);
     axios
-      .get(`process.env.REACT_APP_API_URL + "/available-items/${id}`)
+      .get(`${process.env.REACT_APP_API_URL}/available-items/${id}`)
       .then((response) => {
         const availableItem = response.data.availableItem;
         setAvailableItem(availableItem.availableItem);
@@ -123,7 +123,7 @@ const ShowIssuedEnventory = () => {
   const [issueItemId, setissueItemId] = useState([]);
   const handleDamage = (id) => {
     axios
-      .get(`process.env.REACT_APP_API_URL + "/getissuedata/${id}`)
+      .get(`${process.env.REACT_APP_API_URL}/getissuedata/${id}`)
       .then((response) => {
         let data = response.data;
         setdamageItemId(data.item_id);
@@ -254,7 +254,7 @@ const ShowIssuedEnventory = () => {
   };
   const handlenameSearch = (value) => {
     axios
-      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
+      .get(`${process.env.REACT_APP_API_URL}/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);

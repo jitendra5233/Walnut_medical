@@ -140,7 +140,7 @@ const AddIssuedEnventory = () => {
 
   const handleSearch = (value) => {
     axios
-      .get(`process.env.REACT_APP_API_URL + "/items/search?query=${value}`)
+      .get(`${process.env.REACT_APP_API_URL}/items/search?query=${value}`)
       .then((response) => {
         const items = response.data;
         setSuggestions(items);
@@ -152,7 +152,7 @@ const AddIssuedEnventory = () => {
 
   const handlenameSearch = (value) => {
     axios
-      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
+      .get(`${process.env.REACT_APP_API_URL}/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);

@@ -33,7 +33,7 @@ import { useNavigate, Outlet, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { handleLogoutAc } from "../Redux/Actions";
 const { Header, Content, Footer, Sider } = Layout;
-const LayoutCom2 = () => {
+const LayoutEmp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selector = useSelector((state) => state.persistedReducer);
@@ -105,7 +105,15 @@ const LayoutCom2 = () => {
         </h4>
       </div>
       <div>
-        <h5>Admin</h5>
+        <h5>
+          {selector.user.role == "emp"
+            ? "Employee"
+            : selector.user.role == "admin"
+            ? "Admin"
+            : selector.user.role == "hr"
+            ? "HR"
+            : ""}
+        </h5>
       </div>
       <div style={{ margin: "10px 0 0 0" }}>
         <Link to={`/profile/${user_id}`} className="menuText">
@@ -512,7 +520,15 @@ const LayoutCom2 = () => {
                         <div className="appBarUserContainer">
                           <span className="appBarUserName">{f_name}</span>
 
-                          <span className="appBarUserType">Admin</span>
+                          <span className="appBarUserType">
+                            {selector.user.role == "emp"
+                              ? "Employee"
+                              : selector.user.role == "admin"
+                              ? "Admin"
+                              : selector.user.role == "hr"
+                              ? "HR"
+                              : ""}
+                          </span>
                         </div>
                         <img
                           style={{ margin: "0 20px" }}
@@ -549,4 +565,4 @@ const LayoutCom2 = () => {
     </>
   );
 };
-export default LayoutCom2;
+export default LayoutEmp;

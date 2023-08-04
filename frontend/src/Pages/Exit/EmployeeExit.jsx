@@ -56,7 +56,7 @@ const EmployeeExit = () => {
 
   const deleteItem = (id) => {
     axios
-      .delete(`process.env.REACT_APP_API_URL + "/delete_employeeexit/${id}`)
+      .delete(`${process.env.REACT_APP_API_URL}/delete_employeeexit/${id}`)
       .then((response) => {
         console.log(response.data);
         setTableData((prevData) => prevData.filter((item) => item.key !== id));

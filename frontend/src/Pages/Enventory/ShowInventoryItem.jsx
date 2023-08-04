@@ -142,7 +142,7 @@ const ShowIssuedEnventory = () => {
 
   const deleteItem = (itemId) => {
     axios
-      .delete(`process.env.REACT_APP_API_URL + "/delete_item/${itemId}`)
+      .delete(`${process.env.REACT_APP_API_URL}/delete_item/${itemId}`)
       .then((response) => {
         console.log(response.data);
         setTableData((prevData) =>
@@ -186,7 +186,7 @@ const ShowIssuedEnventory = () => {
   const handleSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`process.env.REACT_APP_API_URL + "/items/searchItem?query=${value}`)
+      .get(`${process.env.REACT_APP_API_URL}/items/searchItem?query=${value}`)
       .then((response) => {
         const items = response.data;
         console.log(items);

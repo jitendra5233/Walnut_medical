@@ -86,7 +86,7 @@ const AddEmployeeExit = () => {
   const handlenameSearch = (value) => {
     // Fetch item suggestions based on the user's input
     axios
-      .get(`process.env.REACT_APP_API_URL + "/items/searchName?query=${value}`)
+      .get(`${process.env.REACT_APP_API_URL}/items/searchName?query=${value}`)
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);
