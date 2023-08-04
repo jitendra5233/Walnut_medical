@@ -7,6 +7,7 @@ const iSate = {
     l_name: "",
     role: "",
     photo: "",
+    employee_id: "",
   },
 };
 
@@ -23,6 +24,7 @@ export const Reducer = (state = iSate, action) => {
           token2: action.payload.token2,
           role: action.payload.role,
           photo: action.payload.photo,
+          employee_id: action.payload.employee_id,
           f_name:
             action.payload.f_name == undefined ? "" : action.payload.f_name,
           l_name:
@@ -42,6 +44,7 @@ export const Reducer = (state = iSate, action) => {
           role: "",
           f_name: "",
           l_name: "",
+          employee_id: "",
         },
       };
     }

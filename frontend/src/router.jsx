@@ -58,6 +58,7 @@ import LayoutAdmin from "./Pages/LayoutAdmin";
 import LayoutEmp from "./Pages/LayoutEmp";
 import LayoutHR from "./Pages/LayoutHR";
 import DashboardEmp from "./Pages/DashboardEmp";
+import ShowExpenseRecord from "./Pages/Expense/ShowExpenseRecord";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -116,6 +117,7 @@ const routerAdmin = createHashRouter(
         <Route path="/view-employeeexit/:id" element={<ShowEmployeeExit />} />
         <Route path="/edit-employeeexit/:id" element={<EditEmployeeExit />} />
         <Route path="/profile/:id" element={<AdminProfile />} />
+        <Route path="show-expenserecord" element={<ShowExpenseRecord />} />
       </Route>
     </Route>
   )
@@ -178,6 +180,7 @@ const routerHR = createHashRouter(
         <Route path="/view-employeeexit/:id" element={<ShowEmployeeExit />} />
         <Route path="/edit-employeeexit/:id" element={<EditEmployeeExit />} />
         <Route path="/profile/:id" element={<AdminProfile />} />
+        <Route path="show-expenserecord" element={<ShowExpenseRecord />} />
       </Route>
     </Route>
   )

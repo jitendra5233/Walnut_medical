@@ -74,6 +74,7 @@ const LoginNew = () => {
                 handleLogin({
                   id: data._id,
                   token2: data.employee_id,
+                  employee_id: data.employee_id,
                   f_name: res2.data[0].f_name,
                   l_name: res2.data[0].l_name,
                   role: data.employee_type,

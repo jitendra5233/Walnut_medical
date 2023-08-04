@@ -70,7 +70,7 @@ const AdminProfile = () => {
         form.setFieldsValue({
           key: x._id,
           emp_code: x.emp_code,
-          job_title: x.job_title,
+          job_title: x.designation,
           f_name: x.f_name,
           l_name: x.l_name,
           department: x.department,

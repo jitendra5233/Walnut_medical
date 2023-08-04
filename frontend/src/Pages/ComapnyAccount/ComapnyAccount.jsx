@@ -20,7 +20,6 @@ import {
   Select,
 } from "antd";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
-const { TextArea } = Input;
 const { Title } = Typography;
 const { confirm } = Modal;
 const { Option } = Select;
@@ -357,13 +356,11 @@ const CompantAccount = () => {
       render: (_, record) => (
         <div>
           <a onClick={() => handleEdit(record.key)}>
-            {" "}
             <span>
               <EditOutlined style={{ cursor: "pointer" }} />
             </span>
           </a>
           <a onClick={() => handleDelete(record.key)}>
-            {" "}
             <span>
               <DeleteOutlined style={{ cursor: "pointer" }} />
             </span>
@@ -371,34 +368,34 @@ const CompantAccount = () => {
         </div>
       ),
     },
-    {
-      title: "Send Mail",
-      key: "action",
-      render: (_, record) => (
-        <div>
-          <Space wrap>
-            <Button
-              type="primary"
-              block
-              onClick={() =>
-                handleSendMail(
-                  record.hosting_name,
-                  record.hosting_url,
-                  record.renewal_date,
-                  record.client_name,
-                  record.smtpPort,
-                  record.smtpHort,
-                  record.smtpUsername,
-                  record.smtpPassword
-                )
-              }
-            >
-              Send Mail
-            </Button>
-          </Space>
-        </div>
-      ),
-    },
+    // {
+    //   title: "Send Mail",
+    //   key: "action",
+    //   render: (_, record) => (
+    //     <div>
+    //       <Space wrap>
+    //         <Button
+    //           type="primary"
+    //           block
+    //           onClick={() =>
+    //             handleSendMail(
+    //               record.hosting_name,
+    //               record.hosting_url,
+    //               record.renewal_date,
+    //               record.client_name,
+    //               record.smtpPort,
+    //               record.smtpHort,
+    //               record.smtpUsername,
+    //               record.smtpPassword
+    //             )
+    //           }
+    //         >
+    //           Send Mail
+    //         </Button>
+    //       </Space>
+    //     </div>
+    //   ),
+    // },
   ];
 
   return (

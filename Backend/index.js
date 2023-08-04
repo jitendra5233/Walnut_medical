@@ -28,6 +28,7 @@ const EmployeeExit = require("./Model/Employeeexit");
 const EmployeeExitDocs = require("./Model/EmployeeExitDocs");
 const AppraisalSchema = require("./Model/Appraisal");
 const IssuesAndFeedbackRoot = require("./Model/IssuesAndFeedbackRoot");
+const ExpenseRecord = require("./Model/ExpenseRecord");
 
 const singleUpload = upload.single("image");
 const docUpload = upload.single("file");
@@ -106,7 +107,7 @@ let getName = async (users) => {
 
 app.get("/usres", async (req, res) => {
   try {
-    let users = await Users.find({});
+    let users = await Users.find({}).sort({ createdAt: -1 });
     // users = await getName(users);
     // users.map((x) => {
     //   // let otherData = EmployeeSchema.find({ _id: x.employee_id });
@@ -245,7 +246,7 @@ app.post("/addDepartment", async (req, res) => {
 
 app.get("/getDepartment", async (req, res) => {
   try {
-    const dep = await Department.find({});
+    const dep = await Department.find({}).sort({ createdAt: -1 });
     res.status(200).json(dep);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -620,7 +621,7 @@ app.post("/deleteCandidateDocs", async (req, res) => {
 
 app.get("/getTotalNumberOfEmp", async (req, res) => {
   try {
-    const result = await EmployeeSchema.find({});
+    const result = await EmployeeSchema.find({}).sort({ createdAt: -1 });
 
     res.status(200).json(result.length);
   } catch (error) {
@@ -755,7 +756,9 @@ app.post("/create_expense", async (req, res) => {
 
 app.get("/expense", async (req, res) => {
   try {
-    const expnese = await Expense.find({}).sort({ createdAt: -1 });
+    const expnese = await Expense.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(expnese);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -824,7 +827,9 @@ app.delete("/delete_expneserecord", async (req, res) => {
 
 app.get("/getexpenserecord", async (req, res) => {
   try {
-    const expenseItems = await ExpenseRecord.find({}).sort({ createdAt: -1 });
+    const expenseItems = await ExpenseRecord.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(expenseItems);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -860,8 +865,10 @@ app.post("/issued_enventory", async (req, res) => {
 
 app.get("/issued", async (req, res) => {
   try {
-    // const enventory = await Enventory.find({});
-    const enventory = await Enventory.find({}).sort({ createdAt: -1 });
+    // const enventory = await Enventory.find({}).sort({ createdAt: -1 });
+    const enventory = await Enventory.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(enventory);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -935,8 +942,10 @@ app.post("/add-item", async (req, res) => {
 
 app.get("/getItem", async (req, res) => {
   try {
-    const inventoryitem = await Inventoryitem.find({}).sort({ createdAt: -1 });
-    // const enventory = await Enventory.find({}).sort({ createdAt: -1 });
+    const inventoryitem = await Inventoryitem.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
+    // const enventory = await Enventory.find({}).sort({ createdAt: -1 }).sort({ createdAt: -1 });
     res.status(200).json(inventoryitem);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -945,7 +954,9 @@ app.get("/getItem", async (req, res) => {
 
 app.get("/getItemrecord", async (req, res) => {
   try {
-    const inventoryitem = await Showrecord.find({}).sort({ createdAt: -1 });
+    const inventoryitem = await Showrecord.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(inventoryitem);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1091,7 +1102,9 @@ app.post("/addToDamage", async (req, res) => {
 
 app.get("/GetDamageItem", async (req, res) => {
   try {
-    const lossDamage = await LossDamageItem.find({}).sort({ createdAt: -1 });
+    const lossDamage = await LossDamageItem.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(lossDamage);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1326,7 +1339,9 @@ app.post("/create_clientSocilaAccount", async (req, res) => {
 
 app.get("/getsocialAccountDeatils", async (req, res) => {
   try {
-    const Sociladata = await SocialIcon.find({}).sort({ createdAt: -1 });
+    const Sociladata = await SocialIcon.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(Sociladata);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1432,7 +1447,9 @@ app.post("/assign_employee", async (req, res) => {
 
 app.get("/getAssignedEmp", async (req, res) => {
   try {
-    const result = await ClientAssign.find({}).sort({ createdAt: -1 });
+    const result = await ClientAssign.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(result);
   } catch {
     res.status(500).json({ message: error.message });
@@ -1473,7 +1490,7 @@ app.delete("/delete_assignemployee/:id", async (req, res) => {
 
 app.get("/getwebsetting", async (req, res) => {
   try {
-    const accounts = await Websetting.find({});
+    const accounts = await Websetting.find({}).sort({ createdAt: -1 });
     res.status(200).json(accounts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1597,7 +1614,9 @@ app.delete(
 
 app.get("/getCompanyAccount_details", async (req, res) => {
   try {
-    const company = await CompanyAccount.find({}).sort({ createdAt: -1 });
+    const company = await CompanyAccount.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(company);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -1801,7 +1820,9 @@ app.post("/add_employeeexit", async (req, res) => {
 
 app.get("/GetEmployeeExit", async (req, res) => {
   try {
-    const company = await EmployeeExit.find({}).sort({ createdAt: -1 });
+    const company = await EmployeeExit.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
     res.status(200).json(company);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -2048,12 +2069,16 @@ app.get("/getJobPositions", async (req, res) => {
     }
     res
       .status(200)
-      .json({ jobPositionCount, hiredEmployee, hiredCandidatePer }); // Corrected response format
+      .json({
+        jobPositionCount,
+        hiredEmployee,
+        hiredCandidatePer,
+        jobOpeningper,
+      }); // Corrected response format
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
 });
-
 // app.get("/getHiredCandidatecount", async (req, res) => {
 //   try {
 //     const hiredEmployee = await DepartmentPositionsCandidate.countDocuments({ hired: true });

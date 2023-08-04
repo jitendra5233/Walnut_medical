@@ -67,6 +67,8 @@ const ShowExpense = () => {
 
   const [updateItemId, srtUpdateIyemId] = useState([]);
   const [updateDate, setUpdateDate] = useState([]);
+  const [OldQuantity, setOldQuantity] = useState([]);
+
   const handleEdit = (id) => {
     showModal();
     srtUpdateIyemId(id);
@@ -80,6 +82,7 @@ const ShowExpense = () => {
           r_paidamt: x.r_paidamt,
           r_getamt: x.r_getamt,
         });
+        setOldQuantity(x.quantity);
       }
     });
   };
@@ -88,6 +91,11 @@ const ShowExpense = () => {
     values.id = updateItemId;
     if (values.buying_date == undefined) {
       values.buying_date = updateDate;
+    }
+    if (values.quantity > OldQuantity) {
+      values.newPurchase = values.quantity - OldQuantity;
+    } else {
+      values.newPurchase = 0;
     }
     axios
       .post(process.env.REACT_APP_API_URL + "/update-expense", values)
@@ -199,6 +207,11 @@ const ShowExpense = () => {
         </Title>
         <Link to={`/add-expense`}>
           <button className="Expensecolorbtn">Add Expense +</button>
+        </Link>
+        <Link to={`/show-expenserecord`}>
+          <button className="filtercolorbtn">
+            Show Expense Record <i class="fa fa-eye" aria-hidden="true"></i>
+          </button>
         </Link>
         <button className="filtercolorbtn">
           Filter <i class="fa fa-filter" aria-hidden="true"></i>
@@ -339,12 +352,7 @@ const ShowExpense = () => {
                       name="buying_date"
                       hasFeedback
                     >
-                      <DatePicker
-                        style={{ width: "100%" }}
-                        disabledDate={(current) =>
-                          current && current < moment().startOf("day")
-                        }
-                      />
+                      <DatePicker style={{ width: "100%" }} />
                     </Form.Item>
                   </Col>
                 </Row>

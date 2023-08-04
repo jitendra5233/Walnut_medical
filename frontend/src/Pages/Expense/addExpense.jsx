@@ -76,12 +76,7 @@ const AddExpense = () => {
                       },
                     ]}
                   >
-                    <DatePicker
-                      style={{ width: "100%" }}
-                      disabledDate={(current) =>
-                        current && current < moment().startOf("day")
-                      }
-                    />
+                    <DatePicker style={{ width: "100%" }} />
                   </Form.Item>
                 </Col>
                 <Col span={8}>

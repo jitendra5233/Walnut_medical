@@ -903,37 +903,6 @@ const ShowClientsDetails = () => {
           </div>
         </Spin>
       </Modal>
-
-      {/* <Modal open={isModalOpen3} onCancel={handleCancel3} footer={[]}>
-        <Spin spinning={loading}>
-          {contextHolder}
-          <div style={{ padding: "30px" }}>
-            <Row>
-              <Col span={24} style={{ marginBottom: "30px" }}>
-                <span className="popupTitle">Delete Social Media</span>
-              </Col>
-              <Col span={24}>
-                <Form
-                  form={form}
-                  name="basic"
-                  layout="vertical"
-                  initialValues={{
-                    remember: true,
-                  }}
-                  autoComplete="off"
-                >
-                  <Row gutter={24}>         
-                <div>
-                <Table columns={columns} dataSource={tableData} />
-                </div>
-                  </Row>
-                </Form>
-              </Col>
-            </Row>
-          </div>
-        </Spin>
-      </Modal> */}
-
       <Modal open={isModalOpen4} onCancel={handleCancel4} footer={[]}>
         <Spin spinning={loading}>
           {contextHolder}

@@ -86,11 +86,14 @@ const ShowIssuedEnventory = () => {
   const [updateAvailableItem, setUpdateAvailableItem] = useState([]);
   const [getOldTotalItem, setOldTotalItem] = useState([]);
   const [getsuggestedId, setSuggestedId] = useState([]);
+  // const [OldQuantity, setOldQuantity] = useState([]);
+
   const handleEdit = (id) => {
     showModal1();
     setUpdateItemId(id);
     tableData.map((x) => {
       if (x.key === id) {
+        // setOldQuantity(x.quantity);
         form.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
@@ -108,6 +111,11 @@ const ShowIssuedEnventory = () => {
     let AvailableItem = values.quantity - getOldTotalItem;
     let FinalAvailableItem = values.availableItem + AvailableItem;
     values.availableItem = FinalAvailableItem;
+    if (values.quantity > getOldTotalItem) {
+      values.newPurchase = AvailableItem;
+    } else {
+      values.newPurchase = 0;
+    }
     axios
       .post(process.env.REACT_APP_API_URL + "/update-item", values)
       .then((res) => {

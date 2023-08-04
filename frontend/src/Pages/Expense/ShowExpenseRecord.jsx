@@ -19,18 +19,23 @@ const ShowAvailableItems = () => {
 
   const getInventory = () => {
     axios
-      .get(process.env.REACT_APP_API_URL + "/getItemrecord")
+      .get(process.env.REACT_APP_API_URL + "/getexpenserecord")
       .then((result) => {
         let data = result.data;
         let newData = [];
         console.log(data);
         data.map((x) => {
           const createdAt = new Date(x.createdAt);
+          const buyingdate = new Date(x.buying_date);
+
           const formattedCreatedAt = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`;
+          const formattedbuyingdate = `${buyingdate.toLocaleDateString()}`;
+
           newData.push({
             key: x._id,
             item_name: x.item_name,
             quantity: x.quantity,
+            buying_date: formattedbuyingdate,
             createdAt: formattedCreatedAt,
           });
         });
@@ -58,7 +63,7 @@ const ShowAvailableItems = () => {
 
   const deleteItem = (id) => {
     axios
-      .delete(process.env.REACT_APP_API_URL + "/delete_showrecord", {
+      .delete(process.env.REACT_APP_API_URL + "/delete_expneserecord", {
         data: { id }, // Pass the data as an object
       })
       .then((response) => {
@@ -76,6 +81,12 @@ const ShowAvailableItems = () => {
       dataIndex: "item_name",
       key: "item_name",
       render: (text) => <a>{text}</a>,
+    },
+
+    {
+      title: "Buying Date",
+      dataIndex: "buying_date",
+      key: "buying_date",
     },
 
     {
@@ -107,21 +118,20 @@ const ShowAvailableItems = () => {
     <div>
       <div className="m12r">
         <Title level={3} className="Expensecolor">
-          Show Item Record
+          Show Expnese Record
         </Title>
-        <Link to={`/inventory-item`}>
+
+        <Link to={`/add-expense`}>
+          <button className="Expensecolorbtn">Add Expense +</button>
+        </Link>
+        <Link to={`/expense`}>
           <button className="filtercolorbtn">
-            Total items <i class="fa fa-eye" aria-hidden="true"></i>
+            Show Expense <i class="fa fa-eye" aria-hidden="true"></i>
           </button>
         </Link>
-        <Link to={`/add-issued`}>
-          <button className="filtercolorbtn">Assign Item +</button>
-        </Link>
-        <Link to={`/show_itemrecord`}>
-          <button className="filtercolorbtn">
-            Show Record <i class="fa fa-eye" aria-hidden="true"></i>
-          </button>
-        </Link>
+        <button className="filtercolorbtn">
+          Filter <i class="fa fa-filter" aria-hidden="true"></i>
+        </button>
       </div>
       <div>
         <Table columns={columns} dataSource={tableData} />

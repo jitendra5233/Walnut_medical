@@ -13,6 +13,7 @@ import {
   ShareAltOutlined,
 } from "@ant-design/icons";
 import {
+  Card,
   Button,
   Layout,
   Menu,
@@ -27,13 +28,19 @@ import {
   Upload,
   Modal,
   notification,
+  AutoComplete,
+  Select,
+  Space,
+  Dropdown,
 } from "antd";
 import axios from "axios";
 import { useNavigate, Outlet, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { handleLogoutAc } from "../Redux/Actions";
 const { Header, Content, Footer, Sider } = Layout;
-const LayoutHR = () => {
+let { Option } = Select;
+
+const LayoutEmp = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const selector = useSelector((state) => state.persistedReducer);
@@ -45,6 +52,15 @@ const LayoutHR = () => {
   const [user_id, setUserId] = useState("");
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
+  const [userSuggestions, setUserSuggestions] = useState([]);
+  const [userSuggestionsimg, setUserSuggestionsimg] = useState([]);
+
+  const [empName, setEmpName] = useState([]);
+  const [empDetails, setEmpDetails] = useState([]);
+  const [empImgDetails, setEmpImgDetails] = useState([]);
+
+  console.log(empDetails);
+
   const { SubMenu } = Menu;
 
   useEffect(() => {
@@ -56,7 +72,7 @@ const LayoutHR = () => {
     let user = selector.user;
     setFName(user.f_name);
     setLName(user.l_name);
-    setUserId(user.token);
+    setUserId(user.employee_id);
   };
 
   const checkLogin = () => {
@@ -117,13 +133,10 @@ const LayoutHR = () => {
       </div>
       <div style={{ margin: "10px 0 0 0" }}>
         <Link to={`/profile/${user_id}`} className="menuText">
-          <Button type="primary" block primary onClick={showModal}>
+          <Button type="primary" block primary>
             Profile
           </Button>
         </Link>
-        {/* <Button type="primary" block primary onClick={showModal}>
-          Update Password
-        </Button> */}
         <Button type="primary" block danger onClick={() => handleLogout()}>
           Logout
         </Button>
@@ -193,6 +206,41 @@ const LayoutHR = () => {
       getItem("Add User", "4", "", ""),
     ]),
   ];
+  const handlenameSearch = (value) => {
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/items/searchEmployeeName?query=${value}`
+      )
+      .then((response) => {
+        const data = response.data;
+        console.log(items);
+        setUserSuggestions(data);
+        // setUserSuggestionsimg(data[0]);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
+  const handleChange = (value, option) => {
+    let userId = option.key;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getEmployeeData", { userId })
+      .then((res) => {
+        if (res.data !== "") {
+          let data = res.data;
+          console.log(data);
+          var emp_name = data.f_name + " " + data.l_name;
+          setEmpDetails(data.doc);
+          setEmpImgDetails(data.getEmployeeImg);
+          showModal(true);
+          setEmpName(emp_name);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <Layout>
@@ -477,14 +525,50 @@ const LayoutHR = () => {
               <Col span={8} className="h64p">
                 <span className="appBarTxt">Dashboard</span>
               </Col>
-              <Col span={8} className="h64p">
+              <Col span={8}>
+                <Form.Item name="emp_name" className="h64p fontchange">
+                  <AutoComplete
+                    placeholder="Search Employee"
+                    onSearch={handlenameSearch}
+                    onChange={handleChange}
+                    prefix={<SearchOutlined className="site-form-item-icon" />}
+                  >
+                    {userSuggestions.map((option) => (
+                      <AutoComplete.Option
+                        key={option.ref_id}
+                        value={`${option.f_name} ${option.l_name}`}
+                      >
+                        <div className="search-result-item">
+                          <img
+                            className="set_img1"
+                            alt="example"
+                            src={option.photo}
+                          />
+                          <div className="colorchangeblue">
+                            <span>
+                              {option.emp_code} - {option.f_name}{" "}
+                              {option.l_name}
+                            </span>
+                            <div className="department">
+                              {option.department}
+                            </div>
+                          </div>
+                          <span className="colorchange">{option.phone}</span>
+                        </div>
+                      </AutoComplete.Option>
+                    ))}
+                  </AutoComplete>
+                </Form.Item>
+              </Col>
+              {/* <Col span={8} className="h64p">
                 <Input
                   size="large"
+                  onSearch={handlenameSearch}
                   className="appBarSearchIpt"
                   placeholder="Enter your username"
                   prefix={<SearchOutlined className="site-form-item-icon" />}
                 />
-              </Col>
+              </Col> */}
               <Col span={8} className="h64p">
                 <Row>
                   <Col
@@ -562,7 +646,102 @@ const LayoutHR = () => {
           </Content>
         </Layout>
       </Layout>
+      <Modal open={isModalOpen} onCancel={handleCancel} footer={[]}>
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24}>
+                <Form
+                  form={form}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item name="client_name">
+                        <img
+                          className="set_img2"
+                          alt="example"
+                          src={empImgDetails.photo}
+                        />
+                        <span className="set_img2 setcolor">
+                          {empDetails.f_name + " " + empDetails.l_name}
+                        </span>
+                        <br></br>
+                        <span className="set_img2">{empDetails.job_title}</span>
+                        <br></br>
+                        <span className="set_img2">{empDetails.email}</span>
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <hr className="addmargin"></hr>
+                    </Col>
+                    <Col span={24} style={{ marginBottom: "0px" }}>
+                      <span className="popupTitle">Profile</span>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item name="client_name"></Form.Item>
+                      <div class="container">
+                        <div class="row">
+                          <span class="label">Contact Info</span>
+                          <span class="value">{empDetails.phone}</span>
+                          <span class="label">Aadhar No.</span>
+                          <span class="value">{empDetails.aadhar_no}</span>
+                        </div>
+
+                        <div class="row">
+                          <span class="label">Gender</span>
+                          <span class="value">Male</span>
+                          <span class="label">Bank Account</span>
+                          <span class="value">{empDetails.account_no}</span>
+                        </div>
+                        <div class="row">
+                          <span class="label">Date of Birth</span>
+                          <span class="value">10-08-1998</span>
+                          <span class="label">Department</span>
+                          <span class="value">{empDetails.department}</span>
+                        </div>
+                        <div class="row"></div>
+                        <div class="row">
+                          <span class="label">Pan no.</span>
+                          <span class="value">{empDetails.pan_no}</span>
+                          <span class="label">Other No</span>
+                          <span class="value">{empDetails.phone}</span>
+                        </div>
+                      </div>
+                    </Col>
+                    <Col span={24} style={{ marginBottom: "-20px" }}>
+                      <span className="popupTitle">Address</span>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item name="client_name"></Form.Item>
+                      <div class="container">
+                        <div class="row">
+                          <span class="label">Permanent Address</span>
+                          <br />
+                          <span class="value">{empDetails.p_address}</span>
+
+                          <span class="label">Temporary Address</span>
+                          <br />
+
+                          <span class="value">{empDetails.t_address}</span>
+                        </div>
+                      </div>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
     </>
   );
 };
-export default LayoutHR;
+export default LayoutEmp;

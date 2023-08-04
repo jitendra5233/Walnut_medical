@@ -226,9 +226,7 @@ export const Dashboard = () => {
         setJobPositions(data.jobPositionCount);
         sethiredCandidate(data.hiredEmployee);
         sethiredCandidatePer(data.hiredCandidatePer + "%");
-        // setjobOpeningPer = data.jobOpeningper + "%";
-
-        // sethiredCandidatePer(hiredCandidatePer);
+        setjobOpeningPer(data.jobOpeningper + "%");
       })
       .catch((err) => {
         console.log(err);
