@@ -29,6 +29,7 @@ const EmployeeExitDocs = require("./Model/EmployeeExitDocs");
 const AppraisalSchema = require("./Model/Appraisal");
 const IssuesAndFeedbackRoot = require("./Model/IssuesAndFeedbackRoot");
 const ExpenseRecord = require("./Model/ExpenseRecord");
+const IssuesAndFeedbackInner = require("./Model/IssuesAndFeedbackInner");
 
 const singleUpload = upload.single("image");
 const docUpload = upload.single("file");
@@ -729,6 +730,33 @@ app.post("/getFeedbackIssues", async (req, res) => {
     const result = await IssuesAndFeedbackRoot.find({
       ref_id: req.body.id,
     });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getFeedbackIssuesAll", async (req, res) => {
+  try {
+    const result = await IssuesAndFeedbackRoot.find({});
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/getEmpDataSingle", async (req, res) => {
+  try {
+    const result = await EmployeeSchema.find({ _id: req.body.id });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/saveAdminReply", async (req, res) => {
+  try {
+    const result = await IssuesAndFeedbackInner.create(req.body);
     res.status(200).json(result);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -2067,14 +2095,12 @@ app.get("/getJobPositions", async (req, res) => {
       hiredCandidatePer = 0;
       jobOpeningper = 0;
     }
-    res
-      .status(200)
-      .json({
-        jobPositionCount,
-        hiredEmployee,
-        hiredCandidatePer,
-        jobOpeningper,
-      }); // Corrected response format
+    res.status(200).json({
+      jobPositionCount,
+      hiredEmployee,
+      hiredCandidatePer,
+      jobOpeningper,
+    }); // Corrected response format
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

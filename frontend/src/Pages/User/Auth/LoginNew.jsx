@@ -58,18 +58,36 @@ const LoginNew = () => {
     axios
       .post(process.env.REACT_APP_API_URL + "/login", values)
       .then((res) => {
-        setLoading(false);
         if (res.data.length === 0) {
+          setLoading(false);
           openNotificationWithIcon("error");
         } else {
           let data = res.data[0];
+
+          if (data.employee_type == "admin") {
+            setLoading(false);
+            dispatch(
+              handleLogin({
+                id: data._id,
+                token2: data._id,
+                employee_id: data._id,
+                f_name: "",
+                l_name: "",
+                role: data.employee_type,
+                photo: "",
+              })
+            );
+            openNotificationWithIcon("success");
+            navigate("/");
+          }
 
           axios
             .post(process.env.REACT_APP_API_URL + "/getEmpData", {
               token: data._id,
             })
             .then((res2) => {
-              console.log(res2.data);
+              setLoading(false);
+
               dispatch(
                 handleLogin({
                   id: data._id,

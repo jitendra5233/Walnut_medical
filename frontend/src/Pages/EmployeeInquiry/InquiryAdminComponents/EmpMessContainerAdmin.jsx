@@ -17,13 +17,14 @@ import {
   EllipsisOutlined,
   StepBackwardFilled,
 } from "@ant-design/icons";
-import EmpMessage from "./EmpMessage";
+
 import { useSelector } from "react-redux";
 import axios from "axios";
-import EmpMessageRoot from "./EmpMessageRoot";
-import EmpMessageInner from "./EmpMessageInner";
 
-const EmpMessContainer = ({
+import EmpMessageRootAdmin from "./EmpMessageRootAdmin";
+import EmpMessageInnerAdmin from "./EmpMessageInnerAdmin";
+
+const EmpMessContainerAdmin = ({
   title,
   type,
   anonymous,
@@ -32,6 +33,7 @@ const EmpMessContainer = ({
 }) => {
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModal2Open, setIsModal2Open] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messDataRoot, setMessDataRoot] = useState([]);
   const [ShowReply, setShowReply] = useState(false);
@@ -41,7 +43,9 @@ const EmpMessContainer = ({
   let selector = useSelector((state) => state.persistedReducer.user);
 
   useEffect(() => {
-    setMessDataRoot(data);
+    if (data.length != 0) {
+      setMessDataRoot(data);
+    }
   });
 
   const items = [
@@ -50,6 +54,15 @@ const EmpMessContainer = ({
       label: <div onClick={() => showModal()}>New Message</div>,
     },
   ];
+
+  const showModal2 = () => {
+    setIsModal2Open(true);
+  };
+
+  const handleCancel2 = () => {
+    setIsModal2Open(false);
+    form.resetFields();
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -84,11 +97,78 @@ const EmpMessContainer = ({
   const ShowMesages = (data) => {
     setShowReply(true);
     setActiveMessage(data);
-    console.log(data);
+  };
+
+  const handleSendReply = (values) => {
+    console.log(activeMessage);
+    values.ref_id = activeMessage._id;
+    values.formAdmin = true;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/saveAddddminReply", values)
+      .then((result) => {
+        handleCancel2();
+      })
+      .catch((err) => {});
   };
 
   return (
     <div>
+      <Modal open={isModal2Open} onCancel={handleCancel2} footer={[]}>
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24} style={{ marginBottom: "30px" }}>
+                <span className="popupTitle">Add New Feedback/Issues</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={handleSendReply}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Reply Message"
+                        name="reply"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Reply Message",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input.TextArea
+                          className="myAntIpt2"
+                          placeholder="Enter your Reply Message"
+                          size="small"
+                        />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Add
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
+
       <Modal open={isModalOpen} onCancel={handleCancel} footer={[]}>
         <Spin spinning={loading}>
           {contextHolder}
@@ -189,9 +269,10 @@ const EmpMessContainer = ({
           <List itemLayout="horizontal">
             {messDataRoot.map((x) => {
               return (
-                <EmpMessageRoot
+                <EmpMessageRootAdmin
+                  senderName={`${x.f_name} ${x.l_name}`}
                   message={x.title}
-                  photo={selector.photo}
+                  photo={x.photo}
                   anonymous={anonymous}
                   ShowMesages={() => ShowMesages(x)}
                   dateTime={`${new Date(
@@ -220,13 +301,18 @@ const EmpMessContainer = ({
             </div>
             <div></div>
             <List itemLayout="horizontal">
-              <EmpMessageInner
+              <EmpMessageInnerAdmin
                 anonymous={anonymous}
                 photo={selector.photo}
-                formAdmin={false}
+                formAdmin={true}
                 message={activeMessage.description}
               />
             </List>
+            <div style={{ marginTop: "10px" }}>
+              <Button size="small" block onClick={() => showModal2()}>
+                Reply
+              </Button>
+            </div>
           </div>
         )}
       </div>
@@ -234,4 +320,4 @@ const EmpMessContainer = ({
   );
 };
 
-export default EmpMessContainer;
+export default EmpMessContainerAdmin;

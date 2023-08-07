@@ -59,8 +59,6 @@ const LayoutEmp = () => {
   const [empDetails, setEmpDetails] = useState([]);
   const [empImgDetails, setEmpImgDetails] = useState([]);
 
-  console.log(empDetails);
-
   const { SubMenu } = Menu;
 
   useEffect(() => {
