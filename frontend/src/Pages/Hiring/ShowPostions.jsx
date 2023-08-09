@@ -53,10 +53,10 @@ const PostionCard = ({
       >
         <div style={{ padding: "20px" }}>
           <Row>
-            <Col span={12}>
+            <Col span={24}>
               <span className="potionCardTitle">{name}</span>
             </Col>
-            <Col span={12} style={{ textAlign: "end" }}>
+            {/* <Col span={12} style={{ textAlign: "end" }}>
               <span
                 className="postionCardSubtitle"
                 style={{ margin: "0 10px" }}
@@ -64,7 +64,7 @@ const PostionCard = ({
                 Share form
               </span>
               <ShareAltOutlined />
-            </Col>
+            </Col> */}
             <Col span={12}>
               <span className="postionCardSubtitle">Candidate</span>
             </Col>

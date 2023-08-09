@@ -214,6 +214,7 @@ const ShowHiredCandidate = () => {
           department: x.ref_id,
           designation: x.profile_id,
           emp_code: totalNoOfEmp,
+          old_emp: false,
         };
 
         axios

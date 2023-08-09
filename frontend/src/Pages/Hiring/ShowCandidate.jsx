@@ -478,13 +478,13 @@ const PostionCard = ({
                           </span>
                         </div>
                         <div>
-                          <Button
+                          {/* <Button
                             className="interviewBtn"
                             type="primary"
                             style={{ marginTop: "10px" }}
                           >
                             Share form <ShareAltOutlined />
-                          </Button>
+                          </Button> */}
                         </div>
                       </>
                     )}

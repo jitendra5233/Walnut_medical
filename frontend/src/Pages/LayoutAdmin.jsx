@@ -687,6 +687,7 @@ const LayoutEmp = () => {
               margin: "24px 16px 0",
               overflow: "auto",
               height: "80vh",
+              background: colorBgContainer,
             }}
           >
             <div

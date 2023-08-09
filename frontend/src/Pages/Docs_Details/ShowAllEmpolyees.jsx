@@ -52,10 +52,26 @@ const EmployeeCard = ({
       });
   };
 
+  const generateLogin = () => {
+    axios
+      .post(process.env.REACT_APP_API_URL + "/generateLogin", { id })
+      .then((result) => {
+        getEmployee();
+        console.log(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const items = [
     {
       key: "1",
       label: <Link onClick={() => SaveAsOldEmployee()}>Move to Old</Link>,
+    },
+    {
+      key: "2",
+      label: <Link onClick={() => generateLogin()}>Generate Login</Link>,
     },
   ];
 
@@ -217,7 +233,6 @@ const ShowAllEmpolyees = () => {
   };
 
   const getAllJobProfiles = (ref_id) => {
-    console.log(ref_id);
     axios
       .post(process.env.REACT_APP_API_URL + "/getDepartmentPostions", {
         id: ref_id,
