@@ -36,6 +36,7 @@ const EmpMessContainerAdmin = ({
   const [isModal2Open, setIsModal2Open] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messDataRoot, setMessDataRoot] = useState([]);
+  const [messDataInner, setMessDataInner] = useState([]);
   const [ShowReply, setShowReply] = useState(false);
   const [activeMessage, setActiveMessage] = useState();
 
@@ -95,18 +96,32 @@ const EmpMessContainerAdmin = ({
   };
 
   const ShowMesages = (data) => {
-    setShowReply(true);
-    setActiveMessage(data);
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getFeedbackIssuesInner", {
+        id: data._id,
+      })
+      .then((result) => {
+        setMessDataInner(result.data);
+        setShowReply(true);
+        setActiveMessage(data);
+        // setInterval(() => {
+        //   ShowMesages(data);
+        // }, 5000);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   const handleSendReply = (values) => {
     console.log(activeMessage);
     values.ref_id = activeMessage._id;
-    values.formAdmin = true;
+    values.fromAdmin = true;
     axios
-      .post(process.env.REACT_APP_API_URL + "/saveAddddminReply", values)
+      .post(process.env.REACT_APP_API_URL + "/saveAdminReply", values)
       .then((result) => {
         handleCancel2();
+        ShowMesages(activeMessage);
       })
       .catch((err) => {});
   };
@@ -304,9 +319,19 @@ const EmpMessContainerAdmin = ({
               <EmpMessageInnerAdmin
                 anonymous={anonymous}
                 photo={selector.photo}
-                formAdmin={true}
+                fromAdmin={"false"}
                 message={activeMessage.description}
               />
+              {messDataInner.map((x) => {
+                return (
+                  <EmpMessageInnerAdmin
+                    anonymous={anonymous}
+                    photo={selector.photo}
+                    fromAdmin={x.fromAdmin}
+                    message={x.reply}
+                  />
+                );
+              })}
             </List>
             <div style={{ marginTop: "10px" }}>
               <Button size="small" block onClick={() => showModal2()}>

@@ -7,11 +7,12 @@ const EmpMessageInner = ({
   anonymous,
   photo,
   ShowMesages,
-  formAdmin,
+  fromAdmin,
 }) => {
   const [messagePhoto, setMessagePhoto] = useState("./user1.png");
 
   useEffect(() => {
+    console.log(fromAdmin, message);
     if (anonymous == false) {
       setMessagePhoto(photo);
     }
@@ -19,7 +20,7 @@ const EmpMessageInner = ({
 
   return (
     <div>
-      {formAdmin == true ? (
+      {fromAdmin == "true" ? (
         <>
           <List.Item>
             <div style={{ display: "flex", alignItems: "center" }}>

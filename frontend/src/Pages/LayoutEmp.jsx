@@ -206,7 +206,13 @@ const LayoutEmp = () => {
           >
             <Row style={{ margin: "0 30px" }}>
               <Col span={18} className="h64p">
-                <img src="./logo.png" alt="" style={{ padding: "1rem 0" }} />
+                <Link to={"/"}>
+                  <img
+                    src="./logo.png"
+                    alt=""
+                    style={{ padding: "1rem 0", cursor: "pointer" }}
+                  />
+                </Link>
               </Col>
               <Col span={6} className="h64p">
                 <Row>
@@ -276,7 +282,7 @@ const LayoutEmp = () => {
             <div
               style={{
                 padding: 40,
-                minHeight: 360,
+                height: "100%",
                 background: colorBgContainer,
               }}
             >

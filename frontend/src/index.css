@@ -569,6 +569,21 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   color: #0071c5;
 }
 
+.ant-drawer-body {
+  padding: 10px !important;
+}
+
+.MarkTxt {
+  font-size: 12px;
+  margin-top: 10px;
+  color: #0071c5;
+  cursor: pointer;
+}
+
+.MarkTxt:hover {
+  color: rgb(238, 54, 22);
+}
+
 /* Jitendra New Css Start */
 
 .card_style {

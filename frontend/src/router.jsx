@@ -196,6 +196,7 @@ const routerEmp = createHashRouter(
       <Route path="/changePassword" element={<ChangePasword />}></Route>
       <Route element={<LayoutEmp />}>
         <Route path="/" element={<DashboardEmp />} />
+        <Route path="/profile/:id" element={<AdminProfile />} />
       </Route>
     </Route>
   )

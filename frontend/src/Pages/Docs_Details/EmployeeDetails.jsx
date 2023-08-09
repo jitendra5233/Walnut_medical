@@ -64,6 +64,7 @@ const EmployeeDetails = () => {
         if (data.length != 0) {
           let formData = data[0];
           formData.date_of_joining = dayjs(formData.date_of_joining);
+          formData.emp_dob = dayjs(formData.emp_dob);
 
           if (formData.job_title == undefined) {
             formData.job_title = formData.designation;
@@ -176,6 +177,27 @@ const EmployeeDetails = () => {
                       size="small"
                       disabled
                     />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Employee Type"
+                    name="employee_type"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Employee Type!",
+                      },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Select Employee Type"
+                      className="myAntIptSelect2"
+                      allowClear
+                    >
+                      <Option value="permanent">Permanent</Option>
+                      <Option value="Intern">Intern</Option>
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={8}>
@@ -442,7 +464,71 @@ const EmployeeDetails = () => {
                       },
                     ]}
                   >
-                    <Input />
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Phone Number"
+                      size="small"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item
+                    label="Other Phone Number"
+                    name="other_phone"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Other Phone Number!",
+                      },
+                    ]}
+                  >
+                    <Input
+                      className="myAntIpt2"
+                      placeholder="Enter Other Phone Number"
+                      size="small"
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={8}>
+                  <Form.Item
+                    label="Date of Birth"
+                    name="emp_dob"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Date of Birth!",
+                      },
+                    ]}
+                  >
+                    <DatePicker
+                      className="myAntIpt2"
+                      placeholder="Enter your Date"
+                      size="small"
+                    />
+                  </Form.Item>
+                </Col>
+
+                <Col span={8}>
+                  <Form.Item
+                    label="Gender"
+                    name="gender"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Please input your Gender!",
+                      },
+                    ]}
+                  >
+                    <Select
+                      placeholder="Select Gender"
+                      className="myAntIptSelect2"
+                      allowClear
+                    >
+                      <Option value="male">Male</Option>
+                      <Option value="female">Female</Option>
+                      <Option value="other">Other</Option>
+                    </Select>
                   </Form.Item>
                 </Col>
                 <Col span={24}>

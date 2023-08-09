@@ -32,6 +32,10 @@ import {
   Select,
   Space,
   Dropdown,
+  Drawer,
+  Alert,
+  message,
+  Divider,
 } from "antd";
 import axios from "axios";
 import { useNavigate, Outlet, Link } from "react-router-dom";
@@ -39,6 +43,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleLogoutAc } from "../Redux/Actions";
 const { Header, Content, Footer, Sider } = Layout;
 let { Option } = Select;
+
+const NotificationMessage = ({ message }) => {
+  return <div>{message}</div>;
+};
 
 const LayoutEmp = () => {
   const navigate = useNavigate();
@@ -55,16 +63,32 @@ const LayoutEmp = () => {
   const [userSuggestions, setUserSuggestions] = useState([]);
   const [userSuggestionsimg, setUserSuggestionsimg] = useState([]);
 
+  const [openDrawer, setOpenDrawer] = useState(false);
+
   const [empName, setEmpName] = useState([]);
   const [empDetails, setEmpDetails] = useState([]);
   const [empImgDetails, setEmpImgDetails] = useState([]);
+
+  const [allNotification, setAllNotification] = useState([]);
 
   const { SubMenu } = Menu;
 
   useEffect(() => {
     checkLogin();
     setProfile();
+    getAllNotification();
   }, []);
+
+  const getAllNotification = () => {
+    let arr = [];
+    for (let i = 1; i <= 6; i++) {
+      arr.push({
+        id: i,
+        name: `Notification ${i}`,
+      });
+    }
+    setAllNotification(arr);
+  };
 
   const setProfile = () => {
     let user = selector.user;
@@ -239,8 +263,40 @@ const LayoutEmp = () => {
       });
   };
 
+  const onCloseDrawer = () => {
+    setOpenDrawer(false);
+  };
+
   return (
     <>
+      <Drawer
+        title="Notification"
+        placement="right"
+        onClose={onCloseDrawer}
+        open={openDrawer}
+      >
+        <div>
+          <div>
+            <p className="MarkTxt" onClick={() => setAllNotification([])}>
+              Mark all read
+            </p>
+          </div>
+          <div>
+            <Divider />
+          </div>
+          {allNotification.map((x, i) => {
+            return (
+              <div key={i} style={{ margin: "10px 0" }}>
+                <Alert
+                  message={<NotificationMessage message={x.name} />}
+                  type="info"
+                  closable
+                />
+              </div>
+            );
+          })}
+        </div>
+      </Drawer>
       <Layout>
         <Sider
           style={{
@@ -575,6 +631,7 @@ const LayoutEmp = () => {
                     style={{ textAlign: "end", cursor: "pointer" }}
                   >
                     <img
+                      onClick={() => setOpenDrawer(true)}
                       style={{ width: "22px", margin: "22px  0" }}
                       src="./icon/bellicon.svg"
                     />
@@ -635,7 +692,7 @@ const LayoutEmp = () => {
             <div
               style={{
                 padding: 24,
-                minHeight: 360,
+                height: "100%",
                 background: colorBgContainer,
               }}
             >

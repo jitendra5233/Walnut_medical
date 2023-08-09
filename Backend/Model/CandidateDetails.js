@@ -82,6 +82,22 @@ const CandidateDetailsSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    employee_type: {
+      type: String,
+      required: false,
+    },
+    other_phone: {
+      type: String,
+      required: false,
+    },
+    emp_dob: {
+      type: String,
+      required: false,
+    },
+    gender: {
+      type: String,
+      required: false,
+    },
   },
   { timestamps: true }
 );

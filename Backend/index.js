@@ -745,6 +745,17 @@ app.post("/getFeedbackIssuesAll", async (req, res) => {
   }
 });
 
+app.post("/getFeedbackIssuesInner", async (req, res) => {
+  try {
+    const result = await IssuesAndFeedbackInner.find({
+      ref_id: req.body.id,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 app.post("/getEmpDataSingle", async (req, res) => {
   try {
     const result = await EmployeeSchema.find({ _id: req.body.id });
