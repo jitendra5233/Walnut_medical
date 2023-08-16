@@ -47,29 +47,49 @@ const ForgotPassword = () => {
   const handleSubmit = (values) => {
     setLoading(true);
     axios
-      .post(process.env.REACT_APP_API_URL + "/checkUserEmail", values)
-      .then((res) => {
-        setLoading(false);
-        if (res.data.length === 0) {
-          openNotificationWithIcon("error");
-        } else {
-          console.log(res.data);
-          if (res.data.token != "") {
-            let data = res.data;
-            dispatch(
-              updateUserToken({
-                id: data.token,
-              })
-            );
-            openNotificationWithIcon("success");
-            navigate("/otpVerify");
-          } else {
-            openNotificationWithIcon("error");
-          }
+      .get(process.env.REACT_APP_API_URL + "/getwebsetting")
+      .then((result) => {
+        if (result.length != 0) {
+          let final_result = result.data[0];
+
+          let obj_data = {
+            email: values.email,
+            remember: values.remember,
+            smtpHost: final_result.smtp_host,
+            smtpPort: final_result.smtp_port,
+            smtpUsername: final_result.smtp_username,
+            smtpPassword: final_result.smtp_password,
+          };
+
+          axios
+            .post(process.env.REACT_APP_API_URL + "/checkUserEmail", obj_data)
+            .then((res) => {
+              setLoading(false);
+              if (res.data.length === 0) {
+                openNotificationWithIcon("error");
+              } else {
+                console.log(res.data);
+                if (res.data.token != "") {
+                  let data = res.data;
+                  dispatch(
+                    updateUserToken({
+                      id: data.token,
+                    })
+                  );
+                  openNotificationWithIcon("success");
+                  navigate("/otpVerify");
+                } else {
+                  openNotificationWithIcon("error");
+                }
+              }
+            })
+            .catch((err) => {
+              setLoading(false);
+              console.log(err);
+            });
         }
       })
       .catch((err) => {
-        setLoading(false);
         console.log(err);
       });
   };

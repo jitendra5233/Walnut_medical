@@ -584,6 +584,13 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   color: rgb(238, 54, 22);
 }
 
+.hiringDashboardActionIcon {
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 10px;
+}
+
 /* Jitendra New Css Start */
 
 .card_style {

@@ -54,10 +54,31 @@ const EmployeeCard = ({
 
   const generateLogin = () => {
     axios
-      .post(process.env.REACT_APP_API_URL + "/generateLogin", { id })
+      .get(process.env.REACT_APP_API_URL + "/getwebsetting")
       .then((result) => {
-        getEmployee();
-        console.log(result);
+        if (result.length != 0) {
+          let final_result = result.data[0];
+          // console.log(final_result);
+          let obj_data = {
+            ref_id,
+            hosting_name: final_result.hosting_name,
+            renewal_date: final_result.renewal_date,
+            client_name: final_result.client_name,
+            smtpHost: final_result.smtp_host,
+            smtpPort: final_result.smtp_port,
+            smtpUsername: final_result.smtp_username,
+            smtpPassword: final_result.smtp_password,
+          };
+          console.log(obj_data);
+          axios
+            .post(process.env.REACT_APP_API_URL + "/generateLogin", obj_data)
+            .then((result) => {
+              console.log(result.data);
+            })
+            .catch((err) => {
+              // console.log(err);
+            });
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -558,7 +579,6 @@ const ShowAllEmpolyees = () => {
         ]}
       >
         {allEmp.map((x, i) => {
-          console.log(x);
           let { _id, f_name, l_name, photo, designation, ref_id } = x;
           if (x.old_emp == "false") {
             return (

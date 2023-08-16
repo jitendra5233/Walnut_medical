@@ -1,4 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
+import { DownSquareOutlined, PlusOutlined } from "@ant-design/icons";
 import {
   Card,
   Row,
@@ -31,17 +31,20 @@ const DepartmentCard = ({ img, name, slug }) => {
         className="DepCard"
         onClick={() => handlelinkOpen(slug)}
       >
-        <div style={{ padding: "60px 70px", textAlign: "center" }}>
-          <img src={img} style={{ height: "100px", width: "100px" }} />
-        </div>
-        <div style={{ backgroundColor: "#F5F6FA" }}>
-          <div
-            style={{
-              textAlign: "center",
-              padding: "15px",
-            }}
-          >
-            <span>{name}</span>
+        <div>
+          <div style={{ padding: "60px 70px", textAlign: "center" }}>
+            <DownSquareOutlined className="hiringDashboardActionIcon" />
+            <img src={img} style={{ height: "100px", width: "100px" }} />
+          </div>
+          <div style={{ backgroundColor: "#F5F6FA" }}>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "15px",
+              }}
+            >
+              <span>{name}</span>
+            </div>
           </div>
         </div>
       </Card>

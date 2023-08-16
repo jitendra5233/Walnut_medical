@@ -20,6 +20,9 @@ const ClientAssign = require("./Model/ClientAssignEmpDetails");
 const Websetting = require("./Model/Websetting");
 const CompanyAccount = require("./Model/CompanyAccount");
 const sendMail = require("./controllers/sendMail");
+const sendMailForSignup = require("./controllers/sendMailForSignup");
+const sendOtp = require("./controllers/sendOtp");
+
 const CandidateDetailsSchema = require("./Model/CandidateDetails");
 const moment = require("moment");
 const cron = require("node-cron");
@@ -125,6 +128,8 @@ app.get("/usres", async (req, res) => {
 });
 
 app.post("/checkUserEmail", async (req, res) => {
+  let { smtpHost, smtpPort, smtpUsername, smtpPassword } = req.body;
+
   try {
     let otp = Math.floor(1000 + Math.random() * 9000);
 
@@ -143,6 +148,21 @@ app.post("/checkUserEmail", async (req, res) => {
 
       newArr.token = users[0]._id;
     }
+
+    sendOtp(
+      "Techies Infotech",
+      "harmanpreet.singh@iamtechie.com",
+      req.body.email,
+      "hosting_name",
+      "renewal_date",
+      "client_name",
+      smtpHost,
+      smtpPort,
+      smtpUsername,
+      smtpPassword,
+      otp
+    );
+
     res.status(200).json(newArr);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -776,8 +796,32 @@ app.post("/saveAdminReply", async (req, res) => {
 
 app.post("/generateLogin", async (req, res) => {
   try {
-    // const result = await IssuesAndFeedbackInner.create(req.body);
-    res.status(200).json("generateLogin");
+    let {
+      ref_id,
+      hosting_name,
+      renewal_date,
+      client_name,
+      smtpHost,
+      smtpPort,
+      smtpUsername,
+      smtpPassword,
+    } = req.body;
+
+    // const result = await CandidateDetails.find({ ref_id: ref_id });
+
+    const mailStatus = await sendMailForSignup(
+      "Techies Infotech",
+      "harmanpreet.techie@gmail.com",
+      "jitendra.singh@iamtechie.com",
+      "hosting_name",
+      "renewal_date",
+      "client_name",
+      smtpHost,
+      smtpPort,
+      smtpUsername,
+      smtpPassword
+    );
+    res.status(200).json(mailStatus);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }

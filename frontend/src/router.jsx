@@ -59,6 +59,7 @@ import LayoutEmp from "./Pages/LayoutEmp";
 import LayoutHR from "./Pages/LayoutHR";
 import DashboardEmp from "./Pages/DashboardEmp";
 import ShowExpenseRecord from "./Pages/Expense/ShowExpenseRecord";
+import EmpSignup from "./Pages/User/Auth/EmpSignup";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -68,6 +69,7 @@ const routerAdmin = createHashRouter(
       <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
       <Route path="/otpVerify" element={<OtpVerify />}></Route>
       <Route path="/changePassword" element={<ChangePasword />}></Route>
+      <Route path="/EmpSignUp" element={<EmpSignup />}></Route>
       <Route element={<LayoutAdmin />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/users" element={<ShowUsers />} />
@@ -131,6 +133,7 @@ const routerHR = createHashRouter(
       <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
       <Route path="/otpVerify" element={<OtpVerify />}></Route>
       <Route path="/changePassword" element={<ChangePasword />}></Route>
+      <Route path="/EmpSignUp" element={<EmpSignup />}></Route>
       <Route element={<LayoutHR />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/users" element={<ShowUsers />} />
@@ -194,6 +197,7 @@ const routerEmp = createHashRouter(
       <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
       <Route path="/otpVerify" element={<OtpVerify />}></Route>
       <Route path="/changePassword" element={<ChangePasword />}></Route>
+      <Route path="/EmpSignUp" element={<EmpSignup />}></Route>
       <Route element={<LayoutEmp />}>
         <Route path="/" element={<DashboardEmp />} />
         <Route path="/profile/:id" element={<AdminProfile />} />

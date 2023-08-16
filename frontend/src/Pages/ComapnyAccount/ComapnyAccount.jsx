@@ -273,6 +273,7 @@ const CompantAccount = () => {
     // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
   }, [tableData]);
+
   const handleSendMail = (
     hosting_name,
     hosting_url,
