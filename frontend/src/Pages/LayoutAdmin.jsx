@@ -32,10 +32,6 @@ import {
   Select,
   Space,
   Dropdown,
-  Drawer,
-  Alert,
-  message,
-  Divider,
 } from "antd";
 import axios from "axios";
 import { useNavigate, Outlet, Link } from "react-router-dom";
@@ -43,10 +39,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { handleLogoutAc } from "../Redux/Actions";
 const { Header, Content, Footer, Sider } = Layout;
 let { Option } = Select;
-
-const NotificationMessage = ({ message }) => {
-  return <div>{message}</div>;
-};
 
 const LayoutEmp = () => {
   const navigate = useNavigate();
@@ -63,32 +55,18 @@ const LayoutEmp = () => {
   const [userSuggestions, setUserSuggestions] = useState([]);
   const [userSuggestionsimg, setUserSuggestionsimg] = useState([]);
 
-  const [openDrawer, setOpenDrawer] = useState(false);
-
   const [empName, setEmpName] = useState([]);
   const [empDetails, setEmpDetails] = useState([]);
   const [empImgDetails, setEmpImgDetails] = useState([]);
 
-  const [allNotification, setAllNotification] = useState([]);
+  console.log(empDetails);
 
   const { SubMenu } = Menu;
 
   useEffect(() => {
     checkLogin();
     setProfile();
-    getAllNotification();
   }, []);
-
-  const getAllNotification = () => {
-    let arr = [];
-    for (let i = 1; i <= 6; i++) {
-      arr.push({
-        id: i,
-        name: `Notification ${i}`,
-      });
-    }
-    setAllNotification(arr);
-  };
 
   const setProfile = () => {
     let user = selector.user;
@@ -235,7 +213,6 @@ const LayoutEmp = () => {
       )
       .then((response) => {
         const data = response.data;
-        console.log(items);
         setUserSuggestions(data);
         // setUserSuggestionsimg(data[0]);
       })
@@ -250,7 +227,6 @@ const LayoutEmp = () => {
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
-          console.log(data);
           var emp_name = data.f_name + " " + data.l_name;
           setEmpDetails(data.doc);
           setEmpImgDetails(data.getEmployeeImg);
@@ -263,40 +239,8 @@ const LayoutEmp = () => {
       });
   };
 
-  const onCloseDrawer = () => {
-    setOpenDrawer(false);
-  };
-
   return (
     <>
-      <Drawer
-        title="Notification"
-        placement="right"
-        onClose={onCloseDrawer}
-        open={openDrawer}
-      >
-        <div>
-          <div>
-            <p className="MarkTxt" onClick={() => setAllNotification([])}>
-              Mark all read
-            </p>
-          </div>
-          <div>
-            <Divider />
-          </div>
-          {allNotification.map((x, i) => {
-            return (
-              <div key={i} style={{ margin: "10px 0" }}>
-                <Alert
-                  message={<NotificationMessage message={x.name} />}
-                  type="info"
-                  closable
-                />
-              </div>
-            );
-          })}
-        </div>
-      </Drawer>
       <Layout>
         <Sider
           style={{
@@ -367,6 +311,12 @@ const LayoutEmp = () => {
               <Menu.Item key="4">
                 <Link to="/old_clients">Old Clients</Link>
               </Menu.Item>
+              <Menu.Item key="5">
+                <Link to="/assigned_hosting">Assigned Hosting</Link>
+              </Menu.Item>
+              <Menu.Item key="6">
+                <Link to="/assigned_socialmedia">Assigned Social Media</Link>
+              </Menu.Item>
             </SubMenu>
             <SubMenu
               key="sub2"
@@ -384,11 +334,17 @@ const LayoutEmp = () => {
                 </span>
               }
             >
-              <Menu.Item key="5">
+              <Menu.Item key="7">
                 <Link to="/issued">Inventory Details</Link>
               </Menu.Item>
-              <Menu.Item key="6">
+              <Menu.Item key="8">
                 <Link to="/loss_Damage">Lost/dameged</Link>
+              </Menu.Item>
+              <Menu.Item key="15">
+                <Link to="/enventory_repair">Inventory Repair</Link>
+              </Menu.Item>
+              <Menu.Item key="166">
+                <Link to="/enventory_category">Inventory Category</Link>
               </Menu.Item>
             </SubMenu>
             <SubMenu
@@ -407,10 +363,10 @@ const LayoutEmp = () => {
                 </span>
               }
             >
-              <Menu.Item key="7">
+              <Menu.Item key="9">
                 <Link to="/show-all-employee">All Employees</Link>
               </Menu.Item>
-              <Menu.Item key="8">
+              <Menu.Item key="10">
                 <Link to="/show-old-employee">Old Employees</Link>
               </Menu.Item>
             </SubMenu>
@@ -430,13 +386,13 @@ const LayoutEmp = () => {
                 </span>
               }
             >
-              <Menu.Item key="10">
+              <Menu.Item key="11">
                 <Link to="/hiring">New hiring</Link>
               </Menu.Item>
-              <Menu.Item key="11">
+              <Menu.Item key="12">
                 <Link to="/show-hired-candidate">New Employee Info</Link>
               </Menu.Item>
-              <Menu.Item key="12">
+              <Menu.Item key="13">
                 <Link to="/show-rejected-candidate">Rejected Candidate</Link>
               </Menu.Item>
             </SubMenu>
@@ -456,13 +412,13 @@ const LayoutEmp = () => {
                 </span>
               }
             >
-              <Menu.Item key="13">
+              <Menu.Item key="14">
                 <Link to="/anonymous-message">Anonymous message</Link>
               </Menu.Item>
-              <Menu.Item key="14">
+              <Menu.Item key="15">
                 <Link to="/employee-message">Employee message</Link>
               </Menu.Item>
-              <Menu.Item key="15">
+              <Menu.Item key="16">
                 <Link to="/all-message">All message</Link>
               </Menu.Item>
             </SubMenu>
@@ -482,14 +438,14 @@ const LayoutEmp = () => {
                 </span>
               }
             >
-              <Menu.Item key="17">
+              <Menu.Item key="18">
                 <Link to="/company_accounts">Company Accounts</Link>
               </Menu.Item>
-              <Menu.Item key="18">
+              <Menu.Item key="19">
                 <Link to="/expense">Office expenses</Link>
               </Menu.Item>
             </SubMenu>
-            <Menu.Item key="19">
+            <Menu.Item key="20">
               <div style={{ display: "flex" }}>
                 <div>
                   <LogoutOutlined
@@ -501,7 +457,7 @@ const LayoutEmp = () => {
                 </div>
                 <div>
                   <Link to="/employee_exit" className="menuText">
-                    Exit
+                    Employee Exit
                   </Link>
                 </div>
               </div>
@@ -511,7 +467,7 @@ const LayoutEmp = () => {
               <span className="menuHeadingTxt">Other options</span>
             </div>
 
-            <Menu.Item key="20">
+            <Menu.Item key="21">
               <div style={{ display: "flex" }}>
                 <div>
                   <ShareAltOutlined
@@ -528,7 +484,7 @@ const LayoutEmp = () => {
                 </div>
               </div>
             </Menu.Item>
-            <Menu.Item key="21">
+            <Menu.Item key="22">
               <div style={{ display: "flex" }}>
                 <div>
                   <SettingOutlined
@@ -545,7 +501,7 @@ const LayoutEmp = () => {
                 </div>
               </div>
             </Menu.Item>
-            <Menu.Item key="22">
+            <Menu.Item key="23">
               <div style={{ display: "flex" }}>
                 <div>
                   <LogoutOutlined
@@ -593,11 +549,20 @@ const LayoutEmp = () => {
                         value={`${option.f_name} ${option.l_name}`}
                       >
                         <div className="search-result-item">
-                          <img
-                            className="set_img1"
-                            alt="example"
-                            src={option.photo}
-                          />
+                          {option.photo == undefined ? (
+                            <img
+                              className="set_img1"
+                              alt="example"
+                              src="./user1.png"
+                            />
+                          ) : (
+                            <img
+                              className="set_img1"
+                              alt="example"
+                              src={option.photo}
+                            />
+                          )}
+
                           <div className="colorchangeblue">
                             <span>
                               {option.emp_code} - {option.f_name}{" "}
@@ -631,7 +596,6 @@ const LayoutEmp = () => {
                     style={{ textAlign: "end", cursor: "pointer" }}
                   >
                     <img
-                      onClick={() => setOpenDrawer(true)}
                       style={{ width: "22px", margin: "22px  0" }}
                       src="./icon/bellicon.svg"
                     />
@@ -720,11 +684,19 @@ const LayoutEmp = () => {
                   <Row gutter={24}>
                     <Col span={24}>
                       <Form.Item name="client_name">
-                        <img
-                          className="set_img2"
-                          alt="example"
-                          src={empImgDetails.photo}
-                        />
+                        {empImgDetails.photo == undefined ? (
+                          <img
+                            className="set_img2"
+                            alt="example"
+                            src="./user1.png"
+                          />
+                        ) : (
+                          <img
+                            className="set_img2"
+                            alt="example"
+                            src={empImgDetails.photo}
+                          />
+                        )}
                         <span className="set_img2 setcolor">
                           {empDetails.f_name + " " + empDetails.l_name}
                         </span>
@@ -753,13 +725,15 @@ const LayoutEmp = () => {
 
                         <div class="row">
                           <span class="label">Gender</span>
-                          <span class="value">Male</span>
+                          <span class="value">{empDetails.gender}</span>
                           <span class="label">Bank Account</span>
                           <span class="value">{empDetails.account_no}</span>
                         </div>
                         <div class="row">
                           <span class="label">Date of Birth</span>
-                          <span class="value">10-08-1998</span>
+                          <span class="value">
+                            {new Date(empDetails.emp_dob).toLocaleDateString()}
+                          </span>
                           <span class="label">Department</span>
                           <span class="value">{empDetails.department}</span>
                         </div>
@@ -768,7 +742,7 @@ const LayoutEmp = () => {
                           <span class="label">Pan no.</span>
                           <span class="value">{empDetails.pan_no}</span>
                           <span class="label">Other No</span>
-                          <span class="value">{empDetails.phone}</span>
+                          <span class="value">{empDetails.other_phone}</span>
                         </div>
                       </div>
                     </Col>

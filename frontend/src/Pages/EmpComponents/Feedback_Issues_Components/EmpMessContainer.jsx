@@ -21,23 +21,14 @@ import EmpMessage from "./EmpMessage";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import EmpMessageRoot from "./EmpMessageRoot";
-import EmpMessageInner from "./EmpMessageInner";
 
-const EmpMessContainer = ({
-  title,
-  type,
-  anonymous,
-  data,
-  getIssuesAndFeedbacks,
-}) => {
+const EmpMessContainer = ({ title, type, anonymous, data }) => {
   const [form] = Form.useForm();
-  const [isModal2Open, setIsModal2Open] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [messDataRoot, setMessDataRoot] = useState([]);
   const [ShowReply, setShowReply] = useState(false);
   const [activeMessage, setActiveMessage] = useState();
-  const [messDataInner, setMessDataInner] = useState([]);
 
   const [api, contextHolder] = notification.useNotification();
   let selector = useSelector((state) => state.persistedReducer.user);
@@ -53,15 +44,6 @@ const EmpMessContainer = ({
     },
   ];
 
-  const showModal2 = () => {
-    setIsModal2Open(true);
-  };
-
-  const handleCancel2 = () => {
-    setIsModal2Open(false);
-    form.resetFields();
-  };
-
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -72,20 +54,9 @@ const EmpMessContainer = ({
     setIsModalOpen(false);
   };
 
-  const handleSendReply = (values) => {
-    values.ref_id = activeMessage._id;
-    values.fromAdmin = false;
-
-    axios
-      .post(process.env.REACT_APP_API_URL + "/saveAdminReply", values)
-      .then((result) => {
-        handleCancel2();
-        ShowMesages(activeMessage);
-      })
-      .catch((err) => {});
-  };
-
   const handleSubmit = (values) => {
+    console.log(title);
+
     values.ref_id = selector.token2;
     values.type = type;
     values.anonymous = anonymous;
@@ -94,7 +65,6 @@ const EmpMessContainer = ({
       .post(process.env.REACT_APP_API_URL + "/addFeedbackIssues", values)
       .then((result) => {
         handleCancel();
-        getIssuesAndFeedbacks();
       })
       .catch((err) => {
         console.log(err);
@@ -106,82 +76,13 @@ const EmpMessContainer = ({
   };
 
   const ShowMesages = (data) => {
-    axios
-      .post(process.env.REACT_APP_API_URL + "/getFeedbackIssuesInner", {
-        id: data._id,
-      })
-      .then((result) => {
-        setMessDataInner(result.data);
-
-        setShowReply(true);
-        setActiveMessage(data);
-
-        // setInterval(() => {
-        //   ShowMesages(data);
-        // }, 10000);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    setShowReply(true);
+    setActiveMessage(data);
+    console.log(data);
   };
 
   return (
     <div>
-      <Modal open={isModal2Open} onCancel={handleCancel2} footer={[]}>
-        <Spin spinning={loading}>
-          {contextHolder}
-          <div style={{ padding: "30px" }}>
-            <Row>
-              <Col span={24} style={{ marginBottom: "30px" }}>
-                <span className="popupTitle">Add New Feedback/Issues</span>
-              </Col>
-              <Col span={24}>
-                <Form
-                  form={form}
-                  name="basic"
-                  layout="vertical"
-                  initialValues={{
-                    remember: true,
-                  }}
-                  onFinish={handleSendReply}
-                  onFinishFailed={onFinishFailed}
-                  autoComplete="off"
-                >
-                  <Row gutter={24}>
-                    <Col span={24}>
-                      <Form.Item
-                        label="Reply Message"
-                        name="reply"
-                        rules={[
-                          {
-                            required: true,
-                            message: "Please input your Reply Message",
-                          },
-                        ]}
-                        hasFeedback
-                      >
-                        <Input.TextArea
-                          className="myAntIpt2"
-                          placeholder="Enter your Reply Message"
-                          size="small"
-                        />
-                      </Form.Item>
-                    </Col>
-
-                    <Col span={24}>
-                      <Form.Item>
-                        <Button type="primary" htmlType="submit">
-                          Add
-                        </Button>
-                      </Form.Item>
-                    </Col>
-                  </Row>
-                </Form>
-              </Col>
-            </Row>
-          </div>
-        </Spin>
-      </Modal>
       <Modal open={isModalOpen} onCancel={handleCancel} footer={[]}>
         <Spin spinning={loading}>
           {contextHolder}
@@ -311,30 +212,26 @@ const EmpMessContainer = ({
                 </span>
               </div>
             </div>
-            <div></div>
+            <div>
+              <EmpMessage message={activeMessage.description} />
+            </div>
             <List itemLayout="horizontal">
-              <EmpMessageInner
-                anonymous={anonymous}
-                photo={selector.photo}
-                fromAdmin={"false"}
-                message={activeMessage.description}
-              />
-              {messDataInner.map((x) => {
+              {messDataRoot.map((x) => {
                 return (
-                  <EmpMessageInner
-                    anonymous={anonymous}
+                  <EmpMessageRoot
+                    message={x.title}
                     photo={selector.photo}
-                    fromAdmin={x.fromAdmin}
-                    message={x.reply}
+                    anonymous={anonymous}
+                    ShowMesages={() => ShowMesages(x)}
+                    dateTime={`${new Date(
+                      x.createdAt
+                    ).toDateString()}  ${new Date(
+                      x.createdAt
+                    ).toLocaleTimeString()}`}
                   />
                 );
               })}
             </List>
-            <div style={{ marginTop: "10px" }}>
-              <Button size="small" block onClick={() => showModal2()}>
-                Reply
-              </Button>
-            </div>
           </div>
         )}
       </div>

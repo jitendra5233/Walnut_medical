@@ -75,7 +75,6 @@ const Feedback_Issues = () => {
                 title="Anonymous message"
                 type="feedback"
                 anonymous={true}
-                getIssuesAndFeedbacks={() => getIssuesAndFeedbacks()}
                 data={allFeedbacks.anonymous}
               />
             </Col>
@@ -84,7 +83,6 @@ const Feedback_Issues = () => {
                 title="Employee message"
                 type="feedback"
                 anonymous={false}
-                getIssuesAndFeedbacks={() => getIssuesAndFeedbacks()}
                 data={allFeedbacks.employee}
               />
             </Col>
@@ -102,7 +100,6 @@ const Feedback_Issues = () => {
                 title="Anonymous message"
                 type="issue"
                 anonymous={true}
-                getIssuesAndFeedbacks={() => getIssuesAndFeedbacks()}
                 data={allIssues.anonymous}
               />
             </Col>
@@ -111,7 +108,6 @@ const Feedback_Issues = () => {
                 title="Employee message"
                 type="issue"
                 anonymous={false}
-                getIssuesAndFeedbacks={() => getIssuesAndFeedbacks()}
                 data={allIssues.employee}
               />
             </Col>

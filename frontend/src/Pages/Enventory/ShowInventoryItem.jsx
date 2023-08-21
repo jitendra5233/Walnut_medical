@@ -21,10 +21,11 @@ const { Title } = Typography;
 const { confirm } = Modal;
 const ShowIssuedEnventory = () => {
   const [form] = Form.useForm();
+  const [form1] = Form.useForm();
   const [tableData, setTableData] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [suggestions, setSuggestions] = useState([]);
-
+  const [getCategory, setCategory] = useState([]);
   const showModal = () => {
     setIsModalOpen(true);
   };
@@ -51,6 +52,7 @@ const ShowIssuedEnventory = () => {
 
   useEffect(() => {
     getInventory();
+    getItemCategory();
   }, []);
 
   const getInventory = () => {
@@ -64,18 +66,53 @@ const ShowIssuedEnventory = () => {
           const updatedAt = new Date(x.updatedAt);
           const formattedCreatedAt = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`;
           const formattedUpdatedAt = `${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`;
-          newData.push({
-            key: x._id,
-            item_name: x.item_name,
-            quantity: x.quantity,
-            lossDamageItem: x.lossDamageItem,
-            availableItem: x.availableItem,
-            createdAt: formattedCreatedAt,
-            updatedAt: formattedUpdatedAt,
-          });
+          if (x.category_name != "Category Deleted") {
+            newData.push({
+              key: x.key,
+              item_name: x.item_name,
+              quantity: x.quantity,
+              lossDamageItem: x.lossDamageItem,
+              availableItem: x.availableItem,
+              createdAt: formattedCreatedAt,
+              updatedAt: formattedUpdatedAt,
+              category_id: x.category_id,
+              category_name: x.category_name,
+            });
+          } else {
+            newData.push({
+              key: x.key,
+              item_name: x.item_name,
+              quantity: x.quantity,
+              lossDamageItem: x.lossDamageItem,
+              availableItem: x.availableItem,
+              createdAt: formattedCreatedAt,
+              updatedAt: formattedUpdatedAt,
+              category_name: x.category_name,
+            });
+          }
         });
 
         setTableData(newData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getItemCategory = () => {
+    axios
+      .get(process.env.REACT_APP_API_URL + "/getItemCategory")
+      .then((result) => {
+        let data = result.data;
+        let newData = [];
+        data.map((x) => {
+          newData.push({
+            id: x._id,
+            category_name: x.category_name,
+          });
+        });
+
+        setCategory(newData);
       })
       .catch((err) => {
         console.log(err);
@@ -86,6 +123,8 @@ const ShowIssuedEnventory = () => {
   const [updateAvailableItem, setUpdateAvailableItem] = useState([]);
   const [getOldTotalItem, setOldTotalItem] = useState([]);
   const [getsuggestedId, setSuggestedId] = useState([]);
+  const [categoryId, setcategoryId] = useState([]);
+
   // const [OldQuantity, setOldQuantity] = useState([]);
 
   const handleEdit = (id) => {
@@ -94,12 +133,14 @@ const ShowIssuedEnventory = () => {
     tableData.map((x) => {
       if (x.key === id) {
         // setOldQuantity(x.quantity);
-        form.setFieldsValue({
+        form1.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
           quantity: x.quantity,
           availableItem: x.availableItem,
+          category_name: x.category_id,
         });
+        setcategoryId(x.category_id);
         setUpdateAvailableItem(x.availableItem);
         setOldTotalItem(x.quantity);
       }
@@ -107,6 +148,7 @@ const ShowIssuedEnventory = () => {
   };
 
   const handleUpdate = (values) => {
+    values.category_id = values.category_name;
     values.id = updateItemId;
     let AvailableItem = values.quantity - getOldTotalItem;
     let FinalAvailableItem = values.availableItem + AvailableItem;
@@ -123,6 +165,7 @@ const ShowIssuedEnventory = () => {
           getInventory();
           setIsModalOpen1(false);
           handleCancel1();
+          form1.resetFields();
         }
       })
       .catch((err) => {
@@ -163,10 +206,9 @@ const ShowIssuedEnventory = () => {
   };
 
   const handleSubmit = (values) => {
+    values.category_id = values.category_name;
     values.availableItem = values.quantity;
-    console.log(values.availableItem);
     values.lossDamageItem = 0;
-
     if (getsuggestedId != undefined) {
       values.setSuggestedId = getsuggestedId;
     }
@@ -220,6 +262,14 @@ const ShowIssuedEnventory = () => {
       key: "item_name",
       render: (text) => <a>{text}</a>,
     },
+
+    {
+      title: "Item Category",
+      dataIndex: "category_name",
+      key: "category_name",
+      render: (text) => <a>{text}</a>,
+    },
+
     {
       title: "Available Item",
       dataIndex: "availableItem",
@@ -320,6 +370,29 @@ const ShowIssuedEnventory = () => {
                       </AutoComplete>
                     </Form.Item>
                   </Col>
+
+                  <Col span={24}>
+                    <Form.Item
+                      label="Name of Category"
+                      name="category_name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input a valid Category name!",
+                          trigger: "change",
+                        },
+                      ]}
+                    >
+                      <Select placeholder="Input Category">
+                        {getCategory.map((option) => (
+                          <Option value={option.id}>
+                            {option.category_name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </Form.Item>
+                  </Col>
+
                   <Col span={24}>
                     <Form.Item
                       label="Total Item"
@@ -366,7 +439,7 @@ const ShowIssuedEnventory = () => {
 
             <Col span={24}>
               <Form
-                form={form}
+                form={form1}
                 name="basic"
                 layout="vertical"
                 initialValues={{
@@ -394,6 +467,30 @@ const ShowIssuedEnventory = () => {
                         placeholder="Enter  your Name Of item"
                         size="small"
                       />
+                    </Form.Item>
+                  </Col>
+                  <Col span={24}>
+                    <Form.Item
+                      label="Name of Category"
+                      name="category_name"
+                      rules={[
+                        {
+                          required: true,
+                          message: "Please input a valid Category name!",
+                          trigger: "change",
+                        },
+                      ]}
+                    >
+                      <Select placeholder="Input Category">
+                        {getCategory.map((option) => (
+                          <Option
+                            value={option.id}
+                            selected={option.id === categoryId}
+                          >
+                            {option.category_name}
+                          </Option>
+                        ))}
+                      </Select>
                     </Form.Item>
                   </Col>
                   <Col span={24}>

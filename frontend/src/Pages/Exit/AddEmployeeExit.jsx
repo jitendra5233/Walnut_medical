@@ -25,6 +25,7 @@ const AddEmployeeExit = () => {
   useEffect(() => {}, []);
   const [userSuggestions, setUserSuggestions] = useState([]);
   const [empName, setEmpName] = useState([]);
+  const [empId, setEmpId] = useState([]);
   const [api, contextHolder] = notification.useNotification();
   const openNotificationWithIcon = (type, message) => {
     if (type === "error") {
@@ -50,7 +51,7 @@ const AddEmployeeExit = () => {
           var emp_name = data.f_name + " " + data.l_name;
           form.setFieldsValue({
             emp_code: data.emp_code,
-            designation: data.designation,
+            designation: data.job_title,
             department: data.department,
           });
           setEmpName(emp_name);
@@ -77,6 +78,7 @@ const AddEmployeeExit = () => {
             password: data.office_email_password,
           });
           setEmpName(emp_name);
+          setEmpId(data._id);
         }
       })
       .catch((err) => {
@@ -101,6 +103,7 @@ const AddEmployeeExit = () => {
 
   const handleAddEmployeeExit = (values) => {
     values.emp_name = empName;
+    values.emp_id = empId;
     axios
       .post(process.env.REACT_APP_API_URL + "/add_employeeexit", values)
       .then((res) => {
@@ -158,7 +161,7 @@ const AddEmployeeExit = () => {
                           key={option._id}
                           value={`${option.f_name} ${option.l_name}`}
                         >
-                          {`${option.f_name} ${option.l_name}`}
+                          {`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                         </Option>
                       ))}
                     </AutoComplete>
@@ -348,7 +351,6 @@ const AddEmployeeExit = () => {
                     >
                       <Option value="Under Process">Under Process</Option>
                       <Option value="Hold">Hold</Option>
-                      <Option value="Confirm">Confirm</Option>
                     </Select>
                   </Form.Item>
                 </Col>

@@ -17,7 +17,7 @@ const { Title } = Typography;
 const { confirm } = Modal;
 const { Option } = Select;
 
-const ShowLossDamage = () => {
+const ShowEnventoryRepair = () => {
   const [tableData, setTableData] = useState([]);
   const [form] = Form.useForm();
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -39,11 +39,10 @@ const ShowLossDamage = () => {
 
   const getInventory = () => {
     axios
-      .get(process.env.REACT_APP_API_URL + "/GetDamageItem")
+      .get(process.env.REACT_APP_API_URL + "/GetReapirItem")
       .then((result) => {
         let data = result.data;
         let newData = [];
-        console.log(data);
         data.map((x) => {
           newData.push({
             key: x._id,
@@ -51,6 +50,7 @@ const ShowLossDamage = () => {
             serial_number: x.serial_number,
             assignment_date: new Date(x.assignment_date).toLocaleDateString(),
             quantity: x.quantity,
+            repair_count: x.repair_count,
             emp_name: x.emp_name,
             emp_code: x.emp_code,
             job_title: x.job_title,
@@ -89,9 +89,8 @@ const ShowLossDamage = () => {
   };
 
   const handleRepaire = (values) => {
-    values.repair_count = 0;
     axios
-      .post(process.env.REACT_APP_API_URL + "/addTorepair", values)
+      .post(process.env.REACT_APP_API_URL + "/addrepairStatus", values)
       .then((res) => {
         form.resetFields();
         setIsModalOpen(false);
@@ -145,6 +144,12 @@ const ShowLossDamage = () => {
       key: "quantity",
     },
     {
+      title: "Repair Count",
+      dataIndex: "repair_count",
+      key: "repair_count",
+    },
+
+    {
       title: "Repair Status",
       dataIndex: "repair_status",
       key: "repair_status",
@@ -159,14 +164,14 @@ const ShowLossDamage = () => {
       key: "action",
       render: (_, record) => (
         <div>
-          {record.repair_status !== "completely_demage" && (
+          {record.repair_status !== "Working" && (
             <Space wrap>
               <Button
                 type="primary"
                 block
                 onClick={() => handleDamage(record.key)}
               >
-                Repaire
+                Change Status
               </Button>
             </Space>
           )}
@@ -179,7 +184,7 @@ const ShowLossDamage = () => {
     <div>
       <div className="m12r">
         <Title level={3} className="Expensecolor">
-          Items Not Found
+          Enventory Repair List
         </Title>
         <button className="filtercolorbtn">Filter</button>
       </div>
@@ -195,7 +200,7 @@ const ShowLossDamage = () => {
         <div style={{ padding: "30px" }}>
           <Row>
             <Col span={24} style={{ marginBottom: "30px" }}>
-              <span className="popupTitle">Add to Repaire</span>
+              <span className="popupTitle">Chnage Repaire Status</span>
             </Col>
 
             <Col span={24}>
@@ -355,6 +360,7 @@ const ShowLossDamage = () => {
                       >
                         <Option value="Under Process">Under Process</Option>
                         <Option value="Hold">Hold</Option>
+                        <Option value="Working">Working</Option>
                         <Option value="completely_demage">
                           Completely Damage
                         </Option>
@@ -390,4 +396,4 @@ const ShowLossDamage = () => {
   );
 };
 
-export default ShowLossDamage;
+export default ShowEnventoryRepair;

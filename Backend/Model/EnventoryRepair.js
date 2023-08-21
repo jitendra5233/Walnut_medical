@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const EnventorySchema = mongoose.Schema({
+const EnventoryRepair = mongoose.Schema({
     item_name: {
     type: String,
     required: true,
@@ -13,11 +13,11 @@ const EnventorySchema = mongoose.Schema({
     type: Number,
     required: true,
   },
-  serial_number: {
-    type: String,
+  repair_count:{
+    type: Number,
     required: true,
   },
-  emp_id: {
+  serial_number: {
     type: String,
     required: true,
   },
@@ -33,13 +33,17 @@ const EnventorySchema = mongoose.Schema({
     type:String,
     require:true,
   },
-  item_id:{
-    type:Object,
+  comment:{
+    type:String,
     require:true,
   },
+  repair_status:{
+    type:String,
+    require:true,
+  }, 
 },
 { timestamps: true });
 
-const enventory = mongoose.model("enventory", EnventorySchema);
+const entoryrepaire = mongoose.model("enventory_repaire", EnventoryRepair);
 
-module.exports = enventory;
+module.exports = entoryrepaire;

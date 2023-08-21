@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Row, Col, Card, Progress, Tooltip, Avatar } from "antd";
 import axios from "axios";
-
 const myStyle = {
   cardTxtContainer: {
     display: "flex",
@@ -132,12 +131,8 @@ const CardComp = ({
 
 export const Dashboard = () => {
   useEffect(() => {
-    getAllInternEmployee();
-    getAllpermanetEmployee();
-    // getHiredCandidate();
     getJobPositions();
     getAllEmployee();
-    // getHiredCandidatePercentage();
     totalItemQuantity();
     getAssignedItemWithPercentage();
     totalClientwithPercentage();
@@ -170,54 +165,16 @@ export const Dashboard = () => {
       .get(process.env.REACT_APP_API_URL + "/getAllEmployeedata")
       .then((result) => {
         let data = result.data;
-        setEmployeeCount(data);
-        setInterEmployee(1);
-        setPermanentEmployee(1);
-        let PermanentEmpPer = (1 / 2) * (100).toFixed(2) + "%";
-        let InterEmpPer = (1 / 2) * (100).toFixed(2) + "%";
-        setPermanentEmpPer(PermanentEmpPer);
-        setInterEmpPer(InterEmpPer);
+        setPermanentEmployee(data.permanent);
+        setEmployeeCount(data.totalEmployeeCount);
+        setPermanentEmpPer(data.PermanentEmpPer + "%");
+        setInterEmployee(data.intern);
+        setInterEmpPer(data.InterEmpPer + "%");
       })
       .catch((err) => {
         console.log(err);
       });
   };
-
-  const getAllpermanetEmployee = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getAllPermanentEmployeedata")
-      .then((result) => {
-        let data = result.data;
-        setPermanentEmployee(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getAllInternEmployee = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getAllInternEmployeedata")
-      .then((result) => {
-        let data = result.data;
-        setInterEmployee(data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  // const getHiredCandidate = () => {
-  //   axios
-  //     .get(process.env.REACT_APP_API_URL + "/getHiredCandidatecount")
-  //     .then((result) => {
-  //       let data = result.data;
-  //       sethiredCandidate(data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
 
   const getJobPositions = () => {
     axios
@@ -233,18 +190,6 @@ export const Dashboard = () => {
         console.log(err);
       });
   };
-
-  // const getHiredCandidatePercentage = () => {
-  //   axios
-  //     .get(process.env.REACT_APP_API_URL + "/getHiredCandidatePercentage")
-  //     .then((result) => {
-  //       let data = result.data;
-  //       sethiredCandidatePer(data + "%");
-  //     })
-  //     .catch((err) => {
-  //       console.log(err);
-  //     });
-  // };
 
   const totalItemQuantity = () => {
     axios

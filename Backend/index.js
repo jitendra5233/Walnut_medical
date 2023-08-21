@@ -32,6 +32,12 @@ const EmployeeExitDocs = require("./Model/EmployeeExitDocs");
 const AppraisalSchema = require("./Model/Appraisal");
 const IssuesAndFeedbackRoot = require("./Model/IssuesAndFeedbackRoot");
 const ExpenseRecord = require("./Model/ExpenseRecord");
+const Assigned_hosting = require("./Model/Assigned_hosting");
+const Assigned_socialmedia = require("./Model/Assigned_socialmedia");
+const EnventoryRepair = require("./Model/EnventoryRepair");
+const EnventoryCategory = require("./Model/EnventoryCategory");
+const RepairRecord = require("./Model/RepairRecord");
+
 const IssuesAndFeedbackInner = require("./Model/IssuesAndFeedbackInner");
 
 const singleUpload = upload.single("image");
@@ -839,8 +845,9 @@ app.post("/create_expense", async (req, res) => {
       item_name: req.body.item_name,
       quantity: req.body.quantity,
       item_id: expense._id,
+      buying_date: expense.buying_date,
     });
-    res.status(201).json({ expense, result });
+    res.status(201).json(expense);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -1001,6 +1008,7 @@ app.post("/add-item", async (req, res) => {
         quantity,
         lossDamageItem,
         setSuggestedId,
+        category_id,
       } = req.body;
 
       const result = await Showrecord.create({
@@ -1015,6 +1023,7 @@ app.post("/add-item", async (req, res) => {
             availableItem: quantity,
             quantity: quantity,
             lossDamageItem: lossDamageItem,
+            category_id: category_id,
           },
         },
         { new: true } // Set 'new' option to return the updated document
@@ -1034,15 +1043,100 @@ app.post("/add-item", async (req, res) => {
 
 app.get("/getItem", async (req, res) => {
   try {
-    const inventoryitem = await Inventoryitem.find({})
-      .sort({ createdAt: -1 })
-      .sort({ createdAt: -1 });
-    // const enventory = await Enventory.find({}).sort({ createdAt: -1 }).sort({ createdAt: -1 });
-    res.status(200).json(inventoryitem);
+    const inventoryItems = await Inventoryitem.find({}).sort({ createdAt: -1 });
+
+    const categoryIds = inventoryItems.map((item) => item.category_id);
+
+    const categoryData = await EnventoryCategory.find({
+      _id: { $in: categoryIds },
+    });
+
+    const responseData = await Promise.all(
+      inventoryItems.map(async (item) => {
+        const category = categoryData.find((category) =>
+          category._id.equals(item.category_id)
+        );
+        const itemCount = await Enventory.countDocuments({ item_id: item._id });
+        const createdAt = new Date(item.createdAt);
+        const updatedAt = new Date(item.updatedAt);
+
+        return {
+          createdAt: createdAt,
+          updatedAt: updatedAt,
+          formattedCreatedAt: `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`,
+          formattedUpdatedAt: `${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`,
+          key: item._id,
+          item_name: item.item_name,
+          quantity: item.quantity,
+          lossDamageItem: item.lossDamageItem,
+          availableItem: item.availableItem,
+          category_id: item.category_id,
+          category_name: category ? category.category_name : "Category Deleted",
+          itemCount: itemCount,
+          // assignedIds:assignedIds,
+          // finalitemcount:finalitemcount,
+        };
+      })
+    );
+
+    res.status(200).json(responseData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
+
+app.post("/return_assigneditem", async (req, res) => {
+  try {
+    const { itemid, quantity } = req.body;
+    const result = await Enventory.deleteOne({ item_id: itemid });
+    if (result.deletedCount === 1) {
+      const updatedData = await Inventoryitem.findOneAndUpdate(
+        { _id: itemid },
+        { $inc: { availableItem: quantity } },
+        { new: true }
+      );
+      res.status(200).json(updatedData);
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// app.get("/getItem", async (req, res) => {
+//   try {
+//     const inventoryItems = await Inventoryitem.find({})
+//       .sort({ createdAt: -1 });
+
+//     const categoryIds = inventoryItems.map(item => item.category_id);
+//     const categoryData = await EnventoryCategory.find({ _id: { $in: categoryIds } });
+
+//     const responseData = inventoryItems.map(item => {
+//       const category = categoryData.find(category => category._id.equals(item.category_id));
+//       const itemCount = Enventory.countDocuments({ item_id: item._id });
+//       const createdAt = new Date(item.createdAt);
+//       const updatedAt = new Date(item.updatedAt);
+
+//       return {
+//         createdAt: createdAt,
+//         updatedAt: updatedAt,
+//         formattedCreatedAt: `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString()}`,
+//         formattedUpdatedAt: `${updatedAt.toLocaleDateString()} ${updatedAt.toLocaleTimeString()}`,
+//         key: item._id,
+//         item_name: item.item_name,
+//         quantity: item.quantity,
+//         lossDamageItem: item.lossDamageItem,
+//         availableItem: item.availableItem,
+//         category_id: item.category_id,
+//         category_name: category ? category.category_name : "Category Deleted",
+//         itemCount:itemCount ? itemCount : "0",
+//       };
+//     });
+
+//     res.status(200).json(responseData);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
 
 app.get("/getItemrecord", async (req, res) => {
   try {
@@ -1089,11 +1183,13 @@ app.post("/update-issueitem", async (req, res) => {
       finalavailableItem,
       item_id,
       assignment_date,
+      emp_id,
     } = req.body;
+
     const updatedData = await Inventoryitem.findOneAndUpdate(
-      { _id: item_id }, // Filter criteria based on the ID field
-      { $inc: { availableItem: -finalavailableItem } }, // Decrement the availableItem field by req.body.quantity
-      { new: true } // Set 'new' option to return the updated document
+      { _id: item_id },
+      { $inc: { availableItem: -finalavailableItem } },
+      { new: true }
     );
     const result = await Enventory.findByIdAndUpdate(id, {
       serial_number,
@@ -1102,15 +1198,10 @@ app.post("/update-issueitem", async (req, res) => {
       quantity,
       emp_code,
       job_title,
+      emp_id,
       assignment_date,
     });
-
-    if (!result) {
-      return res
-        .status(404)
-        .json({ message: `cannot find any product with ID ${id}` });
-    }
-    res.status(200).json(true);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -1118,7 +1209,8 @@ app.post("/update-issueitem", async (req, res) => {
 
 app.post("/update-item", async (req, res) => {
   try {
-    const { id, item_name, quantity, availableItem, newPurchase } = req.body;
+    const { id, item_name, quantity, availableItem, newPurchase, category_id } =
+      req.body;
     if (newPurchase != 0) {
       const result = await Showrecord.create({
         item_name: item_name,
@@ -1130,6 +1222,7 @@ app.post("/update-item", async (req, res) => {
       item_name,
       quantity,
       availableItem,
+      category_id,
     });
     if (!result1) {
       return res
@@ -1155,7 +1248,7 @@ app.delete("/delete_showrecord", async (req, res) => {
 app.post("/getUserData", async (req, res) => {
   try {
     const { userId } = req.body;
-    await EmployeeSchema.findOne({ _id: userId }).then(function (doc) {
+    await CandidateDetails.findOne({ _id: userId }).then(function (doc) {
       res.status(200).json(doc); // Send the found document as the response
     });
   } catch (error) {
@@ -1192,12 +1285,123 @@ app.post("/addToDamage", async (req, res) => {
   }
 });
 
+app.post("/addTorepair", async (req, res) => {
+  try {
+    const { serial_number, repair_status, comment } = req.body;
+
+    let result;
+
+    const updatedRepair = await EnventoryRepair.findOneAndUpdate(
+      { serial_number: serial_number },
+      {
+        comment: comment,
+        repair_status: repair_status,
+      },
+      { new: true }
+    );
+
+    if (!updatedRepair) {
+      const enventoryRepair = await EnventoryRepair.create(req.body);
+      return res.status(200).json(enventoryRepair);
+    }
+
+    if (repair_status !== "completely_demage") {
+      result = await LossDamageItem.deleteOne({
+        serial_number: serial_number,
+      });
+    } else {
+      const updatedAccount = await LossDamageItem.findOneAndUpdate(
+        { serial_number: serial_number },
+        { repair_status: repair_status },
+        { new: true }
+      );
+      result = updatedAccount;
+    }
+
+    return res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/addrepairStatus", async (req, res) => {
+  try {
+    const { serial_number, repair_status, quantity, item_name, comment } =
+      req.body;
+
+    if (repair_status === "completely_demage") {
+      const result = await LossDamageItem.create(req.body);
+      const result1 = await EnventoryRepair.deleteOne({
+        serial_number: serial_number,
+      });
+      return res.status(200).json(result);
+    }
+    if (repair_status == "Working") {
+      const updatedRepair = await EnventoryRepair.findOneAndUpdate(
+        { serial_number: serial_number },
+        {
+          comment: comment,
+          repair_status: repair_status,
+          $inc: { repair_count: 1 },
+        },
+        { new: true }
+      );
+      !updatedRepair;
+      {
+        const updatedData = await Inventoryitem.findOneAndUpdate(
+          { item_name: item_name },
+          { $inc: { availableItem: quantity, lossDamageItem: -1 } },
+          { new: true }
+        );
+
+        // const repairRecord = await RepairRecord.findOneAndUpdate(
+        //   { serial_number: serial_number },
+        //   {
+        //     item_name: item_name,
+        //     comment: comment,
+        //     repair_status: repair_status,
+        //     $inc: { repair_count: 1 }
+        //   },
+        //   { new: true }
+        // );
+
+        // if (!repairRecord) {
+        //   await RepairRecord.create({
+        //     item_name: item_name,
+        //     serial_number: serial_number,
+        //     comment: comment,
+        //     repair_status: repair_status,
+        //     repair_count: 1
+        //   });
+        // }
+
+        return res.status(200).json(updatedData);
+      }
+    } else {
+      return res.status(400).json({ message: "Please select a valid status" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 app.get("/GetDamageItem", async (req, res) => {
   try {
-    const lossDamage = await LossDamageItem.find({})
+    const lossDamage = await LossDamageItem.find({
+      repair_status: { $ne: "Working" },
+    })
       .sort({ createdAt: -1 })
-      .sort({ createdAt: -1 });
+      .exec(); // Adding exec() to execute the query
     res.status(200).json(lossDamage);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/GetReapirItem", async (req, res) => {
+  try {
+    const repaireItem = await EnventoryRepair.find({});
+    res.status(200).json(repaireItem);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -1251,7 +1455,7 @@ app.get("/items/searchName", async (req, res) => {
     const query = req.query.query;
 
     // Query the database to search for items matching the query
-    const items = await EmployeeSchema.find({
+    const items = await CandidateDetails.find({
       f_name: { $regex: query, $options: "i" },
     });
 
@@ -1259,6 +1463,170 @@ app.get("/items/searchName", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.get("/items/searchclientName", async (req, res) => {
+  try {
+    const query = req.query.query;
+    const client_id = req.query.client_id;
+    const items = await CompanyAccount.find({
+      hosting_name: { $regex: new RegExp(query, "i") },
+      client_id: client_id,
+    });
+    res.json(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+app.get("/items/searchsocialclientName", async (req, res) => {
+  try {
+    const query = req.query.query;
+    const client_id = req.query.client_id;
+
+    const items = await SocialIcon.find({
+      icon_name: { $regex: new RegExp(query, "i") },
+      client_id: client_id,
+    });
+
+    res.json(items);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+app.post("/getSocialAssignedData", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    await SocialIcon.findOne({ _id: userId }).then(function (doc) {
+      res.status(200).json(doc); // Send the found document as the response
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/getcomapnyData", async (req, res) => {
+  try {
+    const { userId } = req.body;
+    await CompanyAccount.findOne({ _id: userId }).then(function (doc) {
+      res.status(200).json(doc); // Send the found document as the response
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/assignedHosting", async (req, res) => {
+  try {
+    const {
+      assignedemp_id,
+      hosting_name,
+      hosting_url,
+      hosting_password,
+      assigned_date,
+    } = req.body;
+    const getdata = await ClientAssign.findById({ _id: assignedemp_id });
+    if (getdata != 0) {
+      result = await Assigned_hosting.create({
+        emp_name: getdata.emp_name,
+        job_title: getdata.job_title,
+        emp_code: getdata.emp_code,
+        client_name: getdata.client_name,
+        assignedemp_id,
+        hosting_name,
+        hosting_url,
+        hosting_password,
+        assigned_date,
+      });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+app.post("/assignedsocialmedia", async (req, res) => {
+  try {
+    const {
+      assignedemp_id,
+      icon_name,
+      social_url,
+      social_password,
+      assigned_date,
+    } = req.body;
+    const getdata = await ClientAssign.findById({ _id: assignedemp_id });
+    if (getdata != 0) {
+      result = await Assigned_socialmedia.create({
+        emp_name: getdata.emp_name,
+        job_title: getdata.job_title,
+        emp_code: getdata.emp_code,
+        client_name: getdata.client_name,
+        assignedemp_id,
+        icon_name,
+        social_url,
+        social_password,
+        assigned_date,
+      });
+    }
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/GetassignedHosting", async (req, res) => {
+  try {
+    const { userid } = req.body;
+    const Assignedhosting = await Assigned_hosting.find({
+      assignedemp_id: userid,
+    }).sort({ createdAt: -1 });
+    res.status(200).json(Assignedhosting);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/delete_assignhosting/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Assigned_hosting.deleteOne({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.delete("/delete_assignsocialmedia/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await Assigned_socialmedia.deleteOne({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getAllAssignedHosting", async (req, res) => {
+  try {
+    const Assignedhosting = await Assigned_hosting.find({}).sort({
+      createdAt: -1,
+    });
+    res.status(200).json(Assignedhosting);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getAllSocialAssignedHosting", async (req, res) => {
+  try {
+    const Assignedsocialmedia = await Assigned_socialmedia.find({}).sort({
+      createdAt: -1,
+    });
+    res.status(200).json(Assignedsocialmedia);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });
 
@@ -1517,6 +1885,7 @@ app.post("/assign_employee", async (req, res) => {
       emp_name,
       job_title,
       emp_code,
+      emp_status,
       assignment_date,
       client_id,
     } = req.body;
@@ -1528,6 +1897,7 @@ app.post("/assign_employee", async (req, res) => {
       emp_name,
       job_title,
       emp_code,
+      emp_status,
       assignment_date,
       client_id,
     });
@@ -1572,7 +1942,15 @@ app.delete("/delete_assignemployee/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const result = await ClientAssign.deleteOne({ _id: id });
-    res.status(200).json(result);
+
+    if (result.deletedCount > 0) {
+      await Assigned_hosting.deleteMany({ assignedemp_id: id });
+      await Assigned_socialmedia.deleteMany({ assignedemp_id: id });
+
+      res.status(200).json({ message: "Deletion successful" });
+    } else {
+      res.status(404).json({ message: "Record not found" });
+    }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -1726,6 +2104,7 @@ app.post("/add_companyaccount", async (req, res) => {
       password,
       renewal_date,
       notification_date,
+      client_id,
     } = req.body;
 
     // Validate input
@@ -1736,7 +2115,8 @@ app.post("/add_companyaccount", async (req, res) => {
       !client_name ||
       !username ||
       !password ||
-      !renewal_date
+      !renewal_date ||
+      !client_id
     ) {
       return res.status(400).json({ message: "Missing required fields." });
     }
@@ -1755,6 +2135,7 @@ app.post("/add_companyaccount", async (req, res) => {
       username,
       password,
       renewal_date,
+      client_id,
       notification_date: calculatedNotificationDate,
     });
 
@@ -1987,6 +2368,15 @@ app.post("/getexitemployeedocs", async (req, res) => {
   }
 });
 
+app.post("/getexitemployeeAssignedItem", async (req, res) => {
+  try {
+    const docs = await Enventory.find({ emp_id: req.body.emp_id });
+    res.status(200).json(docs);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 app.delete("/delete_exitemployeedocs/:id", async (req, res) => {
   try {
     const { id } = req.params;
@@ -2073,7 +2463,7 @@ app.post("/update_profile", upload.single("image"), async (req, res) => {
 
     if (req.file) {
       const imgLocation = req.file.location;
-      await Users.findByIdAndUpdate(id, {
+      await EmployeeSchema.findByIdAndUpdate(id, {
         l_name: l_name,
         f_name: f_name,
         job_title: job_title,
@@ -2082,7 +2472,7 @@ app.post("/update_profile", upload.single("image"), async (req, res) => {
         img: imgLocation,
       });
     } else {
-      await Users.findByIdAndUpdate(id, {
+      await EmployeeSchema.findByIdAndUpdate(id, {
         l_name: l_name,
         f_name: f_name,
         job_title: job_title,
@@ -2099,8 +2489,41 @@ app.post("/update_profile", upload.single("image"), async (req, res) => {
 //Get DashBoard Data
 app.get("/getAllEmployeedata", async (req, res) => {
   try {
-    const totalEmployeeCount = await EmployeeSchema.countDocuments();
-    res.status(200).json(totalEmployeeCount);
+    const totalEmployeeCount = await CandidateDetails.countDocuments();
+
+    if (totalEmployeeCount != 0) {
+      const permanent = await CandidateDetails.countDocuments({
+        employee_type: "permanent",
+      });
+      const intern = await CandidateDetails.countDocuments({
+        employee_type: "intern",
+      });
+      const PermanentEmpPer = ((permanent / totalEmployeeCount) * 100).toFixed(
+        2
+      );
+      const InterEmpPer = ((intern / totalEmployeeCount) * 100).toFixed(2);
+      res.status(200).json({
+        totalEmployeeCount,
+        permanent,
+        PermanentEmpPer,
+        intern,
+        InterEmpPer,
+      });
+    } else {
+      const totalEmployeeCount = 0;
+      const permanent = 0;
+      const PermanentEmpPer = 0;
+      const intern = 0;
+      const InterEmpPer = 0;
+      res.status(200).json({
+        totalEmployeeCount,
+        permanent,
+        PermanentEmpPer,
+        intern,
+        InterEmpPer,
+      });
+    }
+    // res.status(200).json(totalEmployeeCount);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -2108,9 +2531,10 @@ app.get("/getAllEmployeedata", async (req, res) => {
 
 app.get("/getAllPermanentEmployeedata", async (req, res) => {
   try {
-    const permanentEmployeeCount = await EmployeeSchema.countDocuments({
-      emp_status: "permanent",
-    });
+    const permanentEmployeeCount =
+      await DepartmentPositionsCandidate.countDocuments({
+        employee_type: "permanent",
+      });
     res.status(200).json(permanentEmployeeCount);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -2119,9 +2543,10 @@ app.get("/getAllPermanentEmployeedata", async (req, res) => {
 
 app.get("/getAllInternEmployeedata", async (req, res) => {
   try {
-    const inetrnEmployeeCount = await EmployeeSchema.countDocuments({
-      emp_status: "intern",
-    });
+    const inetrnEmployeeCount =
+      await DepartmentPositionsCandidate.countDocuments({
+        employee_type: "intern",
+      });
     res.status(200).json(inetrnEmployeeCount);
   } catch (err) {
     res.status(500).json({ message: err.message });
@@ -2169,25 +2594,6 @@ app.get("/getJobPositions", async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
-// app.get("/getHiredCandidatecount", async (req, res) => {
-//   try {
-//     const hiredEmployee = await DepartmentPositionsCandidate.countDocuments({ hired: true });
-//     res.status(200).json(hiredEmployee);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
-
-// app.get("/getHiredCandidatePercentage", async (req, res) => {
-//   try {
-//     const hiredEmployee = await DepartmentPositionsCandidate.countDocuments({ hired: true });
-//     const totalJobPositions = await DepartmentPositions.countDocuments();
-//     const hiredCandidatePer = (hiredEmployee / totalJobPositions * 100).toFixed(2);
-//     res.status(200).json(hiredCandidatePer);
-//   } catch (err) {
-//     res.status(500).json({ message: err.message });
-//   }
-// });
 
 app.get("/totalItemQuantity", async (req, res) => {
   try {
@@ -2326,15 +2732,52 @@ app.get("/items/searchEmployeeName", async (req, res) => {
   try {
     const query = req.query.query;
 
-    // Query the database to search for items matching the query
-    const items = await EmployeeSchema.find({
+    // Query the database to search for items matching the query in the first table
+    const employees = await CandidateDetails.find({
       f_name: { $regex: query, $options: "i" },
       ref_id: { $ne: null },
     });
+
+    // Get all ref_ids from the employees found in the first table
+    const refIds = employees.map((employee) => employee.ref_id);
+
+    // Query the CandidateDetails collection to find matching items with ref_id in refIds array
+    const items = await EmployeeSchema.find({ ref_id: { $in: refIds } });
+
     // Return the results
     res.json(items);
   } catch (err) {
     console.error("Error searching for items:", err);
     res.status(500).json({ error: "Server error" });
+  }
+});
+
+app.post("/add-category", async (req, res) => {
+  try {
+    const enventorycategory = await EnventoryCategory.create(req.body);
+    res.status(200).json(enventorycategory);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.delete("/delete_category/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await EnventoryCategory.deleteOne({ _id: id });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getItemCategory", async (req, res) => {
+  try {
+    const enventorycategory = await EnventoryCategory.find({})
+      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
+    res.status(200).json(enventorycategory);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 });

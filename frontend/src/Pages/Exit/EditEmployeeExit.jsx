@@ -10,10 +10,13 @@ import {
   notification,
   message,
   Modal,
+  Table,
+  Space,
 } from "antd";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { DownloadOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import Dragger from "antd/es/upload/Dragger";
 
@@ -30,11 +33,14 @@ const EditEmployeeExit = () => {
   useEffect(() => {
     getEmployeeExit();
     getExitEmployeeDocs();
+    getEmployeeAssignedItem();
   }, []);
   const { id } = useParams();
   const [loading, setLoading] = useState(false);
   const [api, contextHolder] = notification.useNotification();
   const [accountData, setAccountData] = useState([]);
+  const [ItemData, setItemData] = useState([]);
+  const [empId, setEmpId] = useState([]);
   const openNotificationWithIcon = (type, message) => {
     if (type === "error") {
       api[type]({
@@ -49,36 +55,16 @@ const EditEmployeeExit = () => {
     }
   };
 
-  const getExitEmployeeDocs = () => {
-    axios
-      .post(process.env.REACT_APP_API_URL + "/getexitemployeedocs", { id })
-      .then((result) => {
-        const data = result.data;
-
-        let newData = [];
-        data.map((x, i) => {
-          newData.push({
-            key: x._id,
-            url: x.url,
-            name: `Employee Document ${i + 1}`,
-          });
-        });
-
-        setAccountData(newData);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
   const getEmployeeExit = () => {
     axios
       .get(process.env.REACT_APP_API_URL + "/GetEmployeeExit")
       .then((result) => {
         let data = result.data;
-        console.log(data);
         let newData = [];
         data.map((x) => {
           if (x._id == id) {
+            getEmployeeAssignedItem(x.emp_id);
+            setEmpId(x.emp_id);
             form.setFieldsValue({
               key: x._id,
               emp_name: x.emp_name,
@@ -103,6 +89,53 @@ const EditEmployeeExit = () => {
         console.log(err);
       });
   };
+  const getExitEmployeeDocs = () => {
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getexitemployeedocs", { id })
+      .then((result) => {
+        const data = result.data;
+
+        let newData = [];
+        data.map((x, i) => {
+          newData.push({
+            key: x._id,
+            url: x.url,
+            name: `Employee Document ${i + 1}`,
+          });
+        });
+
+        setAccountData(newData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getEmployeeAssignedItem = (emp_id) => {
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getexitemployeeAssignedItem", {
+        emp_id,
+      })
+      .then((result) => {
+        const data = result.data;
+        let newData = [];
+        data.map((x) => {
+          newData.push({
+            key: x.item_id,
+            item_name: x.item_name,
+            serial_number: x.serial_number,
+            assignment_date: x.assignment_date,
+            quantity: x.quantity,
+          });
+        });
+
+        setItemData(newData);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const deleteDoc = (id) => {
     axios
       .post(process.env.REACT_APP_API_URL + "/deleteemployeeexitDocs", { id })
@@ -194,6 +227,74 @@ const EditEmployeeExit = () => {
         console.error(error);
       });
   };
+
+  const handleReturn = (itemid, quantity) => {
+    axios
+      .post(process.env.REACT_APP_API_URL + "/return_assigneditem", {
+        itemid,
+        quantity,
+      })
+      .then((res) => {
+        setLoading(false);
+        form.resetFields();
+        getEmployeeExit();
+        getExitEmployeeDocs();
+        getEmployeeAssignedItem();
+        openNotificationWithIcon(
+          "success",
+          "Assigned Item Return  Successfully"
+        );
+      })
+      .catch((err) => {
+        setLoading(false);
+        console.log(err);
+        openNotificationWithIcon("error", "Failed to Assigned Item Return");
+      });
+  };
+  // const handleChange = (values) => {};
+  const columns = [
+    {
+      title: "Item Name",
+      dataIndex: "item_name",
+      key: "item_name",
+      render: (text) => <a>{text}</a>,
+    },
+
+    {
+      title: "Serial Number",
+      dataIndex: "serial_number",
+      key: "serial_number",
+    },
+    {
+      title: "Assigned Date",
+      dataIndex: "assignment_date",
+      key: "assignment_date",
+    },
+
+    {
+      title: "Quantity",
+      dataIndex: "quantity",
+      key: "quantity",
+    },
+
+    {
+      title: "Action",
+      key: "action",
+      render: (_, record) => (
+        <div>
+          <Space wrap>
+            <Button
+              type="primary"
+              block
+              onClick={() => handleReturn(record.key, record.quantity)}
+            >
+              Return Items
+            </Button>
+          </Space>
+        </div>
+      ),
+    },
+  ];
   return (
     <div>
       <div className="mainContainer">
@@ -415,6 +516,16 @@ const EditEmployeeExit = () => {
                       <Option value="Confirm">Confirm</Option>
                     </Select>
                   </Form.Item>
+                </Col>
+                <Col span={24}>
+                  <div className="m12r">
+                    <Title level={3} className="Expensecolor">
+                      Assigned Inventories
+                    </Title>
+                  </div>
+                  <div>
+                    <Table columns={columns} dataSource={ItemData} />
+                  </div>
                 </Col>
 
                 <Col span={24}>

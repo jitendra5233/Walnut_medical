@@ -34,6 +34,10 @@ const ClientAssignEmpDetails = mongoose.Schema(
       type: String,
       required: true,
     },
+    emp_status: {
+      type: String,
+      // required: true,
+    },
     assignment_date: {
         type: Date,
         required: true,

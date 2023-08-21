@@ -33,7 +33,10 @@ const LossDamageItem = mongoose.Schema({
     type:String,
     require:true,
   },
-  
+  repair_status:{
+    type:String,
+    require:true,
+  }, 
 },
 { timestamps: true });
 

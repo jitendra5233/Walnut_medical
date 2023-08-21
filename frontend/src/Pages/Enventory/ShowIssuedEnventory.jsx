@@ -71,6 +71,7 @@ const ShowIssuedEnventory = () => {
             emp_name: x.emp_name,
             emp_code: x.emp_code,
             job_title: x.job_title,
+            emp_id: x.emp_id,
           });
         });
 
@@ -86,7 +87,8 @@ const ShowIssuedEnventory = () => {
   const [availableItem, setAvailableItem] = useState([]);
   const [AvailableItemId, setAvailableItemId] = useState([]);
   const [oldasigneddate, setoldasigneddate] = useState([]);
-
+  const [empId, setEmpId] = useState([]);
+  console.log(empId);
   const handleEdit = (id) => {
     showModal();
     setUpdateItemId(id);
@@ -106,6 +108,7 @@ const ShowIssuedEnventory = () => {
         setUpdatedItemName(x.item_name);
         setUpdatedTotaltem(x.quantity);
         setoldasigneddate(x.assignment_date);
+        setEmpId(x.emp_id);
         form1.setFieldsValue({
           key: x._id,
           item_name: x.item_name,
@@ -148,6 +151,27 @@ const ShowIssuedEnventory = () => {
       }
     });
   };
+  const [empName, setEmpName] = useState([]);
+  const handleChange = (value, option) => {
+    let userId = option.key;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
+      .then((res) => {
+        if (res.data !== "") {
+          let data = res.data;
+          var emp_name = data.f_name + " " + data.l_name;
+          setEmpId(data._id);
+          setEmpName(emp_name);
+          form1.setFieldsValue({
+            emp_code: data.emp_code,
+            job_title: data.job_title,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const handleUpdate = (values) => {
     values.id = updateItemId;
@@ -157,6 +181,7 @@ const ShowIssuedEnventory = () => {
     let getavailableitem = values.quantity - updatedTotaltem;
     values.finalavailableItem = getavailableitem;
     values.item_id = AvailableItemId;
+    values.emp_id = empId;
     axios
       .post(process.env.REACT_APP_API_URL + "/update-issueitem", values)
       .then((res) => {
@@ -175,6 +200,7 @@ const ShowIssuedEnventory = () => {
   const handleLossDamage = (values) => {
     values.id = issueItemId;
     values.damageItemId = damageItemId;
+    values.repair_status = "No";
     axios
       .post(process.env.REACT_APP_API_URL + "/addToDamage", values)
       .then((res) => {
@@ -232,26 +258,7 @@ const ShowIssuedEnventory = () => {
       alert("Available Item Only" + " " + +availableItem + "");
     }
   };
-  const [empName, setEmpName] = useState([]);
-  const handleChange = (value, option) => {
-    let userId = option.key;
-    axios
-      .post(process.env.REACT_APP_API_URL + "/getUserData", { userId })
-      .then((res) => {
-        if (res.data !== "") {
-          let data = res.data;
-          var emp_name = data.f_name + " " + data.l_name;
-          form1.setFieldsValue({
-            emp_code: data.emp_code,
-            job_title: data.designation,
-          });
-          setEmpName(emp_name);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
+
   const handlenameSearch = (value) => {
     axios
       .get(`${process.env.REACT_APP_API_URL}/items/searchName?query=${value}`)
@@ -441,13 +448,14 @@ const ShowIssuedEnventory = () => {
                         placeholder="Select Item"
                         onSearch={handlenameSearch}
                         onChange={handleChange}
+                        disabled
                       >
                         {userSuggestions.map((option) => (
                           <Option
                             key={option._id}
                             value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                           >
-                            {`${option.f_name} ${option.l_name}`}
+                            {`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                           </Option>
                         ))}
                       </AutoComplete>
@@ -607,7 +615,6 @@ const ShowIssuedEnventory = () => {
                         className="myAntIpt2"
                         placeholder="Enter Item serial number"
                         size="small"
-                        disabled
                       />
                     </Form.Item>
                   </Col>
@@ -632,9 +639,9 @@ const ShowIssuedEnventory = () => {
                         {userSuggestions.map((option) => (
                           <Option
                             key={option._id}
-                            value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
+                            value={`${option.f_name} ${option.l_name}`}
                           >
-                            {`${option.f_name} ${option.l_name}`}
+                            {`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                           </Option>
                         ))}
                       </AutoComplete>
@@ -693,6 +700,7 @@ const ShowIssuedEnventory = () => {
                       <Input
                         className="myAntIpt2"
                         placeholder="Enter your Quantity"
+                        disabled
                       />
                     </Form.Item>
                   </Col>
@@ -707,7 +715,7 @@ const ShowIssuedEnventory = () => {
                   </Col>
                   <Col span={12}>
                     <Form.Item
-                      label="Assigned Date"
+                      label="Assigned Date (Optional)"
                       name="assignment_date"
                       hasFeedback
                     >

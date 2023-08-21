@@ -138,7 +138,15 @@ const CompantAccount = () => {
     });
   };
 
+  const [getclient_id, setClientId] = useState("");
+  console.log(getclient_id);
+  const handleChange = (value, option) => {
+    let client_id = option.key;
+    setClientId(client_id);
+  };
+
   const handleAdd = (values) => {
+    values.client_id = getclient_id;
     const renewalDate = new Date(values.renewal_date.$d);
     const formattedValues = {
       ...values,
@@ -273,7 +281,6 @@ const CompantAccount = () => {
     // Clean up the interval when the component unmounts
     return () => clearInterval(intervalId);
   }, [tableData]);
-
   const handleSendMail = (
     hosting_name,
     hosting_url,
@@ -510,6 +517,7 @@ const CompantAccount = () => {
                         className="myAntIpt2"
                         placeholder="Select Item"
                         onSearch={handleSearch}
+                        onChange={handleChange}
                       >
                         {suggestions.map((option) => (
                           <Option key={option._id} value={option.client_name}>

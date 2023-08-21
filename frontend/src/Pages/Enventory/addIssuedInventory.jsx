@@ -47,6 +47,8 @@ const AddIssuedEnventory = () => {
   };
 
   const [empName, setEmpName] = useState([]);
+  const [empId, setEmpId] = useState([]);
+  console.log(empId);
   const handleChange = (value, option) => {
     let userId = option.key;
     axios
@@ -54,11 +56,13 @@ const AddIssuedEnventory = () => {
       .then((res) => {
         if (res.data !== "") {
           let data = res.data;
+          var emp_Id = data._id;
           var emp_name = data.f_name + " " + data.l_name;
           form.setFieldsValue({
             emp_code: data.emp_code,
-            job_title: data.designation,
+            job_title: data.job_title,
           });
+          setEmpId(emp_Id);
           setEmpName(emp_name);
         }
       })
@@ -109,6 +113,7 @@ const AddIssuedEnventory = () => {
     values.itemId = updatedItemId;
     values.item_name = updatedItemName;
     values.item_id = updatedItemId;
+    values.emp_id = empId;
     setLoading(true);
     if (values.quantity <= updateAvailableItem) {
       axios
@@ -240,9 +245,9 @@ const AddIssuedEnventory = () => {
                       {userSuggestions.map((option) => (
                         <Option
                           key={option._id}
-                          value={`${option.emp_code} - ${option.f_name} ${option.l_name}`}
+                          value={`${option.f_name} ${option.l_name}`}
                         >
-                          {`${option.f_name} ${option.l_name}`}
+                          {`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                         </Option>
                       ))}
                     </AutoComplete>
@@ -299,6 +304,7 @@ const AddIssuedEnventory = () => {
                   <Form.Item
                     label="Quantity"
                     name="quantity"
+                    initialValue={1}
                     onKeyUp={handleKeyUp}
                     rules={[
                       {
@@ -307,7 +313,7 @@ const AddIssuedEnventory = () => {
                       },
                     ]}
                   >
-                    <Input className="quantity" />
+                    <Input className="quantity" value={1} disabled />
                   </Form.Item>
                 </Col>
                 <Col span={24}>

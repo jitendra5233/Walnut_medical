@@ -15,11 +15,18 @@ import {
   Upload,
   message,
   Table,
+  Space,
 } from "antd";
 import axios from "axios";
-import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import {
+  PlusOutlined,
+  DeleteOutlined,
+  EditOutlined,
+  FundViewOutlined,
+  EyeOutlined,
+} from "@ant-design/icons";
 import { ExclamationCircleOutlined } from "@ant-design/icons";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import "@fortawesome/fontawesome-free/css/all.min.css"; // Import Font Awesome CSS
 import moment from "moment";
 const { Title } = Typography;
@@ -32,10 +39,15 @@ const AccountDetails = () => {
   const [form1] = Form.useForm();
   const [form2] = Form.useForm();
   const [form3] = Form.useForm();
+  const [form4] = Form.useForm();
+  const [form5] = Form.useForm();
   const [api, contextHolder] = notification.useNotification();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpen1, setIsModalOpen1] = useState(false);
   const [userModalOpen, setuserModalOpen] = useState(false);
+  const [clientModalOpen, setclientModalOpen] = useState(false);
+  const [socilaClientModalOpen, setSocialclientModalOpen] = useState(false);
+
   const [userUpdateModalOpen, setuserUpdateModalOpen] = useState(false);
 
   const showModal = () => {
@@ -59,6 +71,20 @@ const AccountDetails = () => {
   };
   const handleUserCancel = () => {
     setuserModalOpen(false);
+  };
+
+  const showClientModal = () => {
+    setclientModalOpen(true);
+  };
+  const handleClientCancel = () => {
+    setclientModalOpen(false);
+  };
+
+  const showSocialClientModal = () => {
+    setSocialclientModalOpen(true);
+  };
+  const handleSocialClientCancel = () => {
+    setSocialclientModalOpen(false);
   };
 
   const handleUserUpdateCancel = () => {
@@ -159,6 +185,9 @@ const AccountDetails = () => {
   };
 
   const [userSuggestions, setUserSuggestions] = useState([]);
+  const [clientSuggestions, setClientSuggestions] = useState([]);
+  const [socialClientSuggestions, setSocialClientSuggestions] = useState([]);
+
   const [empName, setEmpName] = useState([]);
 
   const handleChange = (value, option) => {
@@ -171,9 +200,47 @@ const AccountDetails = () => {
           var emp_name = data.f_name + " " + data.l_name;
           form2.setFieldsValue({
             emp_code: data.emp_code,
-            designation: data.designation,
+            designation: data.job_title,
+            emp_status: data.employee_type,
           });
           setEmpName(emp_name);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleclientChange = (value, option) => {
+    let userId = option.key;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getcomapnyData", { userId })
+      .then((res) => {
+        if (res.data !== "") {
+          let data = res.data;
+          form4.setFieldsValue({
+            hosting_url: data.hosting_url,
+            hosting_password: data.password,
+          });
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+  const handlesocialclientChange = (value, option) => {
+    let userId = option.key;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/getSocialAssignedData", {
+        userId,
+      })
+      .then((res) => {
+        if (res.data !== "") {
+          let data = res.data;
+          form5.setFieldsValue({
+            social_url: data.social_url,
+            social_password: data.password,
+          });
         }
       })
       .catch((err) => {
@@ -191,7 +258,7 @@ const AccountDetails = () => {
           var emp_name = data.f_name + " " + data.l_name;
           form3.setFieldsValue({
             emp_code: data.emp_code,
-            designation: data.designation,
+            designation: data.job_title,
           });
           setEmpName(emp_name);
         }
@@ -277,7 +344,7 @@ const AccountDetails = () => {
               assignment_date: new Date(x.assignment_date).toLocaleDateString(),
               emp_code: x.emp_code,
               designation: x.job_title,
-              emp_status: "permanent",
+              emp_status: x.emp_status,
             });
           }
         });
@@ -292,12 +359,10 @@ const AccountDetails = () => {
   const [oldasigneddate, setoldasigneddate] = useState([]);
   const handleEdit = (id) => {
     setAssignedEmpId(id);
-
     showUpdateUserModal();
     assignedEmployeeData.map((data) => {
       if (data.key === id) {
         setoldasigneddate(data.assignment_date);
-        // const assignmentDate = moment(data.assignment_date, "MM/DD/YYYY");
         form3.setFieldsValue({
           kay: data._id,
           emp_name: data.emp_name,
@@ -339,6 +404,45 @@ const AccountDetails = () => {
       .then((response) => {
         const items = response.data;
         setUserSuggestions(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+  const [companyassignedempId, setCompanayAssignedEmpId] = useState("");
+  const handleAssignAccount = (emp_id) => {
+    setCompanayAssignedEmpId(emp_id);
+    showClientModal(true);
+  };
+  const handleAssignScocialAccount = (emp_id) => {
+    setCompanayAssignedEmpId(emp_id);
+    showSocialClientModal(true);
+  };
+
+  const handleClientNameSearch = (value) => {
+    const client_id = id;
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/items/searchclientName?query=${value}&client_id=${client_id}`
+      )
+      .then((response) => {
+        const items = response.data;
+        setClientSuggestions(items);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleSocialClientNameSearch = (value) => {
+    const client_id = id;
+    axios
+      .get(
+        `${process.env.REACT_APP_API_URL}/items/searchsocialclientName?query=${value}&client_id=${client_id}`
+      )
+      .then((response) => {
+        const items = response.data; // There's no need for { items }
+        setSocialClientSuggestions(items);
       })
       .catch((error) => {
         console.error(error);
@@ -391,6 +495,37 @@ const AccountDetails = () => {
       });
   };
 
+  const handleHostingAssignEmp = (values) => {
+    values.assignedemp_id = companyassignedempId;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/assignedHosting", values)
+      .then((res) => {
+        if (res != "") {
+          form4.resetFields();
+          showClientModal(false);
+          handleClientCancel();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleSocialMediaAssignEmp = (values) => {
+    values.assignedemp_id = companyassignedempId;
+    axios
+      .post(process.env.REACT_APP_API_URL + "/assignedsocialmedia", values)
+      .then((res) => {
+        if (res != "") {
+          form5.resetFields();
+          showSocialClientModal(false);
+          handleSocialClientCancel();
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
   const columns = [
     {
       title: "Employee Name",
@@ -425,18 +560,53 @@ const AccountDetails = () => {
       key: "action",
       render: (_, record) => (
         <div>
-          <a onClick={() => handleEdit(record.key)}>
-            {" "}
+          {/* <a onClick={() => handleEdit(record.key)}>
             <span>
               <EditOutlined style={{ cursor: "pointer" }} />
             </span>
-          </a>
+          </a> */}
           <a onClick={() => handleDelete(record.key)}>
-            {" "}
             <span>
               <DeleteOutlined style={{ cursor: "pointer" }} />
             </span>
           </a>
+          {/* <Link to={`/assigned-hsoting/${record.key}`}>
+            <EyeOutlined style={{ cursor: "pointer" }} />
+          </Link> */}
+        </div>
+      ),
+    },
+    {
+      title: "Assign hosting",
+      key: "action",
+      render: (_, record) => (
+        <div>
+          <Space wrap>
+            <Button
+              type="primary"
+              block
+              onClick={() => handleAssignAccount(record.key)}
+            >
+              Assign hosting
+            </Button>
+          </Space>
+        </div>
+      ),
+    },
+    {
+      title: "Assign Social media",
+      key: "action",
+      render: (_, record) => (
+        <div>
+          <Space wrap>
+            <Button
+              type="primary"
+              block
+              onClick={() => handleAssignScocialAccount(record.key)}
+            >
+              Assign social media
+            </Button>
+          </Space>
         </div>
       ),
     },
@@ -829,7 +999,6 @@ const AccountDetails = () => {
         <button className="Expensecolorbtn" onClick={showUserModal}>
           Assign Employee +
         </button>
-        {/* <button className="filtercolorbtn">Filter</button> */}
       </div>
 
       <Modal open={userModalOpen} onCancel={handleUserCancel} footer={[]}>
@@ -872,7 +1041,7 @@ const AccountDetails = () => {
                               key={option._id}
                               value={`${option.f_name} ${option.l_name}`}
                             >
-                              {`${option.f_name} ${option.l_name}`}
+                              {`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                             </Option>
                           ))}
                         </AutoComplete>
@@ -910,8 +1079,253 @@ const AccountDetails = () => {
                     </Col>
                     <Col span={12}>
                       <Form.Item
+                        label="Employment Status"
+                        name="emp_status"
+                        // rules={[
+                        //   {
+                        //     required: true,
+                        //     message: "Please input employment status!",
+                        //   },
+                        // ]}
+                        hasFeedback
+                      >
+                        <Input placeholder="employment status..." disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
                         label="Assigned Date"
                         name="assignment_date"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Assigned Date!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <DatePicker
+                          style={{ width: "100%" }}
+                          disabledDate={(current) =>
+                            current && current < moment().startOf("day")
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
+
+      <Modal open={clientModalOpen} onCancel={handleClientCancel} footer={[]}>
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24} style={{ marginBottom: "30px" }}>
+                <span className="popupTitle">Assign Accounts</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form4}
+                  name="basic"
+                  layout="vertical"
+                  onFinish={handleHostingAssignEmp}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Account Name"
+                        name="hosting_name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input hosting  name!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <AutoComplete
+                          placeholder="Select Item"
+                          onSearch={handleClientNameSearch}
+                          onChange={handleclientChange}
+                        >
+                          {clientSuggestions.map((option) => (
+                            <Option
+                              key={option._id}
+                              value={option.hosting_name}
+                            >
+                              {option.hosting_name}
+                            </Option>
+                          ))}
+                        </AutoComplete>
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Hosting Url"
+                        name="hosting_url"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input hosting url!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input placeholder="hosting url.." disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Hosting Password"
+                        name="hosting_password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your hosting password!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input placeholder="hosting password..." disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Assigned Date"
+                        name="assigned_date"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Assigned Date!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <DatePicker
+                          style={{ width: "100%" }}
+                          disabledDate={(current) =>
+                            current && current < moment().startOf("day")
+                          }
+                        />
+                      </Form.Item>
+                    </Col>
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Submit
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
+
+      <Modal
+        open={socilaClientModalOpen}
+        onCancel={handleSocialClientCancel}
+        footer={[]}
+      >
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24} style={{ marginBottom: "30px" }}>
+                <span className="popupTitle">Assign Social Accounts</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form5}
+                  name="basic"
+                  layout="vertical"
+                  onFinish={handleSocialMediaAssignEmp}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Account Name"
+                        name="icon_name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Icon  name!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <AutoComplete
+                          placeholder="Select Item"
+                          onSearch={handleSocialClientNameSearch}
+                          onChange={handlesocialclientChange}
+                        >
+                          {socialClientSuggestions.map((option) => (
+                            <Option
+                              key={option._id}
+                              value={option.icon_name.replace("fab fa-", "")}
+                            >
+                              <i className={option.icon_name}>
+                                <span className="custom-icon">
+                                  {option.icon_name.replace("fab fa-", "")}
+                                </span>
+                              </i>
+                            </Option>
+                          ))}
+                        </AutoComplete>
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Social Url"
+                        name="social_url"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input Social url!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input placeholder="Social url.." disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Social Password"
+                        name="social_password"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Social password!",
+                          },
+                        ]}
+                        hasFeedback
+                      >
+                        <Input placeholder="Social password..." disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Assigned Date"
+                        name="assigned_date"
                         rules={[
                           {
                             required: true,
@@ -989,7 +1403,7 @@ const AccountDetails = () => {
                               key={option._id}
                               value={`${option.f_name} ${option.l_name}`}
                             >
-                              {`${option.f_name} ${option.l_name}`}
+                              {`${option.emp_code} - ${option.f_name} ${option.l_name}`}
                             </Option>
                           ))}
                         </AutoComplete>

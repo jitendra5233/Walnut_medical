@@ -10,6 +10,10 @@ const EmployeeExitSchema = mongoose.Schema(
       type: String,
       required: false,
     },
+    emp_id: {
+      type: String,
+      required: false,
+    },
     designation: {
       type: String,
       required: true,

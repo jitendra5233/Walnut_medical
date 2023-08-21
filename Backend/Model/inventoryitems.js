@@ -17,6 +17,10 @@ const InventoryItems = mongoose.Schema({
     type: Number,
     required: true,
   },
+  category_id: {
+    type: String,
+    required: true,
+  },
 },
 { timestamps: true });
 

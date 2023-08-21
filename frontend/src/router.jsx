@@ -60,6 +60,11 @@ import LayoutHR from "./Pages/LayoutHR";
 import DashboardEmp from "./Pages/DashboardEmp";
 import ShowExpenseRecord from "./Pages/Expense/ShowExpenseRecord";
 import EmpSignup from "./Pages/User/Auth/EmpSignup";
+import AssignedHosting from "./Pages/Clients/AssignedHosting";
+import ShowAllAssignedHosting from "./Pages/Clients/ShowAllAssignedHosting";
+import ShowAllAssignedSocialMedia from "./Pages/Clients/ShowAllAssignedSocialMedia";
+import ShowEnventoryRepair from "./Pages/Enventory/ShowEnventoryRepair";
+import ShowEnventoryCategory from "./Pages/Enventory/ShowEnventoryCategory";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -120,6 +125,14 @@ const routerAdmin = createHashRouter(
         <Route path="/edit-employeeexit/:id" element={<EditEmployeeExit />} />
         <Route path="/profile/:id" element={<AdminProfile />} />
         <Route path="show-expenserecord" element={<ShowExpenseRecord />} />
+        <Route path="assigned-hsoting/:id" element={<AssignedHosting />} />
+        <Route path="assigned_hosting" element={<ShowAllAssignedHosting />} />
+        <Route
+          path="assigned_socialmedia"
+          element={<ShowAllAssignedSocialMedia />}
+        />
+        <Route path="enventory_repair" element={<ShowEnventoryRepair />} />
+        <Route path="enventory_category" element={<ShowEnventoryCategory />} />
       </Route>
     </Route>
   )
@@ -184,6 +197,13 @@ const routerHR = createHashRouter(
         <Route path="/edit-employeeexit/:id" element={<EditEmployeeExit />} />
         <Route path="/profile/:id" element={<AdminProfile />} />
         <Route path="show-expenserecord" element={<ShowExpenseRecord />} />
+        <Route path="assigned-hsoting/:id" element={<AssignedHosting />} />
+        <Route path="assigned_hosting" element={<ShowAllAssignedHosting />} />
+        <Route
+          path="assigned_socialmedia"
+          element={<ShowAllAssignedSocialMedia />}
+        />
+        <Route path="enventory_repair" element={<ShowEnventoryRepair />} />
       </Route>
     </Route>
   )

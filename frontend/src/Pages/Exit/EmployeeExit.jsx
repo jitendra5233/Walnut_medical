@@ -102,11 +102,11 @@ const EmployeeExit = () => {
       dataIndex: "salary",
       key: "salary",
     },
-    {
-      title: "Personal Email",
-      dataIndex: "personal_email",
-      key: "personal_email",
-    },
+    // {
+    //   title: "Personal Email",
+    //   dataIndex: "personal_email",
+    //   key: "personal_email",
+    // },
     {
       title: "Office Email",
       dataIndex: "office_email",

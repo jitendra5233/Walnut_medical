@@ -20,6 +20,11 @@ const CompanyAccount = mongoose.Schema(
         type: String,
         required: false,
       },
+      client_id: {
+        type: String,
+        required: false,
+      },
+
 
       username: {
         type: String,
