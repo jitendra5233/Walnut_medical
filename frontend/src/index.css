@@ -166,7 +166,7 @@ ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light {
 
 .appBarTxt {
   color: #5b7690;
-  font-size: 16px;
+  font-size: 14px;
   font-family: Arial;
   font-weight: 700;
 }
@@ -262,6 +262,8 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 .dashboardCard {
   background: #fff;
   border-radius: 0;
+  box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.15);
+  border-radius: 10px;
   /* height: 400px; */
   /* overflow: auto; */
 }
@@ -827,3 +829,18 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 /* Jitendra New Css End */
+
+/* Walnut start */
+.ant-menu .ant-menu-item-selected {
+  background-color: #2b3e50;
+  color: white;
+}
+.sidebarDiv {
+  border-radius: 0;
+}
+
+.sidebarDiv > .ant-card-body {
+  padding: 10px;
+}
+
+/* walnut end */

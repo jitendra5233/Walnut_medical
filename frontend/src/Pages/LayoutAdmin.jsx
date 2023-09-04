@@ -13,6 +13,9 @@ import {
   ShareAltOutlined,
   ApiOutlined,
   CloudUploadOutlined,
+  HomeOutlined,
+  BellTwoTone,
+  BellOutlined,
 } from "@ant-design/icons";
 import {
   Card,
@@ -122,11 +125,6 @@ const LayoutEmp = () => {
         <h5>Admin</h5>
       </div>
       <div style={{ margin: "10px 0 0 0" }}>
-        <Link to={`/profile/${user_id}`} className="menuText">
-          <Button type="primary" block primary>
-            Profile
-          </Button>
-        </Link>
         <Button type="primary" block danger onClick={() => handleLogout()}>
           Logout
         </Button>
@@ -234,33 +232,31 @@ const LayoutEmp = () => {
       <Layout>
         <Sider
           style={{
+            backgroundColor: "#C9D5E3",
             overflow: "auto",
             height: "100vh",
+            position: "relative",
           }}
           theme="light"
           breakpoint="lg"
           collapsedWidth="0"
-          onBreakpoint={(broken) => {
-            // console.log(broken);
-          }}
-          onCollapse={(collapsed, type) => {
-            // console.log(collapsed, type);
-          }}
+          onBreakpoint={(broken) => {}}
+          onCollapse={(collapsed, type) => {}}
           width={250}
         >
-          {/* <img
-            src="./logo.png"
-            alt=""
-            style={{ width: "100%", padding: "44px 24px" }}
-          /> */}
-          <div
-            style={{ width: "100%", padding: "44px 24px", textAlign: "center" }}
-          >
-            <span style={{ fontSize: "25px", fontWeight: 400 }}>
-              Walnut Medical
-            </span>
+          <div style={{ textAlign: "center", width: "100%" }}>
+            <img
+              src="./logo.png"
+              alt=""
+              style={{ padding: "15px 20px 30px" }}
+            />
           </div>
-          <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
+
+          <Menu
+            style={{ backgroundColor: "#C9D5E3" }}
+            defaultSelectedKeys={["1"]}
+            mode="inline"
+          >
             <Menu.Item key="1">
               <div style={{ display: "flex" }}>
                 <div>
@@ -335,10 +331,57 @@ const LayoutEmp = () => {
                 </div>
               </div>
             </Menu.Item>
+            <Menu.Item key="5">
+              <div style={{ display: "flex" }}>
+                <div>
+                  <LogoutOutlined
+                    style={{
+                      fontSize: "15px",
+                      margin: "10px 10px 0px",
+                    }}
+                  />
+                </div>
+                <div>
+                  <Link className="menuText" onClick={() => handleLogout()}>
+                    Logout
+                  </Link>
+                </div>
+              </div>
+            </Menu.Item>
           </Menu>
+          <div>
+            <div
+              style={{
+                position: "absolute",
+                bottom: "10px",
+                padding: "0 10px",
+                width: "100%",
+              }}
+            >
+              <Card className="sidebarDiv">
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div>
+                    <Avatar
+                      size={35}
+                      src={<img src="./icon/userImg.png" alt="avatar" />}
+                      style={{ marginRight: "15px" }}
+                    />
+                  </div>
+                  <div>
+                    <div>
+                      <span className="appBarUserName">User Name</span>
+                    </div>
+                    <div>
+                      <span className="appBarUserType">Quality Head</span>
+                    </div>
+                  </div>
+                </div>
+              </Card>
+            </div>
+          </div>
         </Sider>
 
-        <Layout>
+        <Layout style={{ backgroundColor: "#f6f8fb" }}>
           <Header
             style={{
               padding: 0,
@@ -347,104 +390,33 @@ const LayoutEmp = () => {
             }}
           >
             <Row style={{ margin: "0 30px" }}>
-              <Col span={8} className="h64p">
-                <span className="appBarTxt">Dashboard</span>
+              <Col span={10} className="h64p">
+                <span className="appBarTxt">
+                  <HomeOutlined /> Dashboard
+                </span>
               </Col>
-              <Col span={8}>
-                {/* <Form.Item name="emp_name" className="h64p fontchange">
-                  <AutoComplete
-                    placeholder="Search Employee"
-                    onSearch={handlenameSearch}
-                    onChange={handleChange}
-                    prefix={<SearchOutlined className="site-form-item-icon" />}
-                  >
-                    {userSuggestions.map((option) => (
-                      <AutoComplete.Option
-                        key={option.ref_id}
-                        value={`${option.f_name} ${option.l_name}`}
-                      >
-                        <div className="search-result-item">
-                          {option.photo == undefined ? (
-                            <img
-                              className="set_img1"
-                              alt="example"
-                              src="./user1.png"
-                            />
-                          ) : (
-                            <img
-                              className="set_img1"
-                              alt="example"
-                              src={option.photo}
-                            />
-                          )}
 
-                          <div className="colorchangeblue">
-                            <span>
-                              {option.emp_code} - {option.f_name}{" "}
-                              {option.l_name}
-                            </span>
-                            <div className="department">
-                              {option.department}
-                            </div>
-                          </div>
-                          <span className="colorchange">{option.phone}</span>
-                        </div>
-                      </AutoComplete.Option>
-                    ))}
-                  </AutoComplete>
-                </Form.Item> */}
+              <Col span={7} className="h64p">
+                <div style={{ padding: "0 10px" }}>
+                  <Input placeholder="Select Line number" />
+                </div>
               </Col>
-              {/* <Col span={8} className="h64p">
-                <Input
-                  size="large"
-                  onSearch={handlenameSearch}
-                  className="appBarSearchIpt"
-                  placeholder="Enter your username"
-                  prefix={<SearchOutlined className="site-form-item-icon" />}
-                />
-              </Col> */}
-              <Col span={8} className="h64p">
-                <Row>
-                  <Col span={10} className="h64p">
-                    {/* <img
-                      style={{ width: "22px", margin: "22px  0" }}
-                      src="./icon/bellicon.svg"
-                    /> */}
-                  </Col>
-                  <Col span={4} className="h64p">
-                    <Avatar
-                      size={35}
-                      src={<img src="./icon/userImg.png" alt="avatar" />}
-                      style={{ margin: " 0 15px" }}
-                    />
-                  </Col>
-                  <Col span={10} className="h64p" style={{ cursor: "pointer" }}>
-                    <Popover
-                      placement="bottom"
-                      content={content}
-                      trigger="click"
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          height: "100%",
-                        }}
-                      >
-                        <div className="appBarUserContainer">
-                          <span className="appBarUserName">{f_name}</span>
 
-                          <span className="appBarUserType">Admin</span>
-                        </div>
-                        <img
-                          style={{ margin: "0 20px" }}
-                          src="./icon/ArrowDown.png"
-                        />
-                      </div>
-                    </Popover>
-                  </Col>
-                  {/* <Col span={1} className="h64p"></Col> */}
-                </Row>
+              <Col span={6} className="h64p">
+                <div style={{ padding: "0 10px" }}>
+                  <Input
+                    placeholder="Search something"
+                    prefix={<SearchOutlined />}
+                  />
+                </div>
+              </Col>
+
+              <Col span={1} className="h64p">
+                <div style={{ padding: "0 10px" }}>
+                  <BellOutlined
+                    style={{ fontSize: "16px", cursor: "pointer" }}
+                  />
+                </div>
               </Col>
             </Row>
           </Header>
@@ -459,9 +431,7 @@ const LayoutEmp = () => {
           >
             <div
               style={{
-                padding: 24,
                 height: "100%",
-                background: "#F6F8FB",
               }}
             >
               <Outlet />

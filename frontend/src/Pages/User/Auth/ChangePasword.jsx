@@ -190,7 +190,10 @@ const ChangePasword = () => {
               </div>
             </Col>
             <Col span={12}>
-              <img src="./images/loginRightImg.png" style={{ width: "100%" }} />
+              <img
+                src="./images/loginRightImg4.png"
+                style={{ width: "100%" }}
+              />
             </Col>
           </Row>
         </div>

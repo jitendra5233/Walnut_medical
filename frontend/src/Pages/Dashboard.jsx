@@ -30,9 +30,11 @@ const CardComp = () => {
       <div style={{ margin: "15px 0" }}>
         <Progress
           showInfo={false}
+          strokeColor="#C9D5E3"
           percent={100}
           success={{
             percent: 60,
+            strokeColor: "#5B7690",
           }}
         />
       </div>
@@ -47,7 +49,7 @@ const CardComp = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#52c41a",
+              backgroundColor: "#2B3E50",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
@@ -70,7 +72,7 @@ const CardComp = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#52c41a",
+              backgroundColor: "#5B7690",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
@@ -93,7 +95,7 @@ const CardComp = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#52c41a",
+              backgroundColor: "#7D9EBD",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
@@ -116,7 +118,7 @@ const CardComp = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#52c41a",
+              backgroundColor: "#91B2D1",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
@@ -141,9 +143,12 @@ const CardComp2 = () => {
       <div style={{ margin: "20px 0", textAlign: "center" }}>
         <Progress
           percent={60}
+          strokeColor="#5B7690"
           success={{
             percent: 30,
+            strokeColor: "#2B3E50",
           }}
+          trailColor="#C9D5E3"
           type="circle"
         />
       </div>
@@ -158,7 +163,7 @@ const CardComp2 = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#52c41a",
+              backgroundColor: "#2B3E50",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
@@ -181,7 +186,7 @@ const CardComp2 = () => {
         <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#52c41a",
+              backgroundColor: "#5B7690",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
