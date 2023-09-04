@@ -44,7 +44,7 @@ code {
 :where(.css-dev-only-do-not-override-1wazalj).ant-menu-light
   > .ant-menu
   .ant-menu-item-selected {
-  background-color: #0071c5;
+  background-color: #5b7690;
   color: white;
 }
 
@@ -54,7 +54,7 @@ code {
 
 /* login css start */
 .loginTitle {
-  color: #0071c5;
+  color: #5b7690;
   font-size: 24px;
   font-family: Arial;
   font-weight: 700;
@@ -165,7 +165,7 @@ ul.ant-menu.ant-menu-root.ant-menu-inline.ant-menu-light {
 }
 
 .appBarTxt {
-  color: #0071c5;
+  color: #5b7690;
   font-size: 16px;
   font-family: Arial;
   font-weight: 700;
@@ -249,7 +249,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 
 /* dashboard start */
 .dashboardCardTxt {
-  color: #0071c5;
+  color: #5b7690;
   /* Arial 14px */
   font-size: 14px;
   font-family: Arial;
@@ -260,9 +260,10 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .dashboardCard {
-  background: #f0f1f6;
+  background: #fff;
   border-radius: 0;
-  height: 280px;
+  /* height: 400px; */
+  /* overflow: auto; */
 }
 :where(.css-dev-only-do-not-override-1wazalj).ant-layout {
   background-color: #fff;
@@ -281,7 +282,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   letter-spacing: 0.28px;
 }
 .ant-btn-primary {
-  background-color: #0071c5;
+  background-color: #5b7690;
 }
 /* employee list end */
 
@@ -332,7 +333,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .popupTitle {
-  color: #0071c5;
+  color: #5b7690;
   /* Arial 14px */
   font-size: 14px;
   font-family: Arial;
@@ -384,7 +385,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .potionCardTitle {
-  color: #0071c5;
+  color: #5b7690;
   /* Arial 14px */
   font-family: Arial;
   font-size: 14px;
@@ -410,7 +411,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .popupTitle {
-  color: #0071c5;
+  color: #5b7690;
   /* Arial 14px */
   font-size: 14px;
   font-family: Arial;
@@ -421,14 +422,14 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .Expensecolor {
-  color: #0071c5 !important;
+  color: #5b7690 !important;
   float: left;
 }
 
 .filtercolorbtn {
   color: #ffffff;
   float: right;
-  background: #0071c5;
+  background: #5b7690;
   width: Hug (129.07px);
   height: Hug (35px);
   top: 75px;
@@ -442,7 +443,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 .Expensecolorbtn {
   color: #ffffff;
   float: right;
-  background: #0071c5;
+  background: #5b7690;
   width: Hug (129.07px);
   height: Hug (35px);
   top: 75px;
@@ -530,7 +531,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .EmpTabHeading {
-  color: #0071c5;
+  color: #5b7690;
   font-family: Arial;
   font-size: 14px;
   font-style: normal;
@@ -566,7 +567,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .messageHeading:hover {
-  color: #0071c5;
+  color: #5b7690;
 }
 
 .ant-drawer-body {
@@ -576,7 +577,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 .MarkTxt {
   font-size: 12px;
   margin-top: 10px;
-  color: #0071c5;
+  color: #5b7690;
   cursor: pointer;
 }
 
@@ -608,7 +609,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   left: 21px;
 }
 .client_name {
-  color: #0071c5;
+  color: #5b7690;
   font-family: Arial;
   font-size: 14px;
   font-weight: 700;
@@ -778,7 +779,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 }
 
 .setcolor {
-  color: #0071c5;
+  color: #5b7690;
 }
 .addmargin {
   margin-bottom: 20px;
@@ -789,7 +790,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
 
 /* CSS for the name and department container */
 .colorchangeblue {
-  color: #0071c5; /* Change the color for better visibility */
+  color: #5b7690; /* Change the color for better visibility */
   margin-top: 18px;
 }
 

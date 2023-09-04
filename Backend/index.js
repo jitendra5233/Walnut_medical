@@ -39,6 +39,12 @@ const EnventoryCategory = require("./Model/EnventoryCategory");
 const RepairRecord = require("./Model/RepairRecord");
 
 const IssuesAndFeedbackInner = require("./Model/IssuesAndFeedbackInner");
+const MachineData2 = require("./Model/MachineData2");
+const UploadFiles = require("./Model/UploadFiles");
+
+const MachineData = require("./Model/MachineData");
+
+var multer = require("multer");
 
 const singleUpload = upload.single("image");
 const docUpload = upload.single("file");
@@ -64,6 +70,11 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(express.static("public"));
+app.use(express.static("files"));
+
+app.use("/", express.static("build"));
+
 mongoose
   .connect(process.env.MONGO_DB)
   .then(() => {
@@ -73,6 +84,10 @@ mongoose
     });
   })
   .catch((err) => console.log(err));
+
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/dist/" + "index.html");
+});
 
 app.post("/login", async (req, res) => {
   try {
@@ -2781,3 +2796,173 @@ app.get("/getItemCategory", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+// Walnut Start
+
+app.get("/getData", async (req, res) => {
+  try {
+    const data = await MachineData.find({});
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/downloadData/", async (req, res) => {
+  try {
+    const result = await MachineData.create({
+      DataJson: JSON.stringify(req.query),
+    });
+    const file = `./download/${process.env.donwloadFIleLink}`;
+    res.download(file);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/downloadData/:name", async (req, res) => {
+  try {
+    const result = await MachineData.create({
+      DataJson: JSON.stringify(req.query),
+    });
+
+    const file = `./download/${req.params.name}`;
+    res.download(file);
+
+    // res.status(200).json({ message: req.params.name });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/postlogin", async (req, res) => {
+  try {
+    const data = await User.find({
+      email: req.body.email,
+      password: req.body.password,
+    });
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// app.post("/postsignup", async (req, res) => {
+//   try {
+//     const data = await UsersData.create(req.body);
+//     res.status(200).json(data);
+//   } catch (error) {
+//     res.status(500).json({ message: error.message });
+//   }
+// });
+
+app.post("/postsignup", async (req, res) => {
+  try {
+    const users = await User.create(req.body);
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/saveResponse", async (req, res) => {
+  try {
+    const result = await MachineData2.create({
+      DataJson: JSON.stringify(req.body),
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getResponse", async (req, res) => {
+  try {
+    const data = await MachineData2.find({});
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/getPostResponse", async (req, res) => {
+  try {
+    const result = await MachineData2.find({});
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/deletePostResponse", async (req, res) => {
+  try {
+    const result = await MachineData2.findByIdAndDelete(req.body.id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "./download");
+  },
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + "_" + file.originalname);
+  },
+});
+
+var uploadPostData = multer({ storage: storage }).single("myfile");
+
+app.post("/UploadFiles", async (req, res) => {
+  try {
+    uploadPostData(req, res, function (err) {
+      if (err) {
+        return res.end(err);
+      }
+      const result = UploadFiles.create({
+        name: req.body.name,
+        link: req.file.filename,
+      });
+      res.end("File is uploaded successfully!");
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// app.post("/UploadFiles", function (req, res) {
+//   uploadPostData(req, res, function (err) {
+//     if (err) {
+//       return res.end("Error uploading file.");
+//     }
+//     res.end("File is uploaded successfully!");
+//   });
+//   const result = await UploadFiles.create(req.body);
+
+//   res.status(200).json(result);
+// });
+
+app.get("/getUploadFiles", async (req, res) => {
+  try {
+    const result = await UploadFiles.find({});
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/deleteUploadFiles", async (req, res) => {
+  try {
+    const result = await UploadFiles.findByIdAndDelete(req.body.id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Walnut End

@@ -18,7 +18,7 @@ let myStyle = {
   container: {
     padding: "3em 9em",
   },
-  main: { height: "83vh", overflow: "hidden", borderRadius: "10px" },
+  main: { height: "90vh", overflow: "hidden", borderRadius: "10px" },
 };
 
 const LoginNew = () => {
@@ -64,47 +64,22 @@ const LoginNew = () => {
         } else {
           let data = res.data[0];
 
-          if (data.employee_type == "admin") {
-            setLoading(false);
-            dispatch(
-              handleLogin({
-                id: data._id,
-                token2: data._id,
-                employee_id: data._id,
-                f_name: "",
-                l_name: "",
-                role: data.employee_type,
-                photo: "",
-              })
-            );
-            openNotificationWithIcon("success");
-            navigate("/");
-          }
-
-          axios
-            .post(process.env.REACT_APP_API_URL + "/getEmpData", {
-              token: data._id,
+          // if (data.employee_type == "admin") {
+          setLoading(false);
+          dispatch(
+            handleLogin({
+              id: data._id,
+              token2: data._id,
+              employee_id: data._id,
+              f_name: "",
+              l_name: "",
+              role: data.employee_type,
+              photo: "",
             })
-            .then((res2) => {
-              setLoading(false);
-
-              dispatch(
-                handleLogin({
-                  id: data._id,
-                  token2: data.employee_id,
-                  employee_id: data.employee_id,
-                  f_name: res2.data[0].f_name,
-                  l_name: res2.data[0].l_name,
-                  role: data.employee_type,
-                  photo: res2.data[0].photo,
-                })
-              );
-              openNotificationWithIcon("success");
-              navigate("/");
-            })
-            .catch((err) => {
-              console.log(err);
-            });
+          );
+          openNotificationWithIcon("success");
+          navigate("/");
+          // }
         }
       })
       .catch((err) => {
@@ -118,12 +93,12 @@ const LoginNew = () => {
   };
 
   return (
-    <div>
+    <div style={{ backgroundColor: "#E9F2F1" }}>
       <Spin spinning={loading}>
         {contextHolder}
         <div style={myStyle.container}>
           <Row style={myStyle.main}>
-            <Col span={12} style={{ backgroundColor: "#f6f7fc" }}>
+            <Col span={12} style={{ backgroundColor: "#fff" }}>
               <div>
                 <div className="loginFormContainer">
                   <div className="loginTitleDiv">
@@ -212,7 +187,10 @@ const LoginNew = () => {
               </div>
             </Col>
             <Col span={12}>
-              <img src="./images/loginRightImg.png" style={{ width: "100%" }} />
+              <img
+                src="./images/loginRightImg4.png"
+                style={{ width: "100%" }}
+              />
             </Col>
           </Row>
         </div>

@@ -1,5 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Row, Col, Card, Progress, Tooltip, Avatar } from "antd";
+import {
+  Row,
+  Col,
+  Card,
+  Progress,
+  Tooltip,
+  Avatar,
+  List,
+  Typography,
+  Table,
+  Button,
+} from "antd";
 import axios from "axios";
 const myStyle = {
   cardTxtContainer: {
@@ -9,24 +20,12 @@ const myStyle = {
   },
 };
 
-const CardComp = ({
-  title,
-  totalNo,
-  onetxt,
-  twotxt,
-  threetxt,
-  sno1,
-  sno2,
-  sno3,
-  sno4,
-  sno5,
-  sno6,
-}) => {
+const CardComp = () => {
   return (
-    <Card className="dashboardCard">
+    <Card className="dashboardCard" style={{ height: "350px" }}>
       <div style={myStyle.cardTxtContainer}>
-        <span className="dashboardCardTxt">{title}</span>
-        <span>{totalNo}</span>
+        <span className="dashboardCardTxt">Total No of sound box</span>
+        <span>500</span>
       </div>
       <div style={{ margin: "15px 0" }}>
         <Progress
@@ -56,28 +55,22 @@ const CardComp = ({
             }}
             size="small"
           />
-          {onetxt}
+          Checked
         </div>
-        <div>
-          {sno1} {sno2}
-        </div>
+        <div>140</div>
       </div>
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
+          marginTop: "25px",
           marginBottom: "15px",
         }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
+        <div style={{ display: "flex", alignItems: "center" }}>
           <Avatar
             style={{
-              backgroundColor: "#1677ff",
+              backgroundColor: "#52c41a",
               verticalAlign: "middle",
               width: "12px",
               height: "12px",
@@ -85,46 +78,280 @@ const CardComp = ({
             }}
             size="small"
           />
-          {twotxt}
+          Damaged
         </div>
-        <div>
-          {sno3} {sno4}
+        <div>20</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "25px",
+          marginBottom: "15px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Avatar
+            style={{
+              backgroundColor: "#52c41a",
+              verticalAlign: "middle",
+              width: "12px",
+              height: "12px",
+              marginRight: "5px",
+            }}
+            size="small"
+          />
+          Up for review
+        </div>
+        <div>15</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "25px",
+          marginBottom: "15px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Avatar
+            style={{
+              backgroundColor: "#52c41a",
+              verticalAlign: "middle",
+              width: "12px",
+              height: "12px",
+              marginRight: "5px",
+            }}
+            size="small"
+          />
+          Out for LQC
+        </div>
+        <div>120</div>
+      </div>
+    </Card>
+  );
+};
+const CardComp2 = () => {
+  return (
+    <Card className="dashboardCard" style={{ height: "350px" }}>
+      <div style={myStyle.cardTxtContainer}>
+        <span className="dashboardCardTxt">Total Material in IQC</span>
+        <span>190</span>
+      </div>
+      <div style={{ margin: "20px 0", textAlign: "center" }}>
+        <Progress
+          percent={60}
+          success={{
+            percent: 30,
+          }}
+          type="circle"
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "25px",
+          marginBottom: "15px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Avatar
+            style={{
+              backgroundColor: "#52c41a",
+              verticalAlign: "middle",
+              width: "12px",
+              height: "12px",
+              marginRight: "5px",
+            }}
+            size="small"
+          />
+          Accepted
+        </div>
+        <div>140</div>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          marginTop: "25px",
+          marginBottom: "15px",
+        }}
+      >
+        <div style={{ display: "flex", alignItems: "center" }}>
+          <Avatar
+            style={{
+              backgroundColor: "#52c41a",
+              verticalAlign: "middle",
+              width: "12px",
+              height: "12px",
+              marginRight: "5px",
+            }}
+            size="small"
+          />
+          Rejected
+        </div>
+        <div>20</div>
+      </div>
+    </Card>
+  );
+};
+
+const data = [
+  {
+    title: "Ant Design Title 1",
+  },
+  {
+    title: "Ant Design Title 2",
+  },
+  {
+    title: "Ant Design Title 3",
+  },
+  {
+    title: "Ant Design Title 4",
+  },
+];
+const CardComp3 = () => {
+  return (
+    <Card className="dashboardCard" style={{ height: "350px" }}>
+      <div style={myStyle.cardTxtContainer}>
+        <span className="dashboardCardTxt">Employees Details</span>
+        <span>190</span>
+      </div>
+      <div style={{ margin: "20px 0", textAlign: "center" }}>
+        <List
+          itemLayout="horizontal"
+          dataSource={data}
+          style={{ height: "200px", overflow: "auto" }}
+          renderItem={(item, index) => (
+            <List.Item
+              style={{
+                textAlign: "left",
+              }}
+            >
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
+                  />
+                }
+                title={<span>Employee Name</span>}
+                description="Designation"
+              />
+            </List.Item>
+          )}
+        />
+      </div>
+    </Card>
+  );
+};
+
+const CardComp4 = () => {
+  const [ApiData, setApiData] = useState([
+    {
+      carton_id: "HGDGUDHJS3759",
+      language: "HINDI",
+      check_list: "Bopp tape sticked nicely",
+      status: "Not Ok",
+    },
+    {
+      carton_id: "HGDGUDHJS3759",
+      language: "HINDI",
+      check_list: "Bopp tape sticked nicely",
+      status: "Not Ok",
+    },
+    {
+      carton_id: "HGDGUDHJS3759",
+      language: "HINDI",
+      check_list: "Bopp tape sticked nicely",
+      status: "Not Ok",
+    },
+    {
+      carton_id: "HGDGUDHJS3759",
+      language: "HINDI",
+      check_list: "Bopp tape sticked nicely",
+      status: "Not Ok",
+    },
+    {
+      carton_id: "HGDGUDHJS3759",
+      language: "HINDI",
+      check_list: "Bopp tape sticked nicely",
+      status: "Not Ok",
+    },
+  ]);
+
+  const columns = [
+    {
+      title: "Master carton ID",
+      dataIndex: "carton_id",
+      key: "carton_id",
+    },
+    {
+      title: "Language",
+      dataIndex: "language",
+      key: "language",
+      render: (x) => <div style={{ maxWidth: "700px" }}>{x}</div>,
+    },
+    {
+      title: "Outgoing Quality Check list",
+      dataIndex: "check_list",
+      key: "check_list",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (x) => <div style={{ maxWidth: "700px" }}>{x}</div>,
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      key: "action",
+      render: (id) => {
+        return (
+          <div style={{ cursor: "pointer", textAlign: "center" }}>
+            <Button>Review</Button>
+          </div>
+        );
+      },
+    },
+  ];
+
+  return (
+    <Card className="dashboardCard" style={{ height: "550px" }}>
+      <div style={myStyle.cardTxtContainer}>
+        <span className="dashboardCardTxt">Up for review</span>
+      </div>
+      <div style={{ margin: "20px 0", textAlign: "center" }}>
+        <div style={{ marginTop: "25px" }}>
+          <Table
+            columns={columns}
+            dataSource={ApiData}
+            pagination={{
+              position: ["none", "none"],
+            }}
+            scroll={{
+              y: 350,
+            }}
+          />
         </div>
       </div>
-      {threetxt != "" ? (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginBottom: "15px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              marginBottom: "30px",
-            }}
-          >
-            <Avatar
-              style={{
-                backgroundColor: "#1FBCDE",
-                verticalAlign: "middle",
-                width: "12px",
-                height: "12px",
-                marginRight: "5px",
-              }}
-              size="small"
-            />
-            {threetxt}
-          </div>
-          <div>
-            {sno5} {sno6}
-          </div>
-        </div>
-      ) : (
-        ""
-      )}
+    </Card>
+  );
+};
+
+const CardComp5 = () => {
+  return (
+    <Card
+      className="dashboardCard"
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "550px",
+      }}
+    >
+      <div>No data</div>
     </Card>
   );
 };
@@ -240,63 +467,22 @@ export const Dashboard = () => {
   return (
     <div>
       <Row>
-        <Col span={12} style={{ padding: "20px" }}>
-          <CardComp
-            title="Total No of employees"
-            totalNo={EmployeeCount}
-            onetxt="Permanent"
-            twotxt="Intern"
-            threetxt=""
-            sno1={PermanentEmployee}
-            sno2={PermanentEmpPer}
-            sno3={InterEmployee}
-            sno4={InterEmpPer}
-          />
+        <Col span={8} style={{ padding: "20px" }}>
+          <CardComp />
         </Col>
-        <Col span={12} style={{ padding: "20px" }}>
-          <CardComp
-            title="Job positions this month"
-            totalNo={JobPositions}
-            onetxt="Hired"
-            twotxt="Opening"
-            threetxt=""
-            sno1={hiredCandidate}
-            sno2={hiredCandidatePer}
-            sno3={JobPositions}
-            sno4={jobOpeningPer}
-          />
+        <Col span={8} style={{ padding: "20px" }}>
+          <CardComp2 />
         </Col>
 
-        <Col span={12} style={{ padding: "20px" }}>
-          <CardComp
-            title="Total items in inventory"
-            totalNo={TotalItem}
-            onetxt="Assigned"
-            twotxt="Available"
-            threetxt="Loss/Damage"
-            sno1={AssignedItem}
-            sno2={AssignedItemPer}
-            sno3={TotalAvailableItem}
-            sno4={totalAvailableItemPer}
-            sno5={TotalLossDamageItem}
-            sno6={totalLossDamageItemPer}
-          />
+        <Col span={8} style={{ padding: "20px" }}>
+          <CardComp3 />
         </Col>
 
-        <Col span={12} style={{ padding: "20px" }}>
-          <CardComp
-            title="Client Accounts"
-            totalNo={totalClient}
-            onetxt="New Client"
-            twotxt="Old Clients"
-            threetxt="Total Clients"
-            sno1={newClient}
-            sno2={newClientPer}
-            sno3={oldClient}
-            sno4={oldClientPer}
-            sno5={totalClient}
-            sno6={totalClientPer}
-          />
+        <Col span={16} style={{ padding: "20px" }}>
+          <CardComp4 />
+        </Col>
+        <Col span={8} style={{ padding: "20px" }}>
+          <CardComp5 />
         </Col>
       </Row>
     </div>

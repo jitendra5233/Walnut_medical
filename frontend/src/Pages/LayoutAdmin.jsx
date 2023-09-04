@@ -11,6 +11,8 @@ import {
   LogoutOutlined,
   SettingOutlined,
   ShareAltOutlined,
+  ApiOutlined,
+  CloudUploadOutlined,
 } from "@ant-design/icons";
 import {
   Card,
@@ -58,8 +60,6 @@ const LayoutEmp = () => {
   const [empName, setEmpName] = useState([]);
   const [empDetails, setEmpDetails] = useState([]);
   const [empImgDetails, setEmpImgDetails] = useState([]);
-
-  console.log(empDetails);
 
   const { SubMenu } = Menu;
 
@@ -116,20 +116,10 @@ const LayoutEmp = () => {
         />
       </div>
       <div>
-        <h4>
-          {f_name} {l_name}
-        </h4>
+        <h4>Admin</h4>
       </div>
       <div>
-        <h5>
-          {selector.user.role == "emp"
-            ? "Employee"
-            : selector.user.role == "admin"
-            ? "Admin"
-            : selector.user.role == "hr"
-            ? "HR"
-            : ""}
-        </h5>
+        <h5>Admin</h5>
       </div>
       <div style={{ margin: "10px 0 0 0" }}>
         <Link to={`/profile/${user_id}`} className="menuText">
@@ -258,11 +248,18 @@ const LayoutEmp = () => {
           }}
           width={250}
         >
-          <img
+          {/* <img
             src="./logo.png"
             alt=""
             style={{ width: "100%", padding: "44px 24px" }}
-          />
+          /> */}
+          <div
+            style={{ width: "100%", padding: "44px 24px", textAlign: "center" }}
+          >
+            <span style={{ fontSize: "25px", fontWeight: 400 }}>
+              Walnut Medical
+            </span>
+          </div>
           <Menu theme="light" defaultSelectedKeys={["1"]} mode="inline">
             <Menu.Item key="1">
               <div style={{ display: "flex" }}>
@@ -286,169 +283,10 @@ const LayoutEmp = () => {
               <span className="menuHeadingTxt">Main menu</span>
             </div>
 
-            <SubMenu
-              key="sub1"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <GlobalOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>Client Account</span>
-                </span>
-              }
-            >
-              <Menu.Item key="2">
-                <Link to="/client_details">Client Details</Link>
-              </Menu.Item>
-              <Menu.Item key="3">
-                <Link to="/show_accountInfo">Account Info</Link>
-              </Menu.Item>
-              <Menu.Item key="4">
-                <Link to="/old_clients">Old Clients</Link>
-              </Menu.Item>
-              <Menu.Item key="5">
-                <Link to="/assigned_hosting">Assigned Hosting</Link>
-              </Menu.Item>
-              <Menu.Item key="6">
-                <Link to="/assigned_socialmedia">Assigned Social Media</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub2"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <DropboxOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>Inventory</span>
-                </span>
-              }
-            >
-              <Menu.Item key="7">
-                <Link to="/issued">Inventory Details</Link>
-              </Menu.Item>
-              <Menu.Item key="8">
-                <Link to="/loss_Damage">Lost/dameged</Link>
-              </Menu.Item>
-              <Menu.Item key="15">
-                <Link to="/enventory_repair">Inventory Repair</Link>
-              </Menu.Item>
-              <Menu.Item key="166">
-                <Link to="/enventory_category">Inventory Category</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub3"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <ContactsOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>Document/Details</span>
-                </span>
-              }
-            >
-              <Menu.Item key="9">
-                <Link to="/show-all-employee">All Employees</Link>
-              </Menu.Item>
-              <Menu.Item key="10">
-                <Link to="/show-old-employee">Old Employees</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub4"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <UserOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>Hiring</span>
-                </span>
-              }
-            >
-              <Menu.Item key="11">
-                <Link to="/hiring">New hiring</Link>
-              </Menu.Item>
-              <Menu.Item key="12">
-                <Link to="/show-hired-candidate">New Employee Info</Link>
-              </Menu.Item>
-              <Menu.Item key="13">
-                <Link to="/show-rejected-candidate">Rejected Candidate</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub5"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <QuestionOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>Employee Inquiry</span>
-                </span>
-              }
-            >
-              <Menu.Item key="14">
-                <Link to="/anonymous-message">Anonymous message</Link>
-              </Menu.Item>
-              <Menu.Item key="15">
-                <Link to="/employee-message">Employee message</Link>
-              </Menu.Item>
-              <Menu.Item key="16">
-                <Link to="/all-message">All message</Link>
-              </Menu.Item>
-            </SubMenu>
-            <SubMenu
-              key="sub6"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <SettingOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>Other</span>
-                </span>
-              }
-            >
-              <Menu.Item key="18">
-                <Link to="/company_accounts">Company Accounts</Link>
-              </Menu.Item>
-              <Menu.Item key="19">
-                <Link to="/expense">Office expenses</Link>
-              </Menu.Item>
-            </SubMenu>
-            <Menu.Item key="20">
+            <Menu.Item key="2">
               <div style={{ display: "flex" }}>
                 <div>
-                  <LogoutOutlined
+                  <ApiOutlined
                     style={{
                       fontSize: "15px",
                       margin: "10px 10px 0px",
@@ -456,21 +294,17 @@ const LayoutEmp = () => {
                   />
                 </div>
                 <div>
-                  <Link to="/employee_exit" className="menuText">
-                    Employee Exit
+                  <Link to="/PostApi" className="menuText">
+                    Show POST Data
                   </Link>
                 </div>
               </div>
             </Menu.Item>
 
-            <div className="menuHeading">
-              <span className="menuHeadingTxt">Other options</span>
-            </div>
-
-            <Menu.Item key="21">
+            <Menu.Item key="3">
               <div style={{ display: "flex" }}>
                 <div>
-                  <ShareAltOutlined
+                  <CloudUploadOutlined
                     style={{
                       fontSize: "15px",
                       margin: "10px 10px 0px",
@@ -478,13 +312,13 @@ const LayoutEmp = () => {
                   />
                 </div>
                 <div>
-                  <Link to="/manage-accounts" className="menuText">
-                    Manage Accounts
+                  <Link to="/uploadFiles" className="menuText">
+                    Upload Files
                   </Link>
                 </div>
               </div>
             </Menu.Item>
-            <Menu.Item key="22">
+            <Menu.Item key="4">
               <div style={{ display: "flex" }}>
                 <div>
                   <SettingOutlined
@@ -497,25 +331,6 @@ const LayoutEmp = () => {
                 <div>
                   <Link to="/web_setting" className="menuText">
                     Settings
-                  </Link>
-                </div>
-              </div>
-            </Menu.Item>
-            <Menu.Item key="23">
-              <div style={{ display: "flex" }}>
-                <div>
-                  <LogoutOutlined
-                    style={{
-                      fontSize: "15px",
-                      margin: "10px 10px 0px",
-                    }}
-                  />
-                </div>
-                <div>
-                  <Link className="menuText">
-                    <a onClick={() => handleLogout()}>
-                      <span>Logout</span>
-                    </a>
                   </Link>
                 </div>
               </div>
@@ -536,7 +351,7 @@ const LayoutEmp = () => {
                 <span className="appBarTxt">Dashboard</span>
               </Col>
               <Col span={8}>
-                <Form.Item name="emp_name" className="h64p fontchange">
+                {/* <Form.Item name="emp_name" className="h64p fontchange">
                   <AutoComplete
                     placeholder="Search Employee"
                     onSearch={handlenameSearch}
@@ -577,7 +392,7 @@ const LayoutEmp = () => {
                       </AutoComplete.Option>
                     ))}
                   </AutoComplete>
-                </Form.Item>
+                </Form.Item> */}
               </Col>
               {/* <Col span={8} className="h64p">
                 <Input
@@ -590,15 +405,11 @@ const LayoutEmp = () => {
               </Col> */}
               <Col span={8} className="h64p">
                 <Row>
-                  <Col
-                    span={10}
-                    className="h64p"
-                    style={{ textAlign: "end", cursor: "pointer" }}
-                  >
-                    <img
+                  <Col span={10} className="h64p">
+                    {/* <img
                       style={{ width: "22px", margin: "22px  0" }}
                       src="./icon/bellicon.svg"
-                    />
+                    /> */}
                   </Col>
                   <Col span={4} className="h64p">
                     <Avatar
@@ -623,15 +434,7 @@ const LayoutEmp = () => {
                         <div className="appBarUserContainer">
                           <span className="appBarUserName">{f_name}</span>
 
-                          <span className="appBarUserType">
-                            {selector.user.role == "emp"
-                              ? "Employee"
-                              : selector.user.role == "admin"
-                              ? "Admin"
-                              : selector.user.role == "hr"
-                              ? "HR"
-                              : ""}
-                          </span>
+                          <span className="appBarUserType">Admin</span>
                         </div>
                         <img
                           style={{ margin: "0 20px" }}
@@ -651,14 +454,14 @@ const LayoutEmp = () => {
               margin: "24px 16px 0",
               overflow: "auto",
               height: "80vh",
-              background: colorBgContainer,
+              background: "#F6F8FB",
             }}
           >
             <div
               style={{
                 padding: 24,
                 height: "100%",
-                background: colorBgContainer,
+                background: "#F6F8FB",
               }}
             >
               <Outlet />
