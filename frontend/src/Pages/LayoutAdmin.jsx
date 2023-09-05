@@ -314,7 +314,32 @@ const LayoutEmp = () => {
                 </div>
               </div>
             </Menu.Item>
-            <Menu.Item key="4">
+
+            <SubMenu
+              key="sub1"
+              title={
+                <span>
+                  <span style={{ marginRight: "5px" }}>
+                    <UserOutlined
+                      style={{
+                        fontSize: "15px",
+                        margin: "10px 10px 0px",
+                      }}
+                    />
+                  </span>
+                  <span>User & Role's</span>
+                </span>
+              }
+            >
+              <Menu.Item key="4">
+                <Link to="/ManageUser">User Managemeant</Link>
+              </Menu.Item>
+              <Menu.Item key="5">
+                <Link to="/ManageRole">Role Managemeant</Link>
+              </Menu.Item>
+            </SubMenu>
+
+            <Menu.Item key="6">
               <div style={{ display: "flex" }}>
                 <div>
                   <SettingOutlined
@@ -332,48 +357,7 @@ const LayoutEmp = () => {
               </div>
             </Menu.Item>
 
-            <SubMenu
-              key="sub1"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <DropboxOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>OQC</span>
-                </span>
-              }
-            >
-              <Menu.Item key="7">
-                <Link to="/">Master Carton</Link>
-              </Menu.Item>
-            </SubMenu>
-
-            <SubMenu
-              key="sub2"
-              title={
-                <span>
-                  <span style={{ marginRight: "5px" }}>
-                    <DropboxOutlined
-                      style={{
-                        fontSize: "15px",
-                        margin: "10px 10px 0px",
-                      }}
-                    />
-                  </span>
-                  <span>LQC</span>
-                </span>
-              }
-            >
-              <Menu.Item key="10">
-                <Link to="/">Master Carton</Link>
-              </Menu.Item>
-            </SubMenu>
-            <Menu.Item key="11">
+            <Menu.Item key="99">
               <div style={{ display: "flex" }}>
                 <div>
                   <LogoutOutlined
@@ -447,6 +431,7 @@ const LayoutEmp = () => {
               <Col span={6} className="h64p">
                 <div style={{ padding: "0 10px" }}>
                   <Input
+                    style={{ backgroundColor: "#f5f6fa" }}
                     placeholder="Search something"
                     prefix={<SearchOutlined />}
                   />

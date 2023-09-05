@@ -17,6 +17,7 @@ const MachineData = require("./Model/MachineData");
 require("dotenv").config();
 
 var multer = require("multer");
+const Role = require("./Model/RoleManage");
 
 const doc1Upload = (req, res) => {
   return new Promise((resolve, reject) => {
@@ -41,6 +42,7 @@ app.use(express.static("public"));
 app.use(express.static("files"));
 
 app.use("/", express.static("build"));
+app.use("/images", express.static("images"));
 
 mongoose
   .connect(process.env.MONGO_DB)
@@ -393,17 +395,26 @@ app.post("/UploadFiles", async (req, res) => {
   }
 });
 
-// app.post("/UploadFiles", function (req, res) {
-//   uploadPostData(req, res, function (err) {
-//     if (err) {
-//       return res.end("Error uploading file.");
-//     }
-//     res.end("File is uploaded successfully!");
-//   });
-//   const result = await UploadFiles.create(req.body);
+var storage = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "./download");
+  },
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + "_" + file.originalname);
+  },
+});
 
-//   res.status(200).json(result);
-// });
+var storage2 = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "./images");
+  },
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + "_" + file.originalname);
+  },
+});
+
+var uploadPostData = multer({ storage: storage }).single("myfile");
+var uploadPostData2 = multer({ storage: storage2 }).single("myfile");
 
 app.get("/getUploadFiles", async (req, res) => {
   try {
@@ -424,6 +435,113 @@ app.post("/deleteUploadFiles", async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 });
+
+app.post("/CreateUser", async (req, res) => {
+  try {
+    uploadPostData2(req, res, function (err) {
+      if (err) {
+        return res.end(err);
+      }
+      const result = Users.create({
+        f_name: req.body.f_name,
+        l_name: req.body.l_name,
+        email: req.body.email,
+        password: req.body.password,
+        role: req.body.role,
+        image: req.file.filename,
+      });
+      res.end("File is uploaded successfully!");
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get("/GetUserList", async (req, res) => {
+  try {
+    const result = await Users.find({});
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/deleteUser", async (req, res) => {
+  try {
+    const result = await Users.findByIdAndDelete(req.body.id);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.post("/UpdateUser", async (req, res) => {
+  try {
+    uploadPostData2(req, res, async function (err) {
+      if (req.body.myfile === "false") {
+        let user = await Users.findOneAndUpdate(
+          { _id: req.body.id },
+          {
+            f_name: req.body.f_name,
+            l_name: req.body.l_name,
+            email: req.body.email,
+            role: req.body.role,
+          }
+        );
+        res.status(200).json(user);
+      } else {
+        let user = await Users.findOneAndUpdate(
+          { _id: req.body.id },
+          {
+            f_name: req.body.f_name,
+            l_name: req.body.l_name,
+            email: req.body.email,
+            role: req.body.role,
+            image: req.file.filename,
+          }
+        );
+        res.status(200).json(user);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Role start
+
+app.post("/CreateRole", async (req, res) => {
+  try {
+    const result = await Role.create(req.body);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.get("/getRole", async (req, res) => {
+  try {
+    const result = await Role.find({});
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/deleteRole", async (req, res) => {
+  try {
+    const result = await Role.findByIdAndDelete(req.body.id);
+
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Role end
 
 // Walnut End
 

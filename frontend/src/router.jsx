@@ -20,6 +20,8 @@ import LayoutAdmin from "./Pages/LayoutAdmin";
 
 import PostDataShow from "./Pages/PostData/PostDataShow";
 import UploadData from "./Pages/UploadData/UploadData";
+import ManageUser from "./Pages/User/UserAndRole/ManageUser";
+import ManageRole from "./Pages/User/UserAndRole/ManageRole";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -32,9 +34,10 @@ const routerAdmin = createHashRouter(
 
       <Route element={<LayoutAdmin />}>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/ManageUser" element={<ManageUser />} />
+        <Route path="/ManageRole" element={<ManageRole />} />
 
         <Route path="/web_setting" element={<Websetting />} />
-
         <Route path="PostApi" element={<PostDataShow />} />
         <Route path="uploadFiles" element={<UploadData />} />
       </Route>

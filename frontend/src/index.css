@@ -848,4 +848,16 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   padding: 10px;
 }
 
+.ant-menu-submenu-title {
+  color: #000 !important;
+}
+
+.ant-pagination-item {
+  border-color: #2b3e50 !important;
+}
+
+.ant-pagination-item > a {
+  color: #2b3e50 !important;
+}
+
 /* walnut end */
