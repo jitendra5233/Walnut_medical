@@ -331,7 +331,49 @@ const LayoutEmp = () => {
                 </div>
               </div>
             </Menu.Item>
-            <Menu.Item key="5">
+
+            <SubMenu
+              key="sub1"
+              title={
+                <span>
+                  <span style={{ marginRight: "5px" }}>
+                    <DropboxOutlined
+                      style={{
+                        fontSize: "15px",
+                        margin: "10px 10px 0px",
+                      }}
+                    />
+                  </span>
+                  <span>OQC</span>
+                </span>
+              }
+            >
+              <Menu.Item key="7">
+                <Link to="/">Master Carton</Link>
+              </Menu.Item>
+            </SubMenu>
+
+            <SubMenu
+              key="sub2"
+              title={
+                <span>
+                  <span style={{ marginRight: "5px" }}>
+                    <DropboxOutlined
+                      style={{
+                        fontSize: "15px",
+                        margin: "10px 10px 0px",
+                      }}
+                    />
+                  </span>
+                  <span>LQC</span>
+                </span>
+              }
+            >
+              <Menu.Item key="10">
+                <Link to="/">Master Carton</Link>
+              </Menu.Item>
+            </SubMenu>
+            <Menu.Item key="11">
               <div style={{ display: "flex" }}>
                 <div>
                   <LogoutOutlined
@@ -369,10 +411,10 @@ const LayoutEmp = () => {
                   </div>
                   <div>
                     <div>
-                      <span className="appBarUserName">User Name</span>
+                      <span className="appBarUserName">Harman</span>
                     </div>
                     <div>
-                      <span className="appBarUserType">Quality Head</span>
+                      <span className="appBarUserType">Admin</span>
                     </div>
                   </div>
                 </div>

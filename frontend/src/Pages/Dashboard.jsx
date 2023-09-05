@@ -16,13 +16,12 @@ const myStyle = {
   cardTxtContainer: {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: "30px",
   },
 };
 
 const CardComp = () => {
   return (
-    <Card className="dashboardCard" style={{ height: "350px" }}>
+    <Card className="dashboardCard" style={{ height: "310px" }}>
       <div style={myStyle.cardTxtContainer}>
         <span className="dashboardCardTxt">Total No of sound box</span>
         <span>500</span>
@@ -30,11 +29,12 @@ const CardComp = () => {
       <div style={{ margin: "15px 0" }}>
         <Progress
           showInfo={false}
-          strokeColor="#C9D5E3"
-          percent={100}
+          trailColor="#C9D5E3"
+          strokeColor="#5b7690"
+          percent={70}
           success={{
-            percent: 60,
-            strokeColor: "#5B7690",
+            percent: 40,
+            strokeColor: "#2b3b50",
           }}
         />
       </div>
@@ -107,35 +107,12 @@ const CardComp = () => {
         </div>
         <div>15</div>
       </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          marginTop: "25px",
-          marginBottom: "15px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center" }}>
-          <Avatar
-            style={{
-              backgroundColor: "#91B2D1",
-              verticalAlign: "middle",
-              width: "12px",
-              height: "12px",
-              marginRight: "5px",
-            }}
-            size="small"
-          />
-          Out for LQC
-        </div>
-        <div>120</div>
-      </div>
     </Card>
   );
 };
 const CardComp2 = () => {
   return (
-    <Card className="dashboardCard" style={{ height: "350px" }}>
+    <Card className="dashboardCard" style={{ height: "310px" }}>
       <div style={myStyle.cardTxtContainer}>
         <span className="dashboardCardTxt">Total Material in IQC</span>
         <span>190</span>
@@ -218,7 +195,7 @@ const data = [
 ];
 const CardComp3 = () => {
   return (
-    <Card className="dashboardCard" style={{ height: "350px" }}>
+    <Card className="dashboardCard" style={{ height: "310px" }}>
       <div style={myStyle.cardTxtContainer}>
         <span className="dashboardCardTxt">Employees Details</span>
         <span>190</span>
@@ -235,11 +212,7 @@ const CardComp3 = () => {
               }}
             >
               <List.Item.Meta
-                avatar={
-                  <Avatar
-                    src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
-                  />
-                }
+                avatar={<Avatar src="./icon/userImg.png" />}
                 title={<span>Employee Name</span>}
                 description="Designation"
               />
@@ -323,9 +296,14 @@ const CardComp4 = () => {
   ];
 
   return (
-    <Card className="dashboardCard" style={{ height: "550px" }}>
+    <Card
+      className="dashboardCard dashboardCard2"
+      style={{ height: "400px", overflow: "hidden" }}
+    >
       <div style={myStyle.cardTxtContainer}>
-        <span className="dashboardCardTxt">Up for review</span>
+        <span className="dashboardCardTxt" style={{ padding: "24px" }}>
+          Up for review
+        </span>
       </div>
       <div style={{ margin: "20px 0", textAlign: "center" }}>
         <div style={{ marginTop: "25px" }}>
@@ -334,9 +312,6 @@ const CardComp4 = () => {
             dataSource={ApiData}
             pagination={{
               position: ["none", "none"],
-            }}
-            scroll={{
-              y: 350,
             }}
           />
         </div>
@@ -353,7 +328,7 @@ const CardComp5 = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "550px",
+        height: "400px",
       }}
     >
       <div>No data</div>

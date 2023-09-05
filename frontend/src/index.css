@@ -267,6 +267,11 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   /* height: 400px; */
   /* overflow: auto; */
 }
+
+.dashboardCard2 > .ant-card-body {
+  padding: 0;
+}
+
 :where(.css-dev-only-do-not-override-1wazalj).ant-layout {
   background-color: #fff;
 }
