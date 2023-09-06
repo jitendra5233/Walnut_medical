@@ -16,7 +16,7 @@ import ChangePasword from "./Pages/User/Auth/ChangePasword";
 
 import Websetting from "./Pages/Websetting/Websetting";
 
-import LayoutAdmin from "./Pages/LayoutAdmin";
+import LayoutMain from "./Pages/LayoutMain";
 
 import PostDataShow from "./Pages/PostData/PostDataShow";
 import UploadData from "./Pages/UploadData/UploadData";
@@ -32,14 +32,14 @@ const routerAdmin = createHashRouter(
       <Route path="/otpVerify" element={<OtpVerify />}></Route>
       <Route path="/changePassword" element={<ChangePasword />}></Route>
 
-      <Route element={<LayoutAdmin />}>
+      <Route element={<LayoutMain />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/ManageUser" element={<ManageUser />} />
         <Route path="/ManageRole" element={<ManageRole />} />
 
-        <Route path="/web_setting" element={<Websetting />} />
+        <Route path="/settings" element={<Websetting />} />
         <Route path="PostApi" element={<PostDataShow />} />
-        <Route path="uploadFiles" element={<UploadData />} />
+        <Route path="FileUpload" element={<UploadData />} />
       </Route>
     </Route>
   )

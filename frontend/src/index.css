@@ -860,4 +860,12 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   color: #2b3e50 !important;
 }
 
+.selectBackColor > .ant-select-selector {
+  background-color: #f5f6fa !important;
+}
+
+.sidebarIcon {
+  font-size: 15px;
+  margin: 10px 10px 0px;
+}
 /* walnut end */

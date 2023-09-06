@@ -7,7 +7,7 @@ const RoleSchema = mongoose.Schema(
       required: false,
     },
     access: {
-      type: [String],
+      type: [Object],
       required: false,
     },
   },

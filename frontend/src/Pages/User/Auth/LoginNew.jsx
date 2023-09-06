@@ -71,10 +71,10 @@ const LoginNew = () => {
               id: data._id,
               token2: data._id,
               employee_id: data._id,
-              f_name: "",
-              l_name: "",
-              role: data.employee_type,
-              photo: "",
+              f_name: data.f_name,
+              l_name: data.l_name,
+              role: data.role,
+              photo: data.image,
             })
           );
           openNotificationWithIcon("success");

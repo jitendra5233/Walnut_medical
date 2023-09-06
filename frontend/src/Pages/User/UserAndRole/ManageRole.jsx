@@ -2,6 +2,7 @@ import {
   CopyOutlined,
   DeleteOutlined,
   DownloadOutlined,
+  EditOutlined,
   EllipsisOutlined,
   PlusOutlined,
 } from "@ant-design/icons";
@@ -10,6 +11,7 @@ import {
   Col,
   Form,
   Input,
+  Modal,
   Row,
   Select,
   Space,
@@ -25,6 +27,8 @@ import React, { useEffect, useState } from "react";
 const ManageRole = () => {
   const [ApiData, setApiData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [ActiveId, setActiveId] = useState(0);
 
   const [colorList, setColorList] = useState([
     "processing",
@@ -35,9 +39,33 @@ const ManageRole = () => {
     "gold",
   ]);
 
+  const [optionList, setOptionList] = useState([
+    {
+      key: "admin",
+      name: "Admin",
+    },
+    {
+      key: "PostApi",
+      name: "POST Response",
+    },
+    {
+      key: "FileUpload",
+      name: "File Upload",
+    },
+    {
+      key: "oqc",
+      name: "OQC",
+    },
+    {
+      key: "lqc",
+      name: "LQC",
+    },
+  ]);
+
   const { Option } = Select;
 
   const [form] = Form.useForm();
+  const [form2] = Form.useForm();
 
   const [messageApi, contextHolder] = message.useMessage();
   useEffect(() => {
@@ -97,6 +125,66 @@ const ManageRole = () => {
     return Math.floor(Math.random() * (max - min + 1) + min);
   };
 
+  const EditUser = (id) => {
+    ApiData.map((x) => {
+      if (x.id == id) {
+        setActiveId(id);
+        form2.setFieldsValue(x);
+        showModal();
+      }
+    });
+  };
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSubmit = (values) => {
+    // setLoading(true);
+
+    let accessArr = [];
+
+    values.access.map((z) => {
+      optionList.map((y) => {
+        if (z.key !== undefined) {
+          if (y.key === z.key) {
+            accessArr.push({ key: y.key, name: y.name });
+          }
+        } else {
+          if (y.key === z) {
+            accessArr.push({ key: y.key, name: y.name });
+          }
+        }
+      });
+    });
+
+    values.access = accessArr;
+    values.id = ActiveId;
+
+    axios
+      .post(process.env.REACT_APP_API_URL + "/UpdateRole", values)
+      .then((result) => {
+        console.log(result.data);
+        getData();
+        messageApi.open({
+          type: "success",
+          content: "file uploaded successfully",
+        });
+        setLoading(false);
+        form2.resetFields();
+        handleCancel();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   const columns = [
     {
       title: "No",
@@ -113,7 +201,6 @@ const ManageRole = () => {
       dataIndex: "access",
       key: "access",
       render: (access) => {
-        console.log(access);
         return (
           <div style={{ cursor: "pointer" }}>
             {access.map((x) => {
@@ -122,7 +209,7 @@ const ManageRole = () => {
                   bordered={false}
                   color={colorList[randomIntFromInterval(0, 5)]}
                 >
-                  {x}
+                  {x.name}
                 </Tag>
               );
             })}
@@ -142,6 +229,15 @@ const ManageRole = () => {
       render: (id) => {
         return (
           <div style={{ cursor: "pointer" }}>
+            <EditOutlined
+              onClick={() => EditUser(id)}
+              title="Copy Link"
+              style={{
+                fontSize: "14px",
+                color: "green",
+                marginRight: "10px",
+              }}
+            />
             <DeleteOutlined
               onClick={() => handleDelete(id)}
               style={{ fontSize: "14px", color: "red" }}
@@ -171,10 +267,21 @@ const ManageRole = () => {
   };
 
   const onFinish = (values) => {
+    let accessArr = [];
+
+    values.access.map((z) => {
+      optionList.map((y) => {
+        if (y.key === z) {
+          accessArr.push({ key: y.key, name: y.name });
+        }
+      });
+    });
+
+    values.access = accessArr;
+
     axios
       .post(process.env.REACT_APP_API_URL + "/CreateRole", values)
       .then((result) => {
-        console.log(result.data);
         getData();
         messageApi.open({
           type: "success",
@@ -197,6 +304,86 @@ const ManageRole = () => {
 
   return (
     <div>
+      <Modal open={isModalOpen} onCancel={handleCancel} footer={[]}>
+        <Spin spinning={loading}>
+          {contextHolder}
+          <div style={{ padding: "30px" }}>
+            <Row>
+              <Col span={24} style={{ marginBottom: "30px" }}>
+                <span className="popupTitle">Update Role</span>
+              </Col>
+              <Col span={24}>
+                <Form
+                  form={form2}
+                  name="basic"
+                  layout="vertical"
+                  initialValues={{
+                    remember: true,
+                  }}
+                  onFinish={handleSubmit}
+                  onFinishFailed={onFinishFailed}
+                  autoComplete="off"
+                >
+                  <Row gutter={24}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Role Name"
+                        name="name"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Role Name!",
+                          },
+                        ]}
+                      >
+                        <Input />
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item
+                        label="Access"
+                        name="access"
+                        rules={[
+                          {
+                            required: true,
+                            message: "Please input your Access!",
+                          },
+                        ]}
+                      >
+                        <Select
+                          mode="multiple"
+                          style={{
+                            width: "100%",
+                          }}
+                          placeholder="select one country"
+                          optionLabelProp="label"
+                        >
+                          {optionList.map((x) => {
+                            return (
+                              <Option value={x.key} label={x.name}>
+                                {x.name}
+                              </Option>
+                            );
+                          })}
+                        </Select>
+                      </Form.Item>
+                    </Col>
+
+                    <Col span={24}>
+                      <Form.Item>
+                        <Button type="primary" htmlType="submit">
+                          Save Changes
+                        </Button>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </Col>
+            </Row>
+          </div>
+        </Spin>
+      </Modal>
       <Spin spinning={loading}>
         {contextHolder}
         <div style={{ marginBottom: "2rem" }}>
@@ -246,21 +433,13 @@ const ManageRole = () => {
                     placeholder="select one country"
                     optionLabelProp="label"
                   >
-                    <Option value="admin" label="Admin">
-                      Admin
-                    </Option>
-                    <Option value="postdata" label="POST Response">
-                      POST Response
-                    </Option>
-                    <Option value="fileupload" label="File Upload">
-                      File Upload
-                    </Option>
-                    <Option value="oqc" label="OQC">
-                      OQC
-                    </Option>
-                    <Option value="lqc" label="LQC">
-                      LQC
-                    </Option>
+                    {optionList.map((x) => {
+                      return (
+                        <Option value={x.key} label={x.name}>
+                          {x.name}
+                        </Option>
+                      );
+                    })}
                   </Select>
                 </Form.Item>
               </Col>

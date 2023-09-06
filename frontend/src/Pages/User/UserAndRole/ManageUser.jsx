@@ -17,6 +17,7 @@ import {
   Select,
   Spin,
   Table,
+  Tag,
   Upload,
   message,
 } from "antd";
@@ -28,6 +29,16 @@ const ManageUser = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ActiveId, setActiveId] = useState(0);
+  const [colorList, setColorList] = useState([
+    "processing",
+    "success",
+    "warning",
+    "magenta",
+    "red",
+    "gold",
+  ]);
+
+  const [optionList, setOptionList] = useState([]);
 
   const [form] = Form.useForm();
   const [form2] = Form.useForm();
@@ -39,31 +50,78 @@ const ManageUser = () => {
     getData();
   }, []);
 
+  const randomIntFromInterval = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  };
+
+  const getRole = () => {
+    axios
+      .get(process.env.REACT_APP_API_URL + "/getRole")
+      .then((result) => {
+        setOptionList(result.data);
+        getData();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const getRoleName = (id) => {
+    optionList.map((x) => {
+      if (x._id == id) {
+        return x.name;
+      }
+    });
+  };
+
   const getData = () => {
     setLoading(true);
     axios
       .get(process.env.REACT_APP_API_URL + "/GetUserList")
       .then((result) => {
-        let data = result.data;
-        let newArr = [];
+        axios
+          .get(process.env.REACT_APP_API_URL + "/getRole")
+          .then((result2) => {
+            let OpptionArr = result2.data;
 
-        data.map((x, i) => {
-          newArr.push({
-            no: i + 1,
-            name: `${x.f_name} ${x.l_name}`,
-            image: x.image,
-            f_name: x.f_name,
-            l_name: x.l_name,
-            email: x.email,
-            role: x.role,
-            action: x._id,
-            id: x._id,
-            fileLink: x.link,
+            setOptionList(result2.data);
+
+            let data = result.data;
+            let newArr = [];
+
+            data.map((x, i) => {
+              newArr.push({
+                no: i + 1,
+                name: `${x.f_name} ${x.l_name}`,
+                image: x.image,
+                f_name: x.f_name,
+                l_name: x.l_name,
+                email: x.email,
+                roleId: x.role,
+                role: OpptionArr.map((z) => {
+                  if (z._id === x.role) {
+                    return (
+                      <Tag
+                        bordered={false}
+                        color={colorList[randomIntFromInterval(0, 5)]}
+                      >
+                        {z.name}
+                      </Tag>
+                    );
+                  }
+                }),
+                action: x._id,
+                id: x._id,
+                fileLink: x.link,
+              });
+            });
+
+            setApiData(newArr);
+            setLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
           });
-        });
-
-        setApiData(newArr);
-        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -75,6 +133,10 @@ const ManageUser = () => {
       if (x.id == id) {
         setActiveId(id);
         form2.setFieldsValue(x);
+        form2.setFieldsValue({
+          role: x.roleId,
+        });
+
         showModal();
       }
     });
@@ -339,10 +401,14 @@ const ManageUser = () => {
                           },
                         ]}
                       >
-                        <Select placeholder="Select Role" allowClear>
-                          <Option value="admin">Admin</Option>
-                          <Option value="api_tester">API Tester</Option>
-                          <Option value="form_tester">Form Tester</Option>
+                        <Select
+                          placeholder="Select Role"
+                          allowClear
+                          className="selectBackColor"
+                        >
+                          {optionList.map((x) => {
+                            return <Option value={x._id}>{x.name}</Option>;
+                          })}
                         </Select>
                       </Form.Item>
                     </Col>
@@ -420,7 +486,7 @@ const ManageUser = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={5}>
+              <Col span={4}>
                 <Form.Item
                   label="Password"
                   name="password"
@@ -435,7 +501,7 @@ const ManageUser = () => {
                 </Form.Item>
               </Col>
 
-              <Col span={4}>
+              <Col span={5}>
                 <Form.Item
                   label="Role"
                   name="role"
@@ -446,10 +512,14 @@ const ManageUser = () => {
                     },
                   ]}
                 >
-                  <Select placeholder="Select Role" allowClear>
-                    <Option value="admin">Admin</Option>
-                    <Option value="api_tester">API Tester</Option>
-                    <Option value="form_tester">Form Tester</Option>
+                  <Select
+                    placeholder="Select Role"
+                    allowClear
+                    className="selectBackColor"
+                  >
+                    {optionList.map((x) => {
+                      return <Option value={x._id}>{x.name}</Option>;
+                    })}
                   </Select>
                 </Form.Item>
               </Col>

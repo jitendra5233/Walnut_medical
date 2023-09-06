@@ -1,17 +1,6 @@
-import React, { useEffect, useState } from "react";
-import {
-  Row,
-  Col,
-  Card,
-  Progress,
-  Tooltip,
-  Avatar,
-  List,
-  Typography,
-  Table,
-  Button,
-} from "antd";
-import axios from "axios";
+import React, { useState } from "react";
+import { Row, Col, Card, Progress, Avatar, List, Table, Button } from "antd";
+
 const myStyle = {
   cardTxtContainer: {
     display: "flex",
@@ -337,113 +326,6 @@ const CardComp5 = () => {
 };
 
 export const Dashboard = () => {
-  useEffect(() => {
-    getJobPositions();
-    getAllEmployee();
-    totalItemQuantity();
-    getAssignedItemWithPercentage();
-    totalClientwithPercentage();
-  }, []);
-  const [EmployeeCount, setEmployeeCount] = useState("2");
-  const [InterEmployee, setInterEmployee] = useState("1");
-  const [PermanentEmployee, setPermanentEmployee] = useState("1");
-  const [PermanentEmpPer, setPermanentEmpPer] = useState("0%");
-  const [InterEmpPer, setInterEmpPer] = useState("0%");
-  const [JobPositions, setJobPositions] = useState("0");
-  const [hiredCandidate, sethiredCandidate] = useState("0");
-  const [hiredCandidatePer, sethiredCandidatePer] = useState("0%");
-  const [jobOpeningPer, setjobOpeningPer] = useState("0%");
-  const [TotalItem, setTotalItem] = useState("0");
-  const [AssignedItem, setAssignedItem] = useState("0");
-  const [AssignedItemPer, setAssignedItemPer] = useState("0%");
-  const [TotalAvailableItem, setTotalAvailableItem] = useState("0");
-  const [totalAvailableItemPer, settotalAvailableItemPer] = useState("0%");
-  const [TotalLossDamageItem, setTotalLossDamageItem] = useState("0");
-  const [totalLossDamageItemPer, settotalLossDamageItemPer] = useState("0%");
-  const [totalClient, setTotalClient] = useState("0");
-  const [newClient, setNewClient] = useState("0");
-  const [oldClient, setOldClient] = useState("0");
-  const [newClientPer, setNewClientPer] = useState("0%");
-  const [oldClientPer, setOldClientPer] = useState("0");
-  const [totalClientPer, setTotalClientPer] = useState("0%");
-
-  const getAllEmployee = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getAllEmployeedata")
-      .then((result) => {
-        let data = result.data;
-        setPermanentEmployee(data.permanent);
-        setEmployeeCount(data.totalEmployeeCount);
-        setPermanentEmpPer(data.PermanentEmpPer + "%");
-        setInterEmployee(data.intern);
-        setInterEmpPer(data.InterEmpPer + "%");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const getJobPositions = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getJobPositions")
-      .then((result) => {
-        let data = result.data;
-        setJobPositions(data.jobPositionCount);
-        sethiredCandidate(data.hiredEmployee);
-        sethiredCandidatePer(data.hiredCandidatePer + "%");
-        setjobOpeningPer(data.jobOpeningper + "%");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const totalItemQuantity = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/totalItemQuantity")
-      .then((result) => {
-        let data = result.data;
-        setTotalItem(data.totalQuantity);
-        setTotalAvailableItem(data.totalAvailableQuantity);
-        settotalAvailableItemPer(data.totalAvailableItemPer + "%");
-        setTotalLossDamageItem(data.TotalLossAndDamageQuantity);
-        settotalLossDamageItemPer(data.totalLossDamageItemPer + "%");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-  const getAssignedItemWithPercentage = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/getAssignedItemWithPercentage")
-      .then((result) => {
-        let data = result.data;
-        setAssignedItem(data.totalAssignedQuantity);
-        setAssignedItemPer(data.assignedPercentage + "%");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  const totalClientwithPercentage = () => {
-    axios
-      .get(process.env.REACT_APP_API_URL + "/totalClientwithPercentage")
-      .then((result) => {
-        let data = result.data;
-
-        setTotalClient(data.totalClient);
-        setNewClient(data.newClient);
-        setOldClient(data.oldClient);
-        setNewClientPer(data.newClientPer + "%");
-        setOldClientPer(data.oldClientPer + "%");
-        setTotalClientPer(data.totalClientPer + "%");
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
   return (
     <div>
       <Row>

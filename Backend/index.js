@@ -541,6 +541,23 @@ app.post("/deleteRole", async (req, res) => {
   }
 });
 
+app.post("/UpdateRole", async (req, res) => {
+  try {
+    uploadPostData2(req, res, async function (err) {
+      let role = await Role.findOneAndUpdate(
+        { _id: req.body.id },
+        {
+          name: req.body.name,
+          access: req.body.access,
+        }
+      );
+      res.status(200).json(role);
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
 // Role end
 
 // Walnut End
