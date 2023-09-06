@@ -22,6 +22,9 @@ import PostDataShow from "./Pages/PostData/PostDataShow";
 import UploadData from "./Pages/UploadData/UploadData";
 import ManageUser from "./Pages/User/UserAndRole/ManageUser";
 import ManageRole from "./Pages/User/UserAndRole/ManageRole";
+import MasterCartonOQC from "./Pages/Forms/OQC/MasterCartonOQC";
+import CheckedOQC from "./Pages/Forms/OQC/CheckedOQC";
+import ReviewStatusOQC from "./Pages/Forms/OQC/ReviewStatusOQC";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -36,10 +39,15 @@ const routerAdmin = createHashRouter(
         <Route path="/" element={<Dashboard />} />
         <Route path="/ManageUser" element={<ManageUser />} />
         <Route path="/ManageRole" element={<ManageRole />} />
-
         <Route path="/settings" element={<Websetting />} />
         <Route path="PostApi" element={<PostDataShow />} />
         <Route path="FileUpload" element={<UploadData />} />
+
+        {/* Form Start */}
+        <Route path="MasterCartonOQC" element={<MasterCartonOQC />} />
+        <Route path="CheckedOQC" element={<CheckedOQC />} />
+        <Route path="ReviewStatusOQC" element={<ReviewStatusOQC />} />
+        {/* Form End */}
       </Route>
     </Route>
   )

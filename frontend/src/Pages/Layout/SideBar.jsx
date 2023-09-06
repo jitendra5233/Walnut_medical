@@ -108,7 +108,7 @@ const SideBar = () => {
         key: "oqc",
         name: "Master Carton",
         icon: <CodepenOutlined className="sidebarIcon" />,
-        link: "/oqc",
+        link: "/MasterCartonOQC",
         SubMenu: false,
       },
       {
@@ -116,7 +116,7 @@ const SideBar = () => {
         key: "oqc",
         name: "Checked",
         icon: <CheckSquareOutlined className="sidebarIcon" />,
-        link: "/oqc",
+        link: "/CheckedOQC",
         SubMenu: false,
       },
       {
@@ -132,7 +132,7 @@ const SideBar = () => {
         key: "lqc",
         name: "Sound Box",
         icon: <CodepenOutlined className="sidebarIcon" />,
-        link: "/oqc",
+        link: "/ReviewStatusOQC",
         SubMenu: false,
       },
       {
