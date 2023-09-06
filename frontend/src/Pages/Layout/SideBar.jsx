@@ -124,7 +124,7 @@ const SideBar = () => {
         key: "oqc",
         name: "Review Status",
         icon: <FileDoneOutlined className="sidebarIcon" />,
-        link: "/oqc",
+        link: "/ReviewStatusOQC",
         SubMenu: false,
       },
       {

@@ -868,4 +868,63 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   font-size: 15px;
   margin: 10px 10px 0px;
 }
+
+.TopMenuButton {
+  width: 177px;
+  background: #5b7690;
+  color: #fff;
+}
+
+.TopMenuButton:hover {
+  color: #5b7690 !important;
+  border: 1px solid #5b7690 !important;
+  background: #fff;
+}
+
+.TopMenuTxt {
+  color: #000;
+  /* font-family: Montserrat; */
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 0.28px;
+}
+
+.lineModalCol {
+  text-align: center;
+}
+
+.lineModalButton {
+  display: flex;
+  width: 192px;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 25px !important;
+  border: 1px solid #606060;
+}
+
+.lineModalButton:hover {
+  background-color: #606060;
+  border: 1px solid #fff !important;
+  color: #fff !important;
+}
+.lineModalButtonSUbmit {
+  display: flex;
+  width: 131px;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 25px !important;
+  background: #2b3e50 !important;
+  color: #fff !important;
+}
+.lineModalButtonSUbmit:hover {
+  background: #fff !important;
+  color: #2b3e50 !important;
+  border: 1px solid #2b3e50 !important;
+}
 /* walnut end */

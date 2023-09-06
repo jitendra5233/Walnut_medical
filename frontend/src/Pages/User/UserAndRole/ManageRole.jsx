@@ -1,11 +1,4 @@
-import {
-  CopyOutlined,
-  DeleteOutlined,
-  DownloadOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-  PlusOutlined,
-} from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import {
   Button,
   Col,
@@ -14,11 +7,9 @@ import {
   Modal,
   Row,
   Select,
-  Space,
   Spin,
   Table,
   Tag,
-  Upload,
   message,
 } from "antd";
 import axios from "axios";
@@ -98,27 +89,6 @@ const ManageRole = () => {
       .catch((err) => {
         console.log(err);
       });
-  };
-
-  const downloadFile = (id) => {
-    ApiData.map((x) => {
-      if (id == x.id) {
-        window.location.href = `${process.env.REACT_APP_API_URL}/downloadData/${x.fileLink}`;
-      }
-    });
-  };
-
-  const copyDownloadFileLink = (id) => {
-    ApiData.map((x) => {
-      if (id == x.id) {
-        let copyText = `${process.env.REACT_APP_API_URL}/downloadData/${x.fileLink}`;
-        navigator.clipboard.writeText(copyText);
-        messageApi.open({
-          type: "success",
-          content: "link has been copied to the clipboard",
-        });
-      }
-    });
   };
 
   const randomIntFromInterval = (min, max) => {
