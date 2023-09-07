@@ -20,9 +20,9 @@ const HeaderCom = () => {
         </Col>
 
         <Col span={7} className="h64p">
-          <div style={{ padding: "0 10px" }}>
+          {/* <div style={{ padding: "0 10px" }}>
             <Input placeholder="Select Line number" />
-          </div>
+          </div> */}
         </Col>
 
         <Col span={6} className="h64p">

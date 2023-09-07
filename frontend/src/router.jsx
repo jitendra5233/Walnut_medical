@@ -25,6 +25,7 @@ import ManageRole from "./Pages/User/UserAndRole/ManageRole";
 import MasterCartonOQC from "./Pages/Forms/OQC/MasterCartonOQC";
 import CheckedOQC from "./Pages/Forms/OQC/CheckedOQC";
 import ReviewStatusOQC from "./Pages/Forms/OQC/ReviewStatusOQC";
+import AddMasterCartonOQC from "./Pages/Forms/OQC/AddMasterCartonOQC";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -47,6 +48,7 @@ const routerAdmin = createHashRouter(
         <Route path="MasterCartonOQC" element={<MasterCartonOQC />} />
         <Route path="CheckedOQC" element={<CheckedOQC />} />
         <Route path="ReviewStatusOQC" element={<ReviewStatusOQC />} />
+        <Route path="AddMasterCartonOQC" element={<AddMasterCartonOQC />} />
         {/* Form End */}
       </Route>
     </Route>

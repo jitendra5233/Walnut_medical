@@ -18,3 +18,17 @@ export const updateUserToken = (data) => {
     payload: data,
   };
 };
+
+export const saveActiveLine = (data) => {
+  return {
+    type: "SAVE_ACTIVE_LINE",
+    payload: data,
+  };
+};
+
+export const logoutActiveLine = (data) => {
+  return {
+    type: "LOGOUT_ACTIVE_LINE",
+    payload: data,
+  };
+};

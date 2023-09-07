@@ -18,6 +18,8 @@ require("dotenv").config();
 
 var multer = require("multer");
 const Role = require("./Model/RoleManage");
+const LineLogs = require("./Model/LineLogs");
+const BatchData = require("./Model/BatchData");
 
 const doc1Upload = (req, res) => {
   return new Promise((resolve, reject) => {
@@ -560,8 +562,54 @@ app.post("/UpdateRole", async (req, res) => {
 
 // Role end
 
+// Line Manage
+
+app.post("/LoginLine", async (req, res) => {
+  try {
+    const result = await LineLogs.create(req.body);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.post("/LogoutLine", async (req, res) => {
+  try {
+    let role = await LineLogs.findOneAndUpdate(
+      { _id: req.body.id },
+      {
+        name: req.body.name,
+        LogedOutTime: req.body.time,
+        isLogedIn: false,
+      }
+    );
+    res.status(200).json(role);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Line Manage
+
+// Batch Manage
+app.post("/saveBatch", async (req, res) => {
+  try {
+    const result = await BatchData.create(req.body);
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+app.post("/getBatch", async (req, res) => {
+  try {
+    const result = await BatchData.find({
+      line_name: req.body.line,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// Batch Manage
 // Walnut End
-
-//  OQC Start
-
-// OQC End

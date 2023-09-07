@@ -9,6 +9,13 @@ const iSate = {
     photo: "",
     employee_id: "",
   },
+  LineLogin: {
+    line_name: "",
+    line_login_time: "",
+    type: "",
+    isLogedIn: false,
+    line_id: "",
+  },
 };
 
 export const Reducer = (state = iSate, action) => {
@@ -54,6 +61,32 @@ export const Reducer = (state = iSate, action) => {
         user: {
           ...state.user,
           token: action.payload.id,
+        },
+      };
+    }
+    case "SAVE_ACTIVE_LINE": {
+      return {
+        ...state,
+        LineLogin: {
+          ...state.LineLogin,
+          line_id: action.payload.line_id,
+          line_name: action.payload.line_name,
+          line_login_time: action.payload.line_login_time,
+          type: action.payload.type,
+          isLogedIn: true,
+        },
+      };
+    }
+    case "LOGOUT_ACTIVE_LINE": {
+      return {
+        ...state,
+        LineLogin: {
+          ...state.LineLogin,
+          line_name: "",
+          line_login_time: "",
+          type: "",
+          isLogedIn: false,
+          line_id: "",
         },
       };
     }

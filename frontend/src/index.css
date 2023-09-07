@@ -881,6 +881,14 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   background: #fff;
 }
 
+:where(.css-dev-only-do-not-override-txh9fw).ant-btn-default:disabled:hover {
+  cursor: not-allowed;
+  border-color: #d9d9d9 !important;
+  color: rgba(0, 0, 0, 0.25) !important;
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  box-shadow: none;
+}
+
 .TopMenuTxt {
   color: #000;
   /* font-family: Montserrat; */
@@ -906,6 +914,10 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   border: 1px solid #606060;
 }
 
+.lineModalButtonActive {
+  background-color: #c9d5e3;
+  border: 1px solid #c9d5e3;
+}
 .lineModalButton:hover {
   background-color: #606060;
   border: 1px solid #fff !important;
@@ -922,9 +934,27 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   background: #2b3e50 !important;
   color: #fff !important;
 }
+
+.lineModalButtonSUbmit2 {
+  display: flex;
+  width: 131px;
+  padding: 20px;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  border-radius: 25px !important;
+  background: #babcc8 !important;
+  color: #fff !important;
+}
+
 .lineModalButtonSUbmit:hover {
   background: #fff !important;
   color: #2b3e50 !important;
   border: 1px solid #2b3e50 !important;
+}
+
+.topLogoutBtn:hover {
+  background-color: #c9d5e3 !important;
+  color: #000 !important;
 }
 /* walnut end */
