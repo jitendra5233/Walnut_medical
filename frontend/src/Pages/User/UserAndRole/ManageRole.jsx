@@ -51,6 +51,10 @@ const ManageRole = () => {
       key: "lqc",
       name: "LQC",
     },
+    {
+      key: "rework",
+      name: "Rework",
+    },
   ]);
 
   const { Option } = Select;

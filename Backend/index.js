@@ -4,18 +4,15 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const Users = require("./Model/users");
 const upload = require("./Service/imageUpload");
-
 const Websetting = require("./Model/Websetting");
-
 const sendOtp = require("./controllers/sendOtp");
-
 const MachineData2 = require("./Model/MachineData2");
 const UploadFiles = require("./Model/UploadFiles");
-
 const MachineData = require("./Model/MachineData");
+ const IMEINumberLQC =require('./Model/IMEINumberLQC');
+ const IMEINumberLQCInternalVuales =require("./Model/IMEINumberLQCInternalVuales");
 
 require("dotenv").config();
-
 var multer = require("multer");
 const Role = require("./Model/RoleManage");
 const LineLogs = require("./Model/LineLogs");
@@ -45,7 +42,7 @@ app.use(express.static("files"));
 
 app.use("/", express.static("build"));
 app.use("/images", express.static("images"));
-
+app.use('/SoundImages', express.static('testingImages'));
 mongoose
   .connect(process.env.MONGO_DB)
   .then(() => {
@@ -479,6 +476,7 @@ app.post("/deleteUser", async (req, res) => {
   }
 });
 
+
 app.post("/UpdateUser", async (req, res) => {
   try {
     uploadPostData2(req, res, async function (err) {
@@ -611,5 +609,290 @@ app.post("/getBatch", async (req, res) => {
   }
 });
 
+
+
+
 // Batch Manage
+
+// Jitendra API
+
+
+app.delete('/delete_batch', async (req, res) => {
+  try {
+    const { batch_id, batch_number, line_name } = req.body;
+    const result = await BatchData.deleteOne({ _id: batch_id });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Batch not found." });
+    }
+    const resultRef = await IMEINumberLQCInternalVuales.deleteMany({ batch_number: batch_number, line_name: line_name });
+    const resultSecondTbl = await IMEINumberLQC.deleteMany({ batch_number: batch_number, line_name: line_name });
+    res.status(200).json({
+      message: 'Items deleted successfully',
+      deletedBatchCount: result.deletedCount,
+      deletedRefCount: resultRef.deletedCount,
+      deletedSecondTblCount: resultSecondTbl.deletedCount
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Internal server error", error: error.message });
+  }
+});
+
+
+app.post("/saveIMEI", async (req, res) => {
+  try {
+    const { IMEI, line_name, type, batch_number, IMEI_status, Soundboxlinequalitychecklist } = req.body;
+    const primaryResult = await IMEINumberLQC.create({
+      IMEI,
+      line_name,
+      type,
+      batch_number,
+      IMEI_status
+    });
+
+    if (primaryResult) {
+      const secondaryResult = await IMEINumberLQCInternalVuales.create({
+        ref_IMEI: IMEI,
+        line_name,
+        type,
+        batch_number,
+        IMEI_status,
+        Soundboxlinequalitychecklist
+      });
+
+      res.status(200).json(secondaryResult);
+    } else {
+      res.status(500).json({ message: "Primary table data could not be saved." });
+    }
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
+app.post("/getIMEI", async (req, res) => {
+  try {
+    const result = await IMEINumberLQC.find({
+      batch_number: req.body.batch_number,
+    });
+    res.status(200).json(result);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+app.delete('/delete_IMEI', async (req, res) => {
+  try {
+    const { ids, ref_IMEI,batch_number } = req.body;
+    const result = await IMEINumberLQC.deleteMany({ _id: { $in: ids } });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ message: "Batch not found." });
+    }
+    const resultRef = await IMEINumberLQCInternalVuales.deleteMany({ ref_IMEI: { $in: ref_IMEI } });
+
+    res.status(200).json({ message: 'Items deleted successfully', result, resultRef });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+
+app.post("/saveSoundboxlinequalitychecklist", async (req, res) => {
+  try {
+    const postData = req.body;
+    const { ref_IMEI, batch_number } = postData;
+    const existingEntry = await IMEINumberLQCInternalVuales.findOne({
+      ref_IMEI,
+      batch_number,
+    });
+    if (existingEntry) {
+      await IMEINumberLQCInternalVuales.findOneAndUpdate(
+        { ref_IMEI, batch_number },
+        postData,
+        { new: true } 
+      );
+    } else {
+      const newEntry = new IMEINumberLQCInternalVuales(postData);
+      await newEntry.save();
+    }
+    res.status(200).json({ message: "Table data saved successfully!" });
+  } catch (error) {
+    res.status(500).json({ error: "Error saving table data." });
+  }
+});
+
+
+app.get('/getSoundboxlinequalitychecklist', (req, res) => {
+  const { IMEINumber } = req.query;
+
+  IMEINumberLQCInternalVuales.find({ ref_IMEI:IMEINumber })
+    .exec()
+    .then((result) => {
+      res.status(200).json(result);
+    })
+    .catch((error) => {
+      res.status(500).json({ error });
+    });
+});
+app.post("/getBatchList", async (req, res) => {
+  try {
+    const pipeline = [
+      {
+        $match: { line_name: req.body.line }, 
+      },
+      {
+        $group: {
+          _id: "$batch_number", 
+          count: { $sum: 1 }, 
+          createdAt: { $first: "$createdAt" },
+        },
+      },
+    ];
+    const result = await IMEINumberLQCInternalVuales.aggregate(pipeline);
+    const batchCounts = result.map((item) => ({
+      BatchID: item._id,
+      NumberOfSoundBoxAdded: item.count,
+      createdAt:item.createdAt,
+    }));
+
+    res.status(200).json(batchCounts);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+
+
+
+app.post("/getIMEIList", async (req, res) => {
+  try {
+    const postData = req.body;
+    const { line, BatchNumber } = postData;
+
+    const existingEntry = await IMEINumberLQCInternalVuales.find({
+      line_name: line,
+      batch_number: BatchNumber,
+    });
+
+    if (existingEntry) {
+      res.status(200).json(existingEntry);
+    } else {
+      res.status(404).json({ message: "Entry not found." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Error retrieving table data." });
+  }
+});
+
+var storage3 = multer.diskStorage({
+  destination: function (req, file, callback) {
+    callback(null, "./testingImages");
+  },
+  filename: function (req, file, callback) {
+    callback(null, Date.now() + "_" + file.originalname);
+  },
+});
+
+
+var uploadTestingImages = multer({ storage: storage3 }).single("image");
+
+app.post("/uploadTestingImages", async (req, res) => {
+  try {
+    uploadTestingImages(req, res, function (err) {
+      if (err) {
+        return res.end("err");
+      } else {
+        res.status(200).json(req.file.filename);
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+app.get('/getAllDefectedSoundboxlinequalitychecklist', async (req, res) => {
+  try {
+    const { line_name } = req.query;
+    const result = await IMEINumberLQCInternalVuales.find({
+      line_name: line_name,
+      'Soundboxlinequalitychecklist.status': "NOT OK"
+    });
+    const filteredResult = result.map(item => ({
+      ...item.toObject(),
+      Soundboxlinequalitychecklist: item.Soundboxlinequalitychecklist.filter(entry => entry.status === 'NOT OK')
+    }));
+
+    res.status(200).json(filteredResult);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/updateData', async (req, res) => {
+  try {
+    const { Soundboxlinequalitychecklist } = req.body;
+    for (const item of Soundboxlinequalitychecklist) {
+      await IMEINumberLQCInternalVuales.updateOne(
+        { _id: item.id, 'Soundboxlinequalitychecklist.lqcl': item.lqcl },
+        {
+          $set: {
+            'Soundboxlinequalitychecklist.$.status': item.status,
+            'Soundboxlinequalitychecklist.$.defect_category': item.defect_category,
+            'Soundboxlinequalitychecklist.$.remarks': item.remarks,
+            'Soundboxlinequalitychecklist.$.analysis_details': item.analysis_details,
+
+          }
+        }
+      );
+    }
+
+    res.status(200).json({ message: 'Data updated successfully' });
+  } catch (error) {
+    console.error('Error updating data:', error);
+    res.status(500).json({ error: 'Error updating data' });
+  }
+});
+
+app.get('/getAllDefectedSoundbox', async (req, res) => {
+  try {
+    const result = await IMEINumberLQCInternalVuales.find({
+      'Soundboxlinequalitychecklist.status': 'NOT OK'
+    });
+    const filteredResult = result.map(item => ({
+      ...item.toObject(),
+      Soundboxlinequalitychecklist: item.Soundboxlinequalitychecklist.filter(
+        entry => entry.status === 'NOT OK' 
+      )
+    }));
+
+    res.status(200).json(filteredResult);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+    res.status(500).json({ error: 'Error fetching data' });
+  }
+});
+
+
+app.get('/getAllCheckedSoundboxlist', async (req, res) => {
+  try {
+    const result = await IMEINumberLQCInternalVuales.find({
+      'Soundboxlinequalitychecklist.status': { $in: ["NOT OK", "OK"] }
+    });
+    const filteredResult = result.map(item => ({
+      ...item.toObject(),
+      Soundboxlinequalitychecklist: item.Soundboxlinequalitychecklist.filter(entry => entry.analysis_details !== "")
+    }));
+    res.status(200).json(filteredResult);
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+
+
+// Batch Manage
+
 // Walnut End

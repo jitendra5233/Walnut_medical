@@ -931,7 +931,7 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   align-items: center;
   gap: 10px;
   border-radius: 25px !important;
-  background: #2b3e50 !important;
+  background: #5B7690 !important;
   color: #fff !important;
 }
 
@@ -957,4 +957,92 @@ li.ant-menu-submenu.ant-menu-submenu-inline {
   background-color: #c9d5e3 !important;
   color: #000 !important;
 }
+
+.circular-button {
+  width: 156px !important;
+  height: 35px;
+  gap: 20px;
+border-radius: 25px !important;
+background: #5B7690;
+color: #fff;
+}
+
+.cancle
+{
+ border-radius: 25px !important;
+ background: #BABCC8 !important;
+ color: #fff !important;
+}
+.text-title
+{
+  width: 121px;
+  height: 15px;
+  font-family: Montserrat !important;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 14.63px;
+  letter-spacing:0.02em;
+  text-align: left;
+  color:#606060;
+}
+.circular-button1 {
+  margin-top: 10px;
+  width:323px !important;
+  height: 40px !important;
+  padding: 10px;
+  gap: 10px;
+  background: #5B7690;
+  }
+.btn-txt
+{
+width: 121px;
+height: 15px;
+color: #FFFFFF;
+font-family: Montserrat;
+font-size: 12px;
+font-weight: 600;
+line-height: 14.63px;
+letter-spacing: 0.02em;
+text-align: left;
+}
+.circular-buttonsave
+{
+width:118px !important;
+height:35px !important;
+padding: 5px !important;
+border-radius: 25px !important;
+gap: 10px !important;
+background: #5B7690;
+
+}
+.btn-save
+{
+width: 31px;
+height: 15px;
+font-family: Montserrat;
+font-size: 12px;
+font-weight: 700;
+line-height: 15px;
+letter-spacing: 0.02em;
+text-align: left;
+color:#FFFFFF;
+}
+.ant-checkbox-inner
+{
+  background-color: #5B7690 !important;
+    border-color: #FFFFFF !important;
+}
+
+.btn-savedelete
+{
+width:118px !important;
+height:35px !important;
+padding: 5px !important;
+border-radius: 25px !important;
+gap: 10px !important;
+background: #BABCC8 !important;
+
+
+}
+
 /* walnut end */

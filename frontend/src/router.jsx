@@ -26,6 +26,14 @@ import MasterCartonOQC from "./Pages/Forms/OQC/MasterCartonOQC";
 import CheckedOQC from "./Pages/Forms/OQC/CheckedOQC";
 import ReviewStatusOQC from "./Pages/Forms/OQC/ReviewStatusOQC";
 import AddMasterCartonOQC from "./Pages/Forms/OQC/AddMasterCartonOQC";
+import SoundBoxLQCList from "./Pages/Forms/LQC/SoundBoxLQCList";
+import ReviewStatusLQC from "./Pages/Forms/LQC/ReviweStatusLQC";
+import AddSoundLQC from "./Pages/Forms/LQC/AddSoundLQC";
+import SoundBoxLineChekList from "./Pages/Forms/LQC/SoundBoxLineChekList";
+import SoundBoxLQCCcjekList from "./Pages/Forms/LQC/SoundBoxLQCCheckList";
+import CheckListedSoundBoxLQC from "./Pages/Forms/LQC/CheckListedSoundBoxLQC";
+import ShowDefectedItemList from "./Pages/Forms/Rework/ShowDefectedItemList";
+import ReworkCheckList from "./Pages/Forms/Rework/ReworkCheckList";
 
 const routerAdmin = createHashRouter(
   createRoutesFromElements(
@@ -49,6 +57,21 @@ const routerAdmin = createHashRouter(
         <Route path="CheckedOQC" element={<CheckedOQC />} />
         <Route path="ReviewStatusOQC" element={<ReviewStatusOQC />} />
         <Route path="AddMasterCartonOQC" element={<AddMasterCartonOQC />} />
+        <Route path="sound_box" element={<SoundBoxLQCList />} />
+        <Route path="lqc_reviewStatus" element={<ReviewStatusLQC />} />
+        <Route path="AddSoundLQC/:batch_number" element={<AddSoundLQC />} />
+        <Route
+          path="line_quality_check_list/:IMEI_number/:batch_number"
+          element={<SoundBoxLineChekList />}
+        />
+        <Route path="/Check_list" element={<SoundBoxLQCCcjekList />} />
+        <Route
+          path="/Check_listed_soundbox/:batch_number"
+          element={<CheckListedSoundBoxLQC />}
+        />
+        <Route path="/rework_soundbox" element={<ShowDefectedItemList />} />
+        <Route path="/rework_checklist" element={<ReworkCheckList />} />
+
         {/* Form End */}
       </Route>
     </Route>
